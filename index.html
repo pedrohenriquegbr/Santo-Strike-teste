@@ -581,6 +581,8 @@ img.img-falhou{opacity:0 !important}
 /* a foto do boliche é retrato: ancora na altura da cabeça e da bola
    para os quadros que ainda precisam recortar (tablet e celular) */
 .gal__i--jogo img{object-position:50% 35%}
+/* PlayKids é retrato num quadro largo: 23% mantém a bola e o rosto no corte */
+.gal > [data-area="play"] img{object-position:50% 23%}
 /* Mosaico do desktop com áreas nomeadas. O boliche ocupa duas linhas,
    formato 0,68, quase o mesmo da foto (0,72), e o grid fecha sem buraco. */
 @media (min-width:1001px){
@@ -1377,13 +1379,12 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
           <img src="assets/fotos/boliche-jogando.jpg" alt="Cliente jogando boliche na pista do Santo Strike, com os pinos e o letreiro em neon ao fundo" width="900" height="1258" loading="lazy" decoding="async">
           <figcaption>O boliche</figcaption>
         </figure>
-        <figure class="gal__i gal__i--has gal__i--ilus" data-area="play">
-          <img src="assets/fotos/playkids.jpg" alt="Área infantil com escorregador e túneis" loading="lazy" decoding="async">
+        <figure class="gal__i gal__i--has" data-area="play">
+          <img src="assets/fotos/playkids.jpg" alt="Criança brincando na piscina de bolinhas do PlayKids" width="900" height="1288" loading="lazy" decoding="async">
           <figcaption>PlayKids</figcaption>
         </figure>
       </div>
-      <p class="fineprint rv">Bufê, pizza, churrasco e boliche são fotos reais da casa. A do PlayKids é
-        ilustrativa e sai assim que chegar a de verdade.</p>
+      <p class="fineprint rv">Bufê, pizza, churrasco, boliche e PlayKids são fotos reais da casa.</p>
     </div>
   </section>
 
