@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Proposta da Next Level Dev para a reserva do Santo Strike: como funciona, valor, teste de 30 dias.">
+<meta property="og:title" content="Proposta Santo Strike · Next Level Dev">
+<meta property="og:description" content="A reserva com extras e Pix, do jeito que você descreveu. Valor, teste de 30 dias e próximo passo.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0C0806">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230D0906'/%3E%3Cellipse cx='16' cy='13' rx='10' ry='3.4' fill='none' stroke='%23E3B23C' stroke-width='2'/%3E%3C/svg%3E">
+<title>Reserva Santo Strike</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  --paper:#FDFCFA; --panel:#F4F0E8; --ink:#16120D; --ink-2:#5C5246; --line:#E5DED2;
+  --gold:#8A600F; --gold-fill:#E3B23C; --on-gold:#16120D;
+  --display:'Prata',Georgia,'Times New Roman',serif;
+  --body:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0C0806; --panel:#17110A; --ink:#F4EEE3; --ink-2:#B9AC98; --line:#2C231A;
+    --gold:#E3B23C; --gold-fill:#E3B23C; --on-gold:#140E08; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0C0806; --panel:#17110A; --ink:#F4EEE3; --ink-2:#B9AC98; --line:#2C231A;
+  --gold:#E3B23C; --gold-fill:#E3B23C; --on-gold:#140E08; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.05rem/1.6 var(--body);-webkit-font-smoothing:antialiased}
+.doc{max-width:34rem;margin:0 auto;padding:clamp(1.25rem,5vw,2.5rem) clamp(1.25rem,5vw,2rem) 3rem}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:4px}
+.top{font:500 .68rem/1.5 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+  padding-bottom:1rem;border-bottom:1px solid var(--line)}
+.top strong{color:var(--ink);font-weight:700}
+h1{font:400 clamp(1.9rem,6.4vw,2.6rem)/1.1 var(--display);margin:1.8rem 0 0;text-wrap:balance}
+.lead{color:var(--ink-2);margin:.9rem 0 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:.85rem 1.4rem;
+  border-radius:999px;text-decoration:none;font:500 1rem/1.1 var(--body);
+  background:var(--gold-fill);border:1.5px solid var(--gold-fill);color:var(--on-gold);transition:transform .15s}
+.btn--linha{background:none;border-color:var(--ink);color:var(--ink)}
+.btn:hover{transform:translateY(-1px)}
+.ctas{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem}
+section{padding:2rem 0;border-top:1px solid var(--line);margin-top:2rem}
+h2{font:400 1.45rem/1.2 var(--display);margin:0 0 1rem}
+.label{font:500 .68rem/1.3 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:0 0 .6rem}
+ol,ul{margin:0;padding:0;list-style:none;display:grid;gap:.7rem}
+.passos{counter-reset:p}
+.passos li{counter-increment:p;display:grid;grid-template-columns:1.5rem 1fr;gap:.6rem}
+.passos li::before{content:counter(p);font:700 .78rem/1.7 var(--mono);color:var(--gold)}
+.perg li{display:grid;grid-template-columns:1rem 1fr;gap:.5rem}
+.perg li::before{content:"·";font:700 1.2rem/1.2 var(--mono);color:var(--gold)}
+.valores{display:grid;gap:0;border-top:1px solid var(--line)}
+.valores div{display:flex;justify-content:space-between;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line)}
+.valores dt{font-weight:700;margin:0}
+.valores dd{margin:0;font:500 .98rem/1.5 var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--gold)}
+.teste{margin-top:1.2rem;padding:1.1rem 1.2rem;border:1.5px solid var(--gold);border-radius:14px;background:var(--panel)}
+.teste b{display:block;font:400 1.15rem/1.3 var(--display);margin-bottom:.35rem}
+.teste p{margin:0;color:var(--ink-2);font-size:.95rem}
+.nota{font-size:.86rem;color:var(--ink-2);margin-top:1rem}
+.assina{margin-top:1.6rem;font:500 .7rem/1.6 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
+</style>
+
+<main class="doc">
+  <p class="top"><strong>Next Level Dev</strong> · para o Santo Strike · 12/09/2026</p>
+
+  <h1>A reserva do jeito que você descreveu.</h1>
+  <p class="lead">Igual companhia aérea: a pessoa reserva a mesa e, antes de pagar, escolhe os extras. Fiz funcionando para você testar no celular.</p>
+  <div class="ctas">
+    <a class="btn" href="https://santo-strike.vercel.app/reserva/" target="_blank" rel="noopener">Abrir a demonstração</a>
+    <a class="btn btn--linha" href="https://santo-strike.vercel.app/" target="_blank" rel="noopener">Ver o site</a>
+  </div>
+  <p class="nota">É uma demonstração: nenhuma cobrança acontece de verdade.</p>
+
+  <section>
+    <p class="label">Como funciona</p>
+    <h2>Cinco toques até a reserva paga.</h2>
+    <ol class="passos">
+      <li>Escolhe o andar ou a pista.</li>
+      <li>Escolhe o dia e o horário, com as regras da casa já aplicadas.</li>
+      <li>Diz quantos adultos e quantas crianças.</li>
+      <li>Soma os extras: kit festa, bolo, personagem, hora a mais na pista.</li>
+      <li>Paga no Pix. Sem pagar, não vira reserva.</li>
+    </ol>
+    <p class="nota">O dinheiro cai direto na conta do Santo Strike. Enquanto você não abrir a conta que recebe, a reserva chega no WhatsApp de vocês já somada.</p>
+  </section>
+
+  <section>
+    <p class="label">Valor</p>
+    <h2>O que custa.</h2>
+    <dl class="valores">
+      <div><dt>Site com o sistema de reserva</dt><dd>R$ 1.447,43</dd></div>
+      <div><dt>Manutenção mensal</dt><dd>R$ 197,43</dd></div>
+      <div><dt>Fica pronto em</dt><dd>2 semanas</dd></div>
+      <div><dt>Período de teste</dt><dd>30 dias</dd></div>
+    </dl>
+    <div class="teste">
+      <b>Você testa 30 dias antes de pagar o resto.</b>
+      <p>Metade para eu começar. A outra metade só depois de 30 dias com o site no ar, recebendo reserva de verdade. A manutenção só começa a contar depois do teste.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="label">O que eu preciso de você</p>
+    <h2>Cinco respostas.</h2>
+    <ul class="perg">
+      <li>Cobra o valor cheio antecipado ou um sinal?</li>
+      <li>Vale para toda reserva ou só para o boliche?</li>
+      <li>Se desmarcar: devolve, vira crédito ou não devolve?</li>
+      <li>Quais extras você vende e quanto custa cada um?</li>
+      <li>Quem confere as reservas hoje aí na casa?</li>
+    </ul>
+  </section>
+
+  <section>
+    <p class="label">Próximo passo</p>
+    <h2>Qual dia é melhor para você?</h2>
+    <p class="lead">Eu passo aí antes de abrir, levo isso no celular e a gente resolve as cinco perguntas em dez minutos. Me diz o dia e o horário que funciona.</p>
+    <div class="ctas">
+      <a class="btn" href="https://wa.me/5521974595073?text=Oi%20Pedro!%20Vi%20a%20reserva%20funcionando." target="_blank" rel="noopener">Falar no WhatsApp</a>
+    </div>
+    <p class="assina">Next Level Dev · (21) 97459-5073</p>
+  </section>
+</main>
+
+</html>
