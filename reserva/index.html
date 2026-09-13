@@ -31,7 +31,11 @@ body{margin:0;background:var(--canvas);color:var(--ink);font:400 1rem/1.55 var(-
 .demo{background:var(--accent);color:var(--canvas);font:700 .66rem/1.4 var(--mono);
   letter-spacing:.16em;text-transform:uppercase;text-align:center;padding:.5rem .8rem}
 
-.top{display:flex;align-items:center;gap:.8rem;padding:1.1rem 0 .9rem}
+.top{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:1.1rem 0 .9rem}
+.marca{display:flex;align-items:center;gap:.8rem;color:var(--ink);text-decoration:none}
+.volta{font:500 .66rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+  text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.55rem .8rem}
+.volta:hover{color:var(--accent);border-color:var(--line-strong)}
 .top svg{width:34px;height:20px;color:var(--accent);flex:none}
 .top b{font:400 1.15rem/1 var(--display)}
 .top span{font:500 .62rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:block;margin-top:.25rem}
@@ -170,8 +174,11 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 
 <div class="app">
   <header class="top">
-    <svg viewBox="0 0 34 20" aria-hidden="true"><ellipse cx="17" cy="10" rx="15" ry="5.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-    <div><b>Santo Strike</b><span>Reserva</span></div>
+    <a class="marca" href="https://santo-strike.vercel.app/" aria-label="Voltar ao site do Santo Strike">
+      <svg viewBox="0 0 34 20" aria-hidden="true"><ellipse cx="17" cy="10" rx="15" ry="5.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      <div><b>Santo Strike</b><span>Reserva</span></div>
+    </a>
+    <a class="volta" href="https://santo-strike.vercel.app/">Ver o site</a>
   </header>
 
   <div class="barra"><i id="barra" style="transform:scaleX(.2)"></i></div>
@@ -187,7 +194,7 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
       <label class="op"><input type="radio" name="onde" value="2º piso" data-tipo="mesa" data-piso="2">
         <b>2º piso</b><em>Fusion Food com churrasco</em><span class="val">a partir de R$ 69,99</span></label>
       <label class="op"><input type="radio" name="onde" value="Boliche" data-tipo="pista">
-        <b>Boliche</b><em>Pista por hora, até 6 pessoas</em><span class="val">R$ 80 / hora</span></label>
+        <b>Boliche</b><em>Pista por hora, até 6 pessoas</em><span class="val">a partir de R$ 80 / hora</span></label>
       <label class="op"><input type="radio" name="onde" value="Festa" data-tipo="festa">
         <b>Festa ou evento</b><em>15 anos, casamento, confraternização</em><span class="val">orçamento</span></label>
     </div>
@@ -288,13 +295,14 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     mesa:{ 1:{ 2:54.99, 3:54.99, 4:54.99, 5:59.99, 6:64.99, 0:59.99 },
            2:{ 2:69.99, 3:69.99, 4:69.99, 5:79.99, 6:79.99, 0:79.99 } },
     crianca:{ 1:19.99, 2:24.99 },
-    pista:80
+    /* pista com reserva: R$ 80 de terça a quinta, R$ 120 de sexta a domingo (tabela do site) */
+    pista:function(d){ var w = d ? d.getDay() : 2; return (w >= 2 && w <= 4) ? 80 : 120; }
   };
   var EXTRAS = [
     { id:'kit',  nome:'Kit festa',            desc:'Decoração da mesa do aniversariante', preco:89.90 },
     { id:'bolo', nome:'Bolo 1 kg',            desc:'Pede 24h de antecedência',            preco:79.90 },
     { id:'pers', nome:'Personagem 20 min',    desc:'Visita na mesa e foto com a criança', preco:149.90 },
-    { id:'pista',nome:'Hora extra de pista',  desc:'Uma hora a mais no boliche',          preco:80.00 },
+    { id:'pista',nome:'Hora extra de pista',  desc:'Mesmo valor da hora no dia escolhido', preco:80.00, porDia:true },
     { id:'placa',nome:'Placa com o nome',     desc:'Na mesa, com o nome de quem faz aniversário', preco:19.90 }
   ];
   var NOMES = ['Onde','Quando','Quem vai','Seus dados','Pagamento','Pix','Pronto'];
@@ -320,8 +328,9 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     }
     return false;
   }
+  function precoExtra(e){ return e.porDia ? PRECO.pista(st.data) : e.preco; }
   function valorDia(d){
-    if (st.tipo === 'pista') return PRECO.pista;
+    if (st.tipo === 'pista') return PRECO.pista(d);
     if (st.tipo === 'festa') return 0;
     return PRECO.mesa[st.piso][d.getDay()];
   }
@@ -364,7 +373,7 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     EXTRAS.forEach(function(e){
       var div = document.createElement('div');
       div.className = 'extra';
-      div.innerHTML = '<b>' + e.nome + '</b><span class="val">' + moeda(e.preco) + '</span>' +
+      div.innerHTML = '<b>' + e.nome + '</b><span class="val" id="p_' + e.id + '">' + moeda(e.preco) + '</span>' +
         '<em>' + e.desc + '</em>' +
         '<div class="pm"><button type="button" data-ex="' + e.id + '" data-d="-1" aria-label="Menos">&minus;</button>' +
         '<output id="q_' + e.id + '">0</output>' +
@@ -383,7 +392,7 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 
   /* ---------- conta ---------- */
   function itens(){
-    var out = [], vd = st.data ? valorDia(st.data) : (st.tipo === 'pista' ? PRECO.pista : PRECO.mesa[st.piso][2]);
+    var out = [], vd = st.data ? valorDia(st.data) : (st.tipo === 'pista' ? PRECO.pista(null) : PRECO.mesa[st.piso][2]);
     if (st.tipo === 'pista'){
       out.push({ nome:'Pista por 1 hora', valor:vd });
     } else if (st.tipo !== 'festa'){
@@ -392,14 +401,15 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     }
     EXTRAS.forEach(function(e){
       var q = st.extras[e.id] || 0;
-      if (q) out.push({ nome:(q > 1 ? q + '× ' : '') + e.nome, valor:e.preco * q, extra:true });
+      if (q) out.push({ nome:(q > 1 ? q + '× ' : '') + e.nome, valor:precoExtra(e) * q, extra:true });
     });
     return out;
   }
   function total(){ return itens().reduce(function(s,i){ return s + i.valor; }, 0); }
 
   function atualizar(){
-    var vd = st.data ? valorDia(st.data) : PRECO.mesa[st.piso][2];
+    var vd = st.data ? valorDia(st.data) : (st.tipo === 'pista' ? PRECO.pista(null) : PRECO.mesa[st.piso][2]);
+    var pp = $('p_pista'); if (pp) pp.textContent = moeda(PRECO.pista(st.data));
     $('vAdulto').textContent = moeda(vd) + ' cada';
     $('vCrianca').textContent = moeda(PRECO.crianca[st.piso]) + ' cada';
     $('qAdultos').textContent = st.adultos;
@@ -554,6 +564,16 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
   })();
 
   montarDias(); montarExtras(); atualizar();
+
+  /* atalho do site: /reserva/?onde=2piso já chega com o andar escolhido */
+  (function(){
+    var mapa = { '1piso':0, '2piso':1, 'boliche':2, 'festa':3 };
+    var q = (new URLSearchParams(location.search).get('onde') || '').toLowerCase();
+    if (!(q in mapa)) return;
+    var input = document.querySelectorAll('#onde input')[mapa[q]];
+    input.checked = true;
+    input.dispatchEvent(new Event('change', { bubbles:true }));
+  })();
 })();
 </script>
 

@@ -752,6 +752,21 @@ img.img-falhou{opacity:0 !important}
 .book__foot .btn{flex:1;min-width:180px;border-radius:999px;padding:.95rem 1.6rem}
 .book__erro{margin-top:1rem;font-size:.92rem;color:var(--ember);min-height:1.4em}
 
+/* --- reserva: porta de entrada para /reserva/ ------------- */
+.atalhos-res{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:2.4rem}
+.atalho-res{display:flex;flex-direction:column;gap:.3rem;padding:1.3rem 1.2rem;border:1px solid var(--line);
+  background:var(--panel);color:var(--text-primary);text-decoration:none;
+  transition:border-color .25s var(--ease),transform .25s var(--ease)}
+.atalho-res:hover{border-color:var(--accent);transform:translateY(-3px)}
+.atalho-res:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.atalho-res b{font-family:var(--display);font-weight:400;font-size:1.35rem;line-height:1.2}
+.atalho-res span{color:var(--text-secondary);font-size:.92rem}
+.atalho-res em{font-style:normal;font-family:var(--mono);font-size:.82rem;color:var(--accent);margin-top:.4rem}
+.reserva-cta{display:flex;margin-top:2rem}
+@media (max-width:900px){.atalhos-res{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.atalhos-res{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.atalho-res{transition:none}.atalho-res:hover{transform:none}}
+
 /* --- depoimentos: avaliações reais do Google ----------------
    3 espaços que trocam defasados (2 no tablet, 1 no celular). Só
    transform e opacidade animam. A barra embaixo de cada card é o
@@ -1092,7 +1107,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
     <a href="#festa">Sua festa</a>
     <a href="#onde">Onde ficamos</a>
   </div>
-  <a class="btn btn--gold" href="#reserva">Reservar mesa</a>
+  <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
   <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
@@ -1129,7 +1144,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
           <h1 data-split="word">Santo Strike</h1>
           <p class="sub">Rodízio a partir de R$&nbsp;54,99. Terça a domingo, em Duque de Caxias.</p>
           <div class="ctas">
-            <a class="btn btn--gold" href="#reserva">Reservar mesa</a>
+            <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
             <a class="btn btn--ghost" href="#andares">Ver os rodízios</a>
           </div>
         </div>
@@ -1151,7 +1166,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
       <h1>Santo Strike</h1>
       <p class="sub">Dois andares, dois rodízios, boliche e PlayKids. Terça a domingo, em Duque de Caxias.</p>
       <div class="ctas">
-        <a class="btn btn--gold" href="#reserva">Reservar mesa</a>
+        <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
         <a class="btn btn--ghost" href="#andares">Ver os rodízios</a>
       </div>
     </div>
@@ -1389,130 +1404,21 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
   </section>
 
   <!-- ========== RESERVA ========== -->
+  <!-- A reserva mora em /reserva/: extras, total do dia e Pix. Aqui fica só a porta de entrada,
+       com atalhos que já chegam com o andar escolhido. -->
   <section class="sec" id="reserva">
     <div class="wrap">
       <p class="kicker rv">Reserva</p>
-      <h2 class="rv">Reserve em três passos.</h2>
-      <p class="lede rv">O preço muda por dia da semana e por forma de pagamento. O calendário
-        abaixo já mostra o valor do dia que você escolher.</p>
-
-      <form class="book rv" id="book" novalidate>
-
-        <ol class="stepper" id="stepper">
-          <li class="is-on"><b>1</b><span>Reserva</span></li>
-          <li><b>2</b><span>Seus dados</span></li>
-          <li><b>3</b><span>Confirmar</span></li>
-        </ol>
-
-        <!-- ---------- PASSO 1 ---------- -->
-        <fieldset class="step is-on" data-step="0">
-          <legend>
-            <button type="button" class="voltar" id="back" hidden aria-label="Voltar">&#8592;</button>
-            <span class="legend-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M3 9h18M5 9V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2M4 9v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/>
-              </svg>
-            </span>
-            Sua reserva
-          </legend>
-
-          <div class="campo">
-            <label class="rot" for="pickWhere">Onde <i>*</i></label>
-            <div class="picks" id="pickWhere">
-              <label class="pick"><input type="radio" name="onde" value="1º piso · Rodízio Tradicional" data-promo="0" checked>
-                <b>1º piso</b><span>Rodízio Tradicional</span><em>a partir de R$&nbsp;54,99</em></label>
-              <label class="pick"><input type="radio" name="onde" value="2º piso · Rodízio Fusion Food" data-promo="0">
-                <b>2º piso</b><span>Fusion com churrasco</span><em>a partir de R$&nbsp;69,99</em></label>
-              <label class="pick"><input type="radio" name="onde" value="Boliche" data-boliche="1" data-promo="0">
-                <b>Boliche</b><span>Pista por hora</span><em>a partir de R$&nbsp;40</em></label>
-              <label class="pick"><input type="radio" name="onde" value="Festa ou evento" data-promo="0">
-                <b>Festa</b><span>15 anos, casamento</span><em>orçamento</em></label>
-            </div>
-          </div>
-
-          <div class="campo">
-            <span class="rot">Pessoas <i>*</i></span>
-            <div class="counter">
-              <button type="button" class="cbtn" id="minus" aria-label="Menos uma pessoa">&minus;</button>
-              <output id="people" aria-live="polite">4</output>
-              <button type="button" class="cbtn" id="plus" aria-label="Mais uma pessoa">+</button>
-            </div>
-            <p class="ajuda">De 1 a 40 pessoas. Acima disso a casa confirma o andar no WhatsApp.</p>
-          </div>
-
-          <div class="campo">
-            <span class="rot">Data <i>*</i></span>
-            <div class="atalhos" id="atalhos"></div>
-            <div class="cal">
-              <div class="cal__head">
-                <button type="button" class="cbtn" id="prevM" aria-label="Mês anterior">&lsaquo;</button>
-                <strong id="calLabel"></strong>
-                <button type="button" class="cbtn" id="nextM" aria-label="Próximo mês">&rsaquo;</button>
-              </div>
-              <div class="cal__dow" aria-hidden="true"><i>D</i><i>S</i><i>T</i><i>Q</i><i>Q</i><i>S</i><i>S</i></div>
-              <div class="cal__grid" id="calGrid" role="grid"></div>
-            </div>
-          </div>
-
-          <div class="campo">
-            <span class="rot">Horário <i>*</i></span>
-            <div class="slots" id="slots"></div>
-            <p class="ajuda" id="slotAjuda">Escolha a data primeiro.</p>
-          </div>
-
-          <div class="regras" id="calRules"></div>
-        </fieldset>
-
-        <!-- ---------- PASSO 2 ---------- -->
-        <fieldset class="step" data-step="1" hidden>
-          <legend>
-            <button type="button" class="voltar" aria-label="Voltar" data-back>&#8592;</button>
-            <span class="legend-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/>
-              </svg>
-            </span>
-            Seus dados
-          </legend>
-
-          <label class="fld"><span>Nome completo <i>*</i></span>
-            <input type="text" id="nome" autocomplete="name" placeholder="Seu nome" required></label>
-          <label class="fld"><span>WhatsApp <i>*</i></span>
-            <input type="tel" id="fone" inputmode="tel" placeholder="(21) 99999-9999" autocomplete="tel" required></label>
-          <label class="fld"><span>E-mail <small>(opcional)</small></span>
-            <input type="email" id="email" autocomplete="email" placeholder="voce@email.com"></label>
-          <label class="fld"><span>Ocasião</span>
-            <select id="ocasiao">
-              <option>Só comer</option><option>Aniversário</option><option>15 anos</option>
-              <option>Casamento</option><option>Confraternização</option>
-            </select>
-          </label>
-          <label class="check"><input type="checkbox" id="lgpd" required>
-            <span>Autorizo o contato pelo WhatsApp sobre esta reserva.</span></label>
-        </fieldset>
-
-        <!-- ---------- PASSO 3 ---------- -->
-        <fieldset class="step" data-step="2" hidden>
-          <legend>
-            <button type="button" class="voltar" aria-label="Voltar" data-back>&#8592;</button>
-            <span class="legend-ico" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
-                <path d="M20 6L9 17l-5-5"/>
-              </svg>
-            </span>
-            Confirme antes de enviar
-          </legend>
-          <dl class="resumo" id="resumo"></dl>
-          <div class="regras" id="regrasFinal"></div>
-        </fieldset>
-
-        <div class="book__foot">
-          <button type="button" class="btn btn--ghost" id="backFoot" hidden>Voltar</button>
-          <button type="button" class="btn btn--gold" id="next">Continuar &#8594;</button>
-          <a class="btn btn--gold" id="send" hidden target="_blank" rel="noopener">Enviar no WhatsApp</a>
-        </div>
-        <p class="book__erro" id="erro" role="alert" aria-live="assertive"></p>
-      </form>
+      <h2 class="rv">Reserve em poucos toques.</h2>
+      <p class="lede rv">Escolha o andar, o dia e quantas pessoas vão. Dá pra somar bolo, kit festa
+        e hora extra de pista, e ver o total antes de confirmar.</p>
+      <div class="atalhos-res rv">
+        <a class="atalho-res" href="/reserva/?onde=1piso"><b>1º piso</b><span>Rodízio de pizza e bufê</span><em>a partir de R$&nbsp;54,99</em></a>
+        <a class="atalho-res" href="/reserva/?onde=2piso"><b>2º piso</b><span>Fusion Food com churrasco</span><em>a partir de R$&nbsp;69,99</em></a>
+        <a class="atalho-res" href="/reserva/?onde=boliche"><b>Boliche</b><span>Pista por hora</span><em>a partir de R$&nbsp;80</em></a>
+        <a class="atalho-res" href="/reserva/?onde=festa"><b>Festa</b><span>15 anos, casamento</span><em>orçamento</em></a>
+      </div>
+      <div class="reserva-cta rv"><a class="btn btn--gold" href="/reserva/">Fazer minha reserva</a></div>
     </div>
   </section>
 
@@ -1580,7 +1486,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
           antes de publicar.</p>
         <div class="ctas rv">
           <a class="btn btn--gold" id="rota" href="#" target="_blank" rel="noopener">Traçar rota</a>
-          <a class="btn btn--ghost" href="#reserva">Reservar mesa</a>
+          <a class="btn btn--ghost" href="/reserva/">Reservar mesa</a>
         </div>
       </div>
       <div class="mapwrap rv"><div id="map" role="img" aria-label="Mapa de Duque de Caxias, Rio de Janeiro"></div></div>
