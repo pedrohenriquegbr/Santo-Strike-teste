@@ -1178,7 +1178,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
       <li><b data-count="267" data-suffix=" mil">0 mil</b> seguidores no Instagram</li>
       <li><b data-count="2">0</b> andares, dois rodízios</li>
       <li><b>Boliche</b> e PlayKids no mesmo lugar</li>
-      <li><b>Ter&ndash;Dom</b> exceto 3º domingo</li>
+      <li><b>Ter&ndash;Dom</b> das 18h às 23h</li>
     </ul>
   </div>
 
@@ -1504,7 +1504,7 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
     <div>
       <p><a href="https://www.instagram.com/santo_strike_oficial/" target="_blank" rel="noopener">Instagram</a></p>
       <p>Duque de Caxias &ndash; RJ</p>
-      <p>Terça a domingo, exceto 3º domingo do mês</p>
+      <p>Terça a domingo, das 18h às 23h</p>
     </div>
   </div>
   <p class="disclosure">
@@ -2061,7 +2061,7 @@ document.addEventListener('error', function(ev){
    >>> CONFIRMAR COM O SANTO STRIKE ANTES DE PUBLICAR <<<
    =========================================================== */
 var CASA = {
-  whatsapp: '5521974595073',        /* TROCAR pelo WhatsApp da casa */
+  whatsapp: '5521988799699',        /* WhatsApp de reservas enviado pela dona em 15/09/2026 */
 
   /* Endereço e coordenadas vindos do cadastro do próprio OpenStreetMap,
      onde o Santo Strike está registrado pelo nome. Não é estimativa. */
@@ -2072,7 +2072,7 @@ var CASA = {
   cep: '25045-366',
 
   fechaSegunda: true,
-  fechaTerceiroDomingo: true,
+  fechaTerceiroDomingo: false,   /* a dona pediu para tirar em 15/09/2026 */
   /* Preços conferidos nos posts oficiais de agosto de 2026.
      >>> RECONFERIR COM A CASA ANTES DE PUBLICAR <<< */
 
@@ -2532,9 +2532,11 @@ function diffDias(a, b){ return Math.round((soData(b) - soData(a)) / 86400000); 
     if (d === hoje.getDay()) tr.className = 'is-today';
     tb.appendChild(tr);
   }
-  var nota = document.createElement('tr');
-  nota.innerHTML = '<td colspan="2" class="hours-nota">* fecha no 3º domingo de cada mês</td>';
-  tb.appendChild(nota);
+  if (CASA.fechaTerceiroDomingo){
+    var nota = document.createElement('tr');
+    nota.innerHTML = '<td colspan="2" class="hours-nota">* fecha no 3º domingo de cada mês</td>';
+    tb.appendChild(nota);
+  }
 
   var span = st.querySelector('span');
   if (CASA.fechaSegunda && hoje.getDay() === 1){

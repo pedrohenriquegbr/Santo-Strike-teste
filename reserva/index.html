@@ -274,7 +274,8 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
       <h1 id="tituloOk">Reserva confirmada</h1>
       <p class="codigo-res" id="codigoRes">SS-0000</p>
       <div class="linhas" id="resumoOk"></div>
-      <p class="sub" id="textoOk" style="margin-top:1.2rem">A casa já recebeu a sua reserva com tudo o que você escolheu.</p>
+      <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a reserva, com tudo o que você escolheu, pro WhatsApp do Santo Strike.</p>
+      <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none;margin-top:.4rem">Enviar reserva no WhatsApp</a>
     </div>
   </section>
 </div>
@@ -316,18 +317,9 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
   var telas = [].slice.call(document.querySelectorAll('.tela'));
   var moeda = function(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); };
 
-  /* terceiro domingo do mês e segunda são fechados */
-  function fechado(d){
-    if (d.getDay() === 1) return true;
-    if (d.getDay() === 0){
-      var c = 0;
-      for (var i = 1; i <= d.getDate(); i++){
-        if (new Date(d.getFullYear(), d.getMonth(), i).getDay() === 0) c++;
-      }
-      if (c === 3) return true;
-    }
-    return false;
-  }
+  /* só a segunda é fechada. O 3º domingo saiu a pedido da dona (15/09/2026). */
+  var WHATSAPP_CASA = '5521988799699';
+  function fechado(d){ return d.getDay() === 1; }
   function precoExtra(e){ return e.porDia ? PRECO.pista(st.data) : e.preco; }
   function valorDia(d){
     if (st.tipo === 'pista') return PRECO.pista(d);
@@ -442,6 +434,27 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     el.innerHTML = lin;
   }
 
+  /* a mensagem que chega no WhatsApp da casa, já somada */
+  function linkWhatsApp(){
+    var d = st.data, festa = st.tipo === 'festa';
+    var linhas = [
+      festa ? 'Olá! Quero um orçamento de festa no Santo Strike.' : 'Olá! Quero reservar no Santo Strike.',
+      '(enviado pelo site de reserva, versão de demonstração)',
+      '',
+      '• Código: ' + $('codigoRes').textContent,
+      '• Onde: ' + st.onde,
+      '• Dia: ' + (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) : '-') + ' às ' + (st.hora || '-')
+    ];
+    if (st.tipo === 'mesa') linhas.push('• Pessoas: ' + st.adultos + ' adulto(s)' + (st.criancas ? ' e ' + st.criancas + ' criança(s)' : ''));
+    var ex = EXTRAS.filter(function(e){ return st.extras[e.id]; })
+                   .map(function(e){ return st.extras[e.id] + 'x ' + e.nome; });
+    if (ex.length) linhas.push('• Extras: ' + ex.join(', '));
+    if (!festa) linhas.push('• Total: ' + moeda(total()));
+    linhas.push('', '• Nome: ' + $('nome').value.trim(), '• Ocasião: ' + $('ocasiao').value);
+    if ($('obs').value.trim()) linhas.push('• Observação: ' + $('obs').value.trim());
+    return 'https://wa.me/' + WHATSAPP_CASA + '?text=' + encodeURIComponent(linhas.join('\n'));
+  }
+
   /* ---------- navegação ---------- */
   function ir(n){
     st.tela = n;
@@ -451,7 +464,7 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     $('avancar').textContent = n === 4 ? 'Ir para o pagamento' : 'Continuar';
     if (n === 4) pintarResumo($('resumo'));
     if (n === 5) iniciarPix();
-    if (n === 6) pintarResumo($('resumoOk'));
+    if (n === 6){ pintarResumo($('resumoOk')); $('enviarWpp').href = linkWhatsApp(); }
     window.scrollTo(0,0);
     atualizar();
   }
