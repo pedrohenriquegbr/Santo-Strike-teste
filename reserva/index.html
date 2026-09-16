@@ -5,13 +5,12 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0B0705">
 <title>Reserva Santo Strike</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0705'/%3E%3Cellipse cx='16' cy='13' rx='10' ry='3.4' fill='none' stroke='%23E3B23C' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
-/* App de reserva do Santo Strike. Escuro assumido: é a identidade da casa,
-   a mesma do site. Feito para o celular primeiro. */
+/* Reserva do Santo Strike. Preços, extras e regras vindos do catálogo
+   oficial do WhatsApp da casa (lido em 15/09/2026). Feito para o celular. */
 :root{
   --canvas:#0B0705; --panel:#150F0A; --panel-2:#1E150D;
   --accent:#E3B23C; --accent-2:#F2C65A; --ember:#C2410C;
@@ -25,20 +24,21 @@
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--canvas);color:var(--ink);font:400 1rem/1.55 var(--body);
   -webkit-font-smoothing:antialiased}
-.app{max-width:30rem;margin:0 auto;padding:0 1.1rem 7.5rem}
+.app{max-width:30rem;margin:0 auto;padding:0 1.1rem 8rem}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+img{max-width:100%}
 
 .demo{background:var(--accent);color:var(--canvas);font:700 .66rem/1.4 var(--mono);
   letter-spacing:.16em;text-transform:uppercase;text-align:center;padding:.5rem .8rem}
 
 .top{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:1.1rem 0 .9rem}
 .marca{display:flex;align-items:center;gap:.8rem;color:var(--ink);text-decoration:none}
+.marca svg{width:34px;height:20px;color:var(--accent);flex:none}
+.marca b{font:400 1.15rem/1 var(--display)}
+.marca span{font:500 .62rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:block;margin-top:.25rem}
 .volta{font:500 .66rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
   text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.55rem .8rem}
 .volta:hover{color:var(--accent);border-color:var(--line-strong)}
-.top svg{width:34px;height:20px;color:var(--accent);flex:none}
-.top b{font:400 1.15rem/1 var(--display)}
-.top span{font:500 .62rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:block;margin-top:.25rem}
 
 .barra{height:3px;background:var(--panel-2);border-radius:2px;overflow:hidden}
 .barra i{display:block;height:100%;background:var(--accent);transform-origin:left;transition:transform .45s var(--ease)}
@@ -47,6 +47,8 @@ body{margin:0;background:var(--canvas);color:var(--ink);font:400 1rem/1.55 var(-
 
 h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .sub{color:var(--ink-2);font-size:.95rem;margin:0 0 1.4rem}
+.rot{font:500 .64rem/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);
+  display:block;margin:1.6rem 0 .7rem}
 
 .tela{display:none}
 .tela.on{display:block;animation:entra .35s var(--ease)}
@@ -61,14 +63,11 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .op input{position:absolute;opacity:0;pointer-events:none}
 .op b{font-weight:700;font-size:1.02rem}
 .op em{grid-column:1;font-style:normal;color:var(--ink-2);font-size:.86rem}
-.op .val{font:500 .88rem/1 var(--mono);color:var(--accent);white-space:nowrap}
+.op .val{font:500 .84rem/1.3 var(--mono);color:var(--accent);text-align:right}
 .op:has(input:checked){border-color:var(--accent);background:var(--panel-2)}
 .op:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
 
 /* dias e horários */
-.rot{font:500 .64rem/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-2);
-  display:block;margin:1.6rem 0 .7rem}
-/* faixa de dias: arrasta com o dedo e com o mouse, e encaixa no card */
 .dias-wrap{position:relative}
 .dias-wrap::after{content:"";position:absolute;top:0;bottom:.4rem;right:0;width:2.5rem;pointer-events:none;
   background:linear-gradient(to right,transparent,var(--canvas))}
@@ -76,42 +75,52 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
   scroll-snap-type:x proximity;touch-action:pan-x;cursor:grab;scroll-behavior:smooth}
 .dias.arrastando{cursor:grabbing;scroll-behavior:auto;scroll-snap-type:none}
 .dias::-webkit-scrollbar{display:none}
-.dia{scroll-snap-align:start}
-.setas{display:flex;gap:.4rem;justify-content:flex-end;margin-top:.5rem}
-.setas button{width:2.2rem;height:2.2rem;border-radius:50%;border:1px solid var(--line-strong);
-  background:none;color:var(--ink);cursor:pointer;font:400 1rem/1 var(--body)}
-.setas button:hover{border-color:var(--accent);color:var(--accent)}
-.dia{flex:none;width:4.1rem;border:1px solid var(--line);background:var(--panel);border-radius:12px;
-  padding:.7rem .3rem;text-align:center;cursor:pointer}
+.dia{flex:none;width:4.3rem;border:1px solid var(--line);background:var(--panel);border-radius:12px;
+  padding:.7rem .3rem;text-align:center;cursor:pointer;scroll-snap-align:start;position:relative}
 .dia input{position:absolute;opacity:0;pointer-events:none}
 .dia i{display:block;font:500 .6rem/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-style:normal}
 .dia b{display:block;font:400 1.35rem/1.1 var(--display)}
 .dia u{display:block;font:500 .58rem/1.4 var(--mono);color:var(--accent);text-decoration:none}
 .dia:has(input:checked){border-color:var(--accent);background:var(--panel-2)}
+.dia.promo::before{content:"7 dias";position:absolute;top:-.55rem;left:50%;transform:translateX(-50%);
+  background:var(--accent);color:var(--canvas);font:700 .5rem/1 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;padding:.2rem .3rem;border-radius:4px;white-space:nowrap}
+.setas{display:flex;gap:.4rem;justify-content:flex-end;margin-top:.5rem}
+.setas button{width:2.2rem;height:2.2rem;border-radius:50%;border:1px solid var(--line-strong);
+  background:none;color:var(--ink);cursor:pointer;font:400 1rem/1 var(--body)}
+.setas button:hover{border-color:var(--accent);color:var(--accent)}
 .horas{display:flex;flex-wrap:wrap;gap:.5rem}
 .hora{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:.55rem .95rem;
   font:500 .85rem/1 var(--mono);cursor:pointer}
 .hora input{position:absolute;opacity:0;pointer-events:none}
 .hora:has(input:checked){border-color:var(--accent);background:var(--panel-2);color:var(--accent)}
 
+/* avisos */
+.aviso{border:1px dashed var(--line-strong);border-radius:12px;padding:.85rem 1rem;margin-top:1.2rem;
+  font-size:.88rem;color:var(--ink-2)}
+.aviso b{color:var(--accent);font-weight:700}
+
 /* contadores */
 .conta{display:flex;align-items:center;justify-content:space-between;gap:1rem;
   border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:.85rem 1rem;margin-bottom:.65rem}
 .conta div b{display:block;font-weight:700}
-.conta div span{color:var(--ink-2);font-size:.84rem}
-.pm{display:flex;align-items:center;gap:.9rem}
+.conta div span{color:var(--ink-2);font-size:.82rem}
+.pm{display:flex;align-items:center;gap:.9rem;flex:none}
 .pm button{width:2.2rem;height:2.2rem;border-radius:50%;border:1px solid var(--line-strong);
   background:none;color:var(--ink);font:400 1.2rem/1 var(--body);cursor:pointer}
 .pm button:hover{border-color:var(--accent);color:var(--accent)}
 .pm output{font:500 1.05rem/1 var(--mono);min-width:1.4rem;text-align:center}
 
-/* extras */
-.extra{display:grid;grid-template-columns:1fr auto;gap:.25rem .9rem;align-items:center;
-  border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:.85rem 1rem;margin-bottom:.6rem}
-.extra b{font-weight:700}
-.extra em{grid-column:1;font-style:normal;color:var(--ink-2);font-size:.82rem}
-.extra .val{font:500 .84rem/1 var(--mono);color:var(--accent);white-space:nowrap;grid-row:1;grid-column:2}
-.extra .pm{grid-row:2;grid-column:2}
+/* extras com foto */
+.extra{display:grid;grid-template-columns:3.4rem 1fr auto;gap:.3rem .8rem;align-items:center;
+  border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:.8rem .9rem;margin-bottom:.6rem}
+.extra img{grid-row:span 3;width:3.4rem;height:3.4rem;object-fit:cover;border-radius:8px;background:var(--panel-2)}
+.extra .semfoto{grid-row:span 3;width:3.4rem;height:3.4rem;border-radius:8px;background:var(--panel-2);
+  display:grid;place-items:center;color:var(--accent);font:400 1.3rem/1 var(--display)}
+.extra b{font-weight:700;font-size:.98rem}
+.extra em{grid-column:2;font-style:normal;color:var(--ink-2);font-size:.8rem;line-height:1.35}
+.extra .val{grid-column:3;grid-row:1;font:500 .84rem/1 var(--mono);color:var(--accent);white-space:nowrap}
+.extra .pm{grid-column:3;grid-row:2 / span 2;justify-self:end}
 .extra .pm button{width:1.9rem;height:1.9rem;font-size:1rem}
 
 /* campos */
@@ -120,10 +129,22 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
   color:var(--ink-2);margin-bottom:.45rem}
 .fld input,.fld select,.fld textarea{width:100%;background:var(--panel);border:1px solid var(--line);
   border-radius:10px;color:var(--ink);font:400 1rem/1.4 var(--body);padding:.8rem .9rem}
-.fld textarea{resize:vertical;min-height:4.5rem}
+.fld textarea{resize:vertical;min-height:4.2rem}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent);outline:none}
 .check{display:grid;grid-template-columns:1.2rem 1fr;gap:.7rem;align-items:start;font-size:.9rem;color:var(--ink-2);margin-top:1rem}
 .check input{width:1.2rem;height:1.2rem;accent-color:var(--accent);margin-top:.15rem}
+
+/* contrato */
+.contrato{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:1rem 1.1rem}
+.contrato h2{font:400 1.1rem/1.3 var(--display);margin:0 0 .7rem}
+.contrato ul{list-style:none;margin:0;padding:0;display:grid;gap:.6rem;font-size:.9rem;color:var(--ink-2)}
+.contrato li{display:grid;grid-template-columns:1rem 1fr;gap:.5rem}
+.contrato li::before{content:"•";color:var(--accent);font-weight:700}
+.contrato b{color:var(--ink)}
+details.artes{margin-top:.9rem;border-top:1px solid var(--line);padding-top:.8rem}
+details.artes summary{cursor:pointer;font:500 .68rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+details.artes .fotos{display:grid;gap:.7rem;margin-top:.9rem}
+details.artes img{border-radius:10px;border:1px solid var(--line)}
 
 /* resumo */
 .linhas{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden}
@@ -134,8 +155,6 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
   text-transform:uppercase;color:var(--ink-2)}
 .linhas .l--extra span:first-child::before{content:"+ ";color:var(--ember);font-weight:700}
 .linhas .l--total{border-bottom:0;font-weight:700;font-size:1.05rem;color:var(--accent)}
-.regra{border:1px dashed var(--line-strong);border-radius:12px;padding:.9rem 1rem;margin-top:1rem;
-  font-size:.86rem;color:var(--ink-2)}
 
 /* pix */
 .pix{text-align:center}
@@ -165,8 +184,7 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .btn:hover{background:var(--accent-2)}
 .btn:active{transform:scale(.97)}
 .btn--fantasma{background:none;border:1px solid var(--line-strong);color:var(--ink);padding:1rem 1.1rem}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
-.erro{color:var(--ember);font-size:.86rem;margin:.7rem 0 0;min-height:1.2em}
+.erro{color:var(--ember);font-size:.86rem;margin:.4rem 0 0;min-height:1.2em}
 @media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:active{transform:none}}
 </style>
 
@@ -181,61 +199,80 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     <a class="volta" href="https://santo-strike.vercel.app/">Ver o site</a>
   </header>
 
-  <div class="barra"><i id="barra" style="transform:scaleX(.2)"></i></div>
-  <p class="passo-nome"><span id="passoNome">Onde</span><span id="passoNum">1 de 5</span></p>
+  <div class="barra"><i id="barra" style="transform:scaleX(.125)"></i></div>
+  <p class="passo-nome"><span id="passoNome">Onde</span><span id="passoNum">1 de 8</span></p>
 
   <!-- 1. ONDE -->
   <section class="tela on" data-tela="0">
     <h1>Onde vai ser?</h1>
-    <p class="sub">Os valores mudam por dia da semana. O do dia aparece no passo seguinte.</p>
+    <p class="sub">O valor muda por dia da semana. O do dia aparece no passo seguinte.</p>
     <div class="ops" id="onde">
       <label class="op"><input type="radio" name="onde" value="1º piso" data-tipo="mesa" data-piso="1" checked>
-        <b>1º piso</b><em>Rodízio de pizza e bufê</em><span class="val">a partir de R$ 54,99</span></label>
+        <b>1º piso</b><em>Rodízio de pizza e bufê</em><span class="val">de R$ 49,99<br>a R$ 69,99</span></label>
       <label class="op"><input type="radio" name="onde" value="2º piso" data-tipo="mesa" data-piso="2">
-        <b>2º piso</b><em>Fusion Food com churrasco</em><span class="val">a partir de R$ 69,99</span></label>
+        <b>2º piso</b><em>Fusion Food com churrasco</em><span class="val">de R$ 69,99<br>a R$ 84,99</span></label>
       <label class="op"><input type="radio" name="onde" value="Boliche" data-tipo="pista">
-        <b>Boliche</b><em>Pista por hora, até 6 pessoas</em><span class="val">a partir de R$ 80 / hora</span></label>
+        <b>Boliche</b><em>Pista por hora, até 6 pessoas</em><span class="val">R$ 80 ou<br>R$ 120 a hora</span></label>
       <label class="op"><input type="radio" name="onde" value="Festa" data-tipo="festa">
         <b>Festa ou evento</b><em>15 anos, casamento, confraternização</em><span class="val">orçamento</span></label>
     </div>
+    <div class="aviso">A casa trabalha <b>só no sistema de rodízio</b>. Todo mundo que entra participa e paga o valor do dia, inclusive acompanhantes.</div>
   </section>
 
   <!-- 2. QUANDO -->
   <section class="tela" data-tela="1">
     <h1>Que dia?</h1>
-    <p class="sub">A casa abre de terça a domingo, das 18h às 22h.</p>
+    <p class="sub">A casa abre de terça a domingo, a partir das 18h.</p>
     <span class="rot">Escolha o dia</span>
     <div class="dias-wrap"><div class="dias" id="dias"></div></div>
     <div class="setas"><button type="button" id="diaEsq" aria-label="Ver dias anteriores">&#8592;</button>
       <button type="button" id="diaDir" aria-label="Ver próximos dias">&#8594;</button></div>
-    <span class="rot">Horário</span>
+    <span class="rot">Horário de chegada</span>
     <div class="horas" id="horas"></div>
+    <div class="aviso" id="avisoDia">Reservando com <b>7 dias de antecedência</b> e pagando agora, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.</div>
   </section>
 
-  <!-- 3. PESSOAS + EXTRAS -->
+  <!-- 3. QUEM VAI -->
   <section class="tela" data-tela="2">
     <h1>Quem vai?</h1>
-    <p class="sub" id="subPessoas">O valor da criança é menor.</p>
+    <p class="sub" id="subPessoas">Criança tem valor próprio, por idade.</p>
     <div class="conta">
       <div><b>Adultos</b><span id="vAdulto">R$ 54,99 cada</span></div>
       <div class="pm"><button type="button" data-qtd="adultos" data-d="-1" aria-label="Menos um adulto">&minus;</button>
-        <output id="qAdultos">4</output>
+        <output id="qAdultos">2</output>
         <button type="button" data-qtd="adultos" data-d="1" aria-label="Mais um adulto">+</button></div>
     </div>
-    <div class="conta" id="boxCriancas">
-      <div><b>Crianças</b><span id="vCrianca">R$ 19,99 cada</span></div>
-      <div class="pm"><button type="button" data-qtd="criancas" data-d="-1" aria-label="Menos uma criança">&minus;</button>
-        <output id="qCriancas">0</output>
-        <button type="button" data-qtd="criancas" data-d="1" aria-label="Mais uma criança">+</button></div>
+    <div class="conta caixa-crianca">
+      <div><b>Crianças de 3 a 5 anos</b><span id="vCrianca35">R$ 19,99 cada</span></div>
+      <div class="pm"><button type="button" data-qtd="c35" data-d="-1" aria-label="Menos uma criança de 3 a 5">&minus;</button>
+        <output id="qC35">0</output>
+        <button type="button" data-qtd="c35" data-d="1" aria-label="Mais uma criança de 3 a 5">+</button></div>
     </div>
-
-    <span class="rot">Quer somar alguma coisa?</span>
-    <div id="extras"></div>
-    <p class="sub" style="font-size:.82rem;margin-top:.8rem">Valores dos extras são exemplo. A casa define cada um.</p>
+    <div class="conta caixa-crianca">
+      <div><b>Crianças de 6 a 8 anos</b><span id="vCrianca68">R$ 34,99 cada</span></div>
+      <div class="pm"><button type="button" data-qtd="c68" data-d="-1" aria-label="Menos uma criança de 6 a 8">&minus;</button>
+        <output id="qC68">0</output>
+        <button type="button" data-qtd="c68" data-d="1" aria-label="Mais uma criança de 6 a 8">+</button></div>
+    </div>
+    <div class="conta caixa-crianca">
+      <div><b>Até 2 anos</b><span>Não paga</span></div>
+      <div class="pm"><button type="button" data-qtd="bebes" data-d="-1" aria-label="Menos um bebê">&minus;</button>
+        <output id="qBebes">0</output>
+        <button type="button" data-qtd="bebes" data-d="1" aria-label="Mais um bebê">+</button></div>
+    </div>
+    <div class="aviso caixa-crianca">Para o valor infantil é <b>obrigatório apresentar RG ou certidão</b> da criança no caixa. Bariátricos têm 30% de desconto, com comprovação.</div>
   </section>
 
-  <!-- 4. DADOS -->
+  <!-- 4. EXTRAS -->
   <section class="tela" data-tela="3">
+    <h1>Quer somar alguma coisa?</h1>
+    <p class="sub">Tudo o que você marcar aqui entra na mesma conta.</p>
+    <div id="extras"></div>
+    <div class="aviso">Confete explosivo, glitter e parecidos <b>não são permitidos</b>. O uso gera taxa de limpeza de R$ 300,00.</div>
+  </section>
+
+  <!-- 5. DADOS -->
+  <section class="tela" data-tela="4">
     <h1>Seus dados</h1>
     <p class="sub">É por aqui que a casa confirma com você.</p>
     <label class="fld"><span>Nome completo</span><input id="nome" type="text" placeholder="Maria Souza" autocomplete="name"></label>
@@ -243,20 +280,42 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     <label class="fld"><span>Ocasião</span>
       <select id="ocasiao"><option>Só comer</option><option>Aniversário</option><option>15 anos</option><option>Confraternização</option><option>Encontro de família</option></select></label>
     <label class="fld"><span>Alguma observação</span><textarea id="obs" placeholder="Alergia, cadeirinha de bebê, cadeira de rodas"></textarea></label>
+    <div class="aviso">O <b>2º piso não tem acessibilidade</b>. Quem precisa de acesso sem escada fica no 1º piso.</div>
   </section>
 
-  <!-- 5. RESUMO -->
-  <section class="tela" data-tela="4">
-    <h1>Confira e pague</h1>
+  <!-- 6. CONTRATO E RESUMO -->
+  <section class="tela" data-tela="5">
+    <h1>Confira e concorde</h1>
     <p class="sub">A reserva só entra na agenda depois do pagamento.</p>
     <div class="linhas" id="resumo"></div>
-    <div class="regra" id="regraCancel">Cancelamento até 24h antes devolve o valor pago. Depois disso vira crédito por 30 dias. <b>Regra de exemplo: a casa define a dela.</b></div>
-    <label class="check"><input type="checkbox" id="aceite"><span>Li e aceito a regra de cancelamento.</span></label>
+
+    <div class="contrato" style="margin-top:1rem">
+      <h2>Contrato de reserva</h2>
+      <ul>
+        <li><b>Chegada:</b> a casa abre às 18h. A tolerância vai <span id="tolerancia">até 19h30 de terça a sexta</span>. Passou disso e tendo fila, a mesa pode ser liberada.</li>
+        <li><b>Cancelamento:</b> reembolso total se você pedir pelo WhatsApp oficial em até 7 dias da contratação. Depois desse prazo não há reembolso.</li>
+        <li><b>Remarcação:</b> avisando com 24 horas de antecedência, a data pode ser remarcada e usada em até 30 dias, conforme a agenda.</li>
+        <li><b>Não comparecer</b> ou chegar fora da tolerância sem avisar é no-show, sem reembolso e sem remarcação.</li>
+        <li><b>A reserva garante entrada com prioridade</b> dentro da tolerância, não escolha de mesa nem espaço bloqueado.</li>
+        <li><b>Bolo trazido por você:</b> pode. Usando pratos, talheres e estrutura da casa, a taxa é de R$ 60,00.</li>
+      </ul>
+      <details class="artes">
+        <summary>Ver o contrato e a tabela da casa</summary>
+        <div class="fotos">
+          <img src="/assets/catalogo/contrato-1.jpg" alt="Contrato de reserva do Santo Strike" loading="lazy" decoding="async">
+          <img src="/assets/catalogo/regras-funcionamento.jpg" alt="Regras de funcionamento da casa" loading="lazy" decoding="async">
+          <img src="/assets/catalogo/tabela-precos.jpg" alt="Tabela de valores dos rodízios" loading="lazy" decoding="async">
+          <img src="/assets/catalogo/bebidas.jpg" alt="Regras do refrigerante" loading="lazy" decoding="async">
+        </div>
+      </details>
+    </div>
+
+    <label class="check"><input type="checkbox" id="aceite"><span>Li e concordo com o contrato de reserva.</span></label>
     <p class="erro" id="erro"></p>
   </section>
 
-  <!-- 6. PIX -->
-  <section class="tela" data-tela="5">
+  <!-- 7. PIX -->
+  <section class="tela" data-tela="6">
     <h1>Pague com Pix</h1>
     <p class="sub">Abra o app do banco, aponte a câmera ou cole o código.</p>
     <div class="pix">
@@ -267,15 +326,15 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     </div>
   </section>
 
-  <!-- 7. CONFIRMADO -->
-  <section class="tela" data-tela="6">
+  <!-- 8. PRONTO -->
+  <section class="tela" data-tela="7">
     <div class="ok">
       <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></div>
       <h1 id="tituloOk">Reserva confirmada</h1>
       <p class="codigo-res" id="codigoRes">SS-0000</p>
       <div class="linhas" id="resumoOk"></div>
-      <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a reserva, com tudo o que você escolheu, pro WhatsApp do Santo Strike.</p>
-      <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none;margin-top:.4rem">Enviar reserva no WhatsApp</a>
+      <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a reserva pro WhatsApp do Santo Strike.</p>
+      <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar reserva no WhatsApp</a>
     </div>
   </section>
 </div>
@@ -292,39 +351,73 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 (function(){
-  var PRECO = {
-    mesa:{ 1:{ 2:54.99, 3:54.99, 4:54.99, 5:59.99, 6:64.99, 0:59.99 },
-           2:{ 2:69.99, 3:69.99, 4:69.99, 5:79.99, 6:79.99, 0:79.99 } },
-    crianca:{ 1:19.99, 2:24.99 },
-    /* pista com reserva: R$ 80 de terça a quinta, R$ 120 de sexta a domingo (tabela do site) */
-    pista:function(d){ var w = d ? d.getDay() : 2; return (w >= 2 && w <= 4) ? 80 : 120; }
+  /* Tabela oficial do catálogo do WhatsApp da casa, lida em 15/09/2026.
+     Online a pessoa paga no Pix, então o valor usado é o do Pix. O da
+     promoção de 7 dias e o do dinheiro aparecem como aviso. */
+  var TABELA = {
+    1: { terQui:{ pix:59.99, dinheiro:54.99, promo:49.99 },
+         sexDom:{ pix:64.99, dinheiro:59.99 },
+         sabado:{ pix:69.99, dinheiro:64.99 },
+         crianca:{ c35:19.99, c68:34.99 } },
+    2: { terQui:{ pix:74.99, dinheiro:69.99 },
+         sexDom:{ pix:84.99, dinheiro:79.99 },
+         crianca:{ c35:24.99, c68:34.99 } }
   };
+  var WHATSAPP_CASA = '5521988799699';
+  var pistaDoDia = function(d){ var w = d ? d.getDay() : 2; return (w >= 2 && w <= 4) ? 80 : 120; };
+
+  function faixa(d, piso){
+    var w = d ? d.getDay() : 2;
+    if (piso === 1){
+      if (w >= 2 && w <= 4) return 'terQui';
+      if (w === 6) return 'sabado';
+      return 'sexDom';
+    }
+    return (w >= 2 && w <= 4) ? 'terQui' : 'sexDom';
+  }
+  function diasDeAntecedencia(d){
+    if (!d) return 0;
+    var hoje = new Date(); hoje.setHours(0,0,0,0);
+    return Math.round((d - hoje) / 86400000);
+  }
+  /* promoção dos R$ 49,99: 1º piso, terça a quinta, 7 dias de antecedência
+     e pagamento no ato, que é exatamente o que este fluxo faz */
+  function temPromo(d, piso){
+    return piso === 1 && faixa(d, 1) === 'terQui' && diasDeAntecedencia(d) >= 7;
+  }
+  function valorAdulto(d, piso){
+    var f = TABELA[piso][faixa(d, piso)];
+    return temPromo(d, piso) ? TABELA[1].terQui.promo : f.pix;
+  }
+
   var EXTRAS = [
-    { id:'kit',  nome:'Kit festa',            desc:'Decoração da mesa do aniversariante', preco:89.90 },
-    { id:'bolo', nome:'Bolo 1 kg',            desc:'Pede 24h de antecedência',            preco:79.90 },
-    { id:'pers', nome:'Personagem 20 min',    desc:'Visita na mesa e foto com a criança', preco:149.90 },
-    { id:'pista',nome:'Hora extra de pista',  desc:'Mesmo valor da hora no dia escolhido', preco:80.00, porDia:true },
-    { id:'placa',nome:'Placa com o nome',     desc:'Na mesa, com o nome de quem faz aniversário', preco:19.90 }
+    { id:'kit',  nome:'Kit Festa + Bolo', preco:119.99, foto:'/assets/catalogo/kit-festa.jpg',
+      desc:'Bolo de 10 fatias, 10 cupcakes e mesa decorada. Pago no ato da reserva.' },
+    { id:'refri', nome:'Refrigerante 2L', preco:15, ico:'🥤',
+      desc:'R$ 15 com reserva. No 1º piso, de terça a sexta, é cortesia.' },
+    { id:'bolo', nome:'Taxa de bolo próprio', preco:60, ico:'🍰',
+      desc:'Só se você trouxer o bolo e usar pratos, talheres e estrutura da casa.' },
+    { id:'pista', nome:'Hora extra de pista', preco:80, porDia:true, ico:'🎳',
+      desc:'Uma hora a mais no boliche, no valor do dia.' }
   ];
-  var NOMES = ['Onde','Quando','Quem vai','Seus dados','Pagamento','Pix','Pronto'];
+
+  var NOMES = ['Onde','Quando','Quem vai','Extras','Seus dados','Contrato','Pix','Pronto'];
   var DIAS_CURTO = ['dom','seg','ter','qua','qui','sex','sáb'];
   var MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
   var st = { tela:0, tipo:'mesa', piso:1, onde:'1º piso', data:null, hora:null,
-             adultos:2, criancas:0, extras:{}, relogio:null };
+             adultos:2, c35:0, c68:0, bebes:0, extras:{}, relogio:null };
 
   var $ = function(id){ return document.getElementById(id); };
   var telas = [].slice.call(document.querySelectorAll('.tela'));
   var moeda = function(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); };
 
-  /* só a segunda é fechada. O 3º domingo saiu a pedido da dona (15/09/2026). */
-  var WHATSAPP_CASA = '5521988799699';
+  /* só a segunda é fechada */
   function fechado(d){ return d.getDay() === 1; }
-  function precoExtra(e){ return e.porDia ? PRECO.pista(st.data) : e.preco; }
-  function valorDia(d){
-    if (st.tipo === 'pista') return PRECO.pista(d);
-    if (st.tipo === 'festa') return 0;
-    return PRECO.mesa[st.piso][d.getDay()];
+
+  function precoExtra(e){
+    if (e.id === 'refri' && st.piso === 1 && st.data && st.data.getDay() >= 2 && st.data.getDay() <= 5) return 0;
+    return e.porDia ? pistaDoDia(st.data) : e.preco;
   }
 
   /* ---------- dias ---------- */
@@ -332,25 +425,25 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
     var box = $('dias'); box.innerHTML = '';
     var d = new Date(); d.setHours(0,0,0,0);
     var achados = 0;
-    while (achados < 10){
+    while (achados < 14){
       d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
       if (fechado(d)) continue;
       achados++;
-      var v = valorDia(d);
+      var v = st.tipo === 'pista' ? pistaDoDia(d) : (st.tipo === 'festa' ? 0 : valorAdulto(d, st.piso));
       var lab = document.createElement('label');
-      lab.className = 'dia';
+      lab.className = 'dia' + (st.tipo === 'mesa' && temPromo(d, st.piso) ? ' promo' : '');
       lab.innerHTML = '<input type="radio" name="dia" value="' + d.toISOString().slice(0,10) + '">' +
         '<i>' + DIAS_CURTO[d.getDay()] + '</i><b>' + d.getDate() + '</b>' +
         '<u>' + (v ? moeda(v).replace(/\s/g,'') : 'orçar') + '</u>';
       (function(dd, input){
-        input.addEventListener('change', function(){ st.data = dd; montarHoras(); atualizar(); });
+        input.addEventListener('change', function(){ st.data = dd; montarHoras(); montarExtras(); atualizar(); });
       })(new Date(d), lab.querySelector('input'));
       box.appendChild(lab);
     }
   }
   function montarHoras(){
     var box = $('horas'); box.innerHTML = '';
-    ['18:00','19:00','20:00','21:00','22:00'].forEach(function(h){
+    ['18:00','18:30','19:00','19:30','20:00','21:00'].forEach(function(h){
       var lab = document.createElement('label');
       lab.className = 'hora';
       lab.innerHTML = '<input type="radio" name="hora" value="' + h + '">' + h;
@@ -363,64 +456,87 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
   function montarExtras(){
     var box = $('extras'); box.innerHTML = '';
     EXTRAS.forEach(function(e){
+      var p = precoExtra(e);
       var div = document.createElement('div');
       div.className = 'extra';
-      div.innerHTML = '<b>' + e.nome + '</b><span class="val" id="p_' + e.id + '">' + moeda(e.preco) + '</span>' +
+      div.innerHTML = (e.foto ? '<img src="' + e.foto + '" alt="" loading="lazy" decoding="async">'
+                              : '<span class="semfoto" aria-hidden="true">' + (e.ico || '+') + '</span>') +
+        '<b>' + e.nome + '</b><span class="val" id="p_' + e.id + '">' + (p ? moeda(p) : 'cortesia') + '</span>' +
         '<em>' + e.desc + '</em>' +
         '<div class="pm"><button type="button" data-ex="' + e.id + '" data-d="-1" aria-label="Menos">&minus;</button>' +
-        '<output id="q_' + e.id + '">0</output>' +
+        '<output id="q_' + e.id + '">' + (st.extras[e.id] || 0) + '</output>' +
         '<button type="button" data-ex="' + e.id + '" data-d="1" aria-label="Mais">+</button></div>';
       box.appendChild(div);
     });
-    box.addEventListener('click', function(ev){
-      var b = ev.target.closest('button[data-ex]');
-      if (!b) return;
-      var id = b.getAttribute('data-ex');
-      st.extras[id] = Math.max(0, (st.extras[id] || 0) + (+b.getAttribute('data-d')));
-      $('q_' + id).textContent = st.extras[id];
-      atualizar();
-    });
   }
+  document.addEventListener('click', function(ev){
+    var b = ev.target.closest('button[data-ex]');
+    if (!b) return;
+    var id = b.getAttribute('data-ex');
+    st.extras[id] = Math.max(0, (st.extras[id] || 0) + (+b.getAttribute('data-d')));
+    $('q_' + id).textContent = st.extras[id];
+    atualizar();
+  });
 
   /* ---------- conta ---------- */
   function itens(){
-    var out = [], vd = st.data ? valorDia(st.data) : (st.tipo === 'pista' ? PRECO.pista(null) : PRECO.mesa[st.piso][2]);
+    var out = [], d = st.data;
     if (st.tipo === 'pista'){
-      out.push({ nome:'Pista por 1 hora', valor:vd });
-    } else if (st.tipo !== 'festa'){
-      out.push({ nome:st.adultos + ' adulto' + (st.adultos > 1 ? 's' : '') + ' × ' + moeda(vd), valor:vd * st.adultos });
-      if (st.criancas) out.push({ nome:st.criancas + ' criança' + (st.criancas > 1 ? 's' : '') + ' × ' + moeda(PRECO.crianca[st.piso]), valor:PRECO.crianca[st.piso] * st.criancas });
+      out.push({ nome:'Pista por 1 hora', valor:pistaDoDia(d) });
+    } else if (st.tipo === 'mesa'){
+      var va = valorAdulto(d, st.piso);
+      out.push({ nome:st.adultos + ' adulto' + (st.adultos > 1 ? 's' : '') + ' × ' + moeda(va), valor:va * st.adultos });
+      var cr = TABELA[st.piso].crianca;
+      if (st.c35) out.push({ nome:st.c35 + ' criança 3 a 5 × ' + moeda(cr.c35), valor:cr.c35 * st.c35 });
+      if (st.c68) out.push({ nome:st.c68 + ' criança 6 a 8 × ' + moeda(cr.c68), valor:cr.c68 * st.c68 });
+      if (st.bebes) out.push({ nome:st.bebes + ' até 2 anos', valor:0 });
     }
     EXTRAS.forEach(function(e){
-      var q = st.extras[e.id] || 0;
-      if (q) out.push({ nome:(q > 1 ? q + '× ' : '') + e.nome, valor:precoExtra(e) * q, extra:true });
+      var q = st.extras[e.id] || 0, p = precoExtra(e);
+      if (q) out.push({ nome:(q > 1 ? q + '× ' : '') + e.nome + (p ? '' : ' (cortesia)'), valor:p * q, extra:true });
     });
     return out;
   }
   function total(){ return itens().reduce(function(s,i){ return s + i.valor; }, 0); }
 
   function atualizar(){
-    var vd = st.data ? valorDia(st.data) : (st.tipo === 'pista' ? PRECO.pista(null) : PRECO.mesa[st.piso][2]);
-    var pp = $('p_pista'); if (pp) pp.textContent = moeda(PRECO.pista(st.data));
-    $('vAdulto').textContent = moeda(vd) + ' cada';
-    $('vCrianca').textContent = moeda(PRECO.crianca[st.piso]) + ' cada';
+    var d = st.data, cr = TABELA[st.piso].crianca;
+    var va = st.tipo === 'pista' ? pistaDoDia(d) : valorAdulto(d, st.piso);
+    $('vAdulto').textContent = moeda(va) + ' cada' + (temPromo(d, st.piso) ? ' · promoção' : '');
+    $('vCrianca35').textContent = moeda(cr.c35) + ' cada';
+    $('vCrianca68').textContent = moeda(cr.c68) + ' cada';
     $('qAdultos').textContent = st.adultos;
-    $('qCriancas').textContent = st.criancas;
-    $('boxCriancas').hidden = st.tipo !== 'mesa';
-    /* nas duas primeiras telas mostra o preço por pessoa. Total só depois de
-       a pessoa dizer quantos vão, senão o número grande assusta antes da hora. */
+    $('qC35').textContent = st.c35; $('qC68').textContent = st.c68; $('qBebes').textContent = st.bebes;
+    [].forEach.call(document.querySelectorAll('.caixa-crianca'), function(el){ el.hidden = st.tipo !== 'mesa'; });
+    EXTRAS.forEach(function(e){ var el = $('p_' + e.id); if (el){ var p = precoExtra(e); el.textContent = p ? moeda(p) : 'cortesia'; } });
+
     if (st.tipo === 'festa'){
       $('totalRot').textContent = 'Festa'; $('total').textContent = 'a combinar';
     } else if (st.tela <= 1){
       $('totalRot').textContent = st.tipo === 'pista' ? 'Pista' : 'Por pessoa';
-      $('total').textContent = moeda(vd) + (st.tipo === 'pista' ? ' / hora' : '');
+      $('total').textContent = moeda(va) + (st.tipo === 'pista' ? ' / hora' : '');
     } else {
-      $('totalRot').textContent = st.tela >= 4 ? 'Total a pagar' : 'Total';
+      $('totalRot').textContent = st.tela >= 5 ? 'Total a pagar' : 'Total';
       $('total').textContent = moeda(total());
     }
-    $('barra').style.transform = 'scaleX(' + Math.min(1, (st.tela + 1) / 7) + ')';
+    $('barra').style.transform = 'scaleX(' + Math.min(1, (st.tela + 1) / 8) + ')';
     $('passoNome').textContent = NOMES[st.tela];
-    $('passoNum').textContent = (st.tela + 1) + ' de 7';
+    $('passoNum').textContent = (st.tela + 1) + ' de 8';
+
+    /* avisos que mudam com o dia escolhido */
+    var fim = d && (d.getDay() === 6 || d.getDay() === 0);
+    $('tolerancia').textContent = fim ? 'até 19h aos sábados, domingos e feriados' : 'até 19h30 de terça a sexta';
+    var av = $('avisoDia');
+    if (st.tipo !== 'mesa'){
+      av.innerHTML = 'A pista é reservada por hora e o valor muda: <b>R$ 80</b> de terça a quinta e <b>R$ 120</b> de sexta a domingo.';
+    } else if (temPromo(d, st.piso)){
+      av.innerHTML = 'Este dia está na <b>promoção de R$ 49,99</b>: reserva com 7 dias de antecedência e pagamento agora.';
+    } else if (d){
+      var f = TABELA[st.piso][faixa(d, st.piso)];
+      av.innerHTML = 'Pagando agora no Pix, o valor deste dia é <b>' + moeda(f.pix) + '</b> por adulto. No caixa, em dinheiro, sai por ' + moeda(f.dinheiro) + '.';
+    } else {
+      av.innerHTML = 'Reservando com <b>7 dias de antecedência</b> e pagando agora, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.';
+    }
   }
 
   function pintarResumo(el){
@@ -445,13 +561,20 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
       '• Onde: ' + st.onde,
       '• Dia: ' + (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) : '-') + ' às ' + (st.hora || '-')
     ];
-    if (st.tipo === 'mesa') linhas.push('• Pessoas: ' + st.adultos + ' adulto(s)' + (st.criancas ? ' e ' + st.criancas + ' criança(s)' : ''));
+    if (st.tipo === 'mesa'){
+      linhas.push('• Pessoas: ' + st.adultos + ' adulto(s)' +
+        (st.c35 ? ', ' + st.c35 + ' de 3 a 5 anos' : '') +
+        (st.c68 ? ', ' + st.c68 + ' de 6 a 8 anos' : '') +
+        (st.bebes ? ', ' + st.bebes + ' até 2 anos' : ''));
+      if (temPromo(d, st.piso)) linhas.push('• Promoção de R$ 49,99 (7 dias de antecedência, pago no ato)');
+    }
     var ex = EXTRAS.filter(function(e){ return st.extras[e.id]; })
                    .map(function(e){ return st.extras[e.id] + 'x ' + e.nome; });
     if (ex.length) linhas.push('• Extras: ' + ex.join(', '));
     if (!festa) linhas.push('• Total: ' + moeda(total()));
     linhas.push('', '• Nome: ' + $('nome').value.trim(), '• Ocasião: ' + $('ocasiao').value);
     if ($('obs').value.trim()) linhas.push('• Observação: ' + $('obs').value.trim());
+    linhas.push('• Li e concordo com o contrato de reserva.');
     return 'https://wa.me/' + WHATSAPP_CASA + '?text=' + encodeURIComponent(linhas.join('\n'));
   }
 
@@ -459,50 +582,48 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
   function ir(n){
     st.tela = n;
     telas.forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-tela') === n); });
-    $('voltar').hidden = n === 0 || n === 6;
-    $('avancar').hidden = n === 5 || n === 6;
-    $('avancar').textContent = n === 4 ? 'Ir para o pagamento' : 'Continuar';
-    if (n === 4) pintarResumo($('resumo'));
-    if (n === 5) iniciarPix();
-    if (n === 6){ pintarResumo($('resumoOk')); $('enviarWpp').href = linkWhatsApp(); }
+    $('voltar').hidden = n === 0 || n === 7;
+    $('avancar').hidden = n === 6 || n === 7;
+    $('avancar').textContent = n === 5 ? 'Ir para o pagamento' : 'Continuar';
+    if (n === 5) pintarResumo($('resumo'));
+    if (n === 6) iniciarPix();
+    if (n === 7){ pintarResumo($('resumoOk')); $('enviarWpp').href = linkWhatsApp(); }
     window.scrollTo(0,0);
     atualizar();
   }
   function valida(n){
     if (n === 1 && (!st.data || !st.hora)) return 'Escolha o dia e o horário.';
-    if (n === 3 && (!$('nome').value.trim() || $('fone').value.replace(/\D/g,'').length < 10)) return 'Preencha o nome e o WhatsApp.';
-    if (n === 4 && !$('aceite').checked) return 'Aceite a regra de cancelamento para continuar.';
+    if (n === 4 && (!$('nome').value.trim() || $('fone').value.replace(/\D/g,'').length < 10)) return 'Preencha o nome e o WhatsApp.';
+    if (n === 5 && !$('aceite').checked) return 'Marque que você concorda com o contrato para continuar.';
     return '';
   }
   function avisa(msg){
-    $('erro').textContent = st.tela === 4 ? msg : '';
+    $('erro').textContent = st.tela === 5 ? msg : '';
     $('erroGeral').textContent = msg;
   }
   $('avancar').addEventListener('click', function(){
     var msg = valida(st.tela);
     if (msg){ avisa(msg); return; }
     avisa('');
-    /* festa não paga online: vira pedido de orçamento no WhatsApp */
-    if (st.tela === 4 && st.tipo === 'festa'){
+    if (st.tela === 5 && st.tipo === 'festa'){
       $('tituloOk').textContent = 'Pedido enviado';
       $('codigoRes').textContent = 'ORÇAMENTO';
       $('textoOk').textContent = 'A casa vai te chamar no WhatsApp com o orçamento da festa.';
-      ir(6); return;
+      ir(7); return;
     }
-    ir(Math.min(6, st.tela + 1));
+    ir(Math.min(7, st.tela + 1));
   });
-  /* campos limpam o aviso assim que a pessoa corrige */
   document.addEventListener('input', function(){ avisa(''); });
   document.addEventListener('change', function(){ avisa(''); });
   $('voltar').addEventListener('click', function(){ ir(Math.max(0, st.tela - 1)); });
 
-  document.getElementById('onde').addEventListener('change', function(ev){
+  $('onde').addEventListener('change', function(ev){
     var i = ev.target;
     st.tipo = i.getAttribute('data-tipo');
     st.piso = +(i.getAttribute('data-piso') || 1);
     st.onde = i.value;
-    montarDias(); st.data = null; st.hora = null; $('horas').innerHTML = '';
-    atualizar();
+    st.data = null; st.hora = null; $('horas').innerHTML = '';
+    montarDias(); montarExtras(); atualizar();
   });
   document.addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-qtd]');
@@ -533,10 +654,10 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 
     /* na demonstração o pagamento cai sozinho depois de 6 segundos */
     setTimeout(function(){
-      if (st.tela !== 5) return;
+      if (st.tela !== 6) return;
       clearInterval(st.relogio);
       $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
-      ir(6);
+      ir(7);
     }, 6000);
   }
   $('copiar').addEventListener('click', function(){
@@ -548,32 +669,29 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 
   /* arrastar a faixa de dias com o mouse (no dedo o navegador já faz) */
   (function(){
-    var faixa = $('dias'), baixo = false, x0 = 0, s0 = 0, andou = 0;
-    faixa.addEventListener('pointerdown', function(ev){
+    var faixaEl = $('dias'), baixo = false, x0 = 0, s0 = 0, andou = 0;
+    faixaEl.addEventListener('pointerdown', function(ev){
       if (ev.pointerType === 'touch') return;
-      baixo = true; andou = 0; x0 = ev.clientX; s0 = faixa.scrollLeft;
-      faixa.classList.add('arrastando');
+      baixo = true; andou = 0; x0 = ev.clientX; s0 = faixaEl.scrollLeft;
+      faixaEl.classList.add('arrastando');
     });
     addEventListener('pointermove', function(ev){
       if (!baixo) return;
-      var dx = ev.clientX - x0;
-      andou = Math.max(andou, Math.abs(dx));
-      faixa.scrollLeft = s0 - dx;
+      var dx = ev.clientX - x0; andou = Math.max(andou, Math.abs(dx));
+      faixaEl.scrollLeft = s0 - dx;
     });
     addEventListener('pointerup', function(ev){
       if (!baixo) return;
-      baixo = false; faixa.classList.remove('arrastando');
-      /* arrastou de verdade? então não escolhe o dia sem querer */
+      baixo = false; faixaEl.classList.remove('arrastando');
       if (andou > 6){ ev.preventDefault(); ev.stopPropagation(); }
     }, true);
-    faixa.addEventListener('click', function(ev){ if (andou > 6){ ev.preventDefault(); ev.stopPropagation(); andou = 0; } }, true);
-    /* roda do mouse na vertical vira rolagem lateral aqui dentro */
-    faixa.addEventListener('wheel', function(ev){
+    faixaEl.addEventListener('click', function(ev){ if (andou > 6){ ev.preventDefault(); ev.stopPropagation(); andou = 0; } }, true);
+    faixaEl.addEventListener('wheel', function(ev){
       if (Math.abs(ev.deltaY) <= Math.abs(ev.deltaX)) return;
-      ev.preventDefault(); faixa.scrollLeft += ev.deltaY;
+      ev.preventDefault(); faixaEl.scrollLeft += ev.deltaY;
     }, { passive:false });
-    $('diaEsq').addEventListener('click', function(){ faixa.scrollLeft -= 200; });
-    $('diaDir').addEventListener('click', function(){ faixa.scrollLeft += 200; });
+    $('diaEsq').addEventListener('click', function(){ faixaEl.scrollLeft -= 200; });
+    $('diaDir').addEventListener('click', function(){ faixaEl.scrollLeft += 200; });
   })();
 
   montarDias(); montarExtras(); atualizar();
