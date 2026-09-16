@@ -303,10 +303,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <details class="artes">
         <summary>Ver o contrato e a tabela da casa</summary>
         <div class="fotos">
-          <img src="/assets/catalogo/contrato-1.jpg" width="700" height="1242" alt="Contrato de reserva do Santo Strike" loading="lazy" decoding="async">
-          <img src="/assets/catalogo/regras-funcionamento.jpg" width="700" height="1202" alt="Regras de funcionamento da casa" loading="lazy" decoding="async">
-          <img src="/assets/catalogo/tabela-precos.jpg" width="700" height="1244" alt="Tabela de valores dos rodízios" loading="lazy" decoding="async">
-          <img src="/assets/catalogo/bebidas.jpg" width="700" height="1244" alt="Regras do refrigerante" loading="lazy" decoding="async">
+          <img data-src="/assets/catalogo/contrato-1.jpg" width="700" height="1242" alt="Contrato de reserva do Santo Strike" decoding="async">
+          <img data-src="/assets/catalogo/regras-funcionamento.jpg" width="700" height="1202" alt="Regras de funcionamento da casa" decoding="async">
+          <img data-src="/assets/catalogo/tabela-precos.jpg" width="700" height="1244" alt="Tabela de valores dos rodízios" decoding="async">
+          <img data-src="/assets/catalogo/bebidas.jpg" width="700" height="1244" alt="Regras do refrigerante" decoding="async">
         </div>
       </details>
     </div>
@@ -624,7 +624,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     st.piso = +(i.getAttribute('data-piso') || 1);
     st.onde = i.value;
     st.data = null; st.hora = null; $('horas').innerHTML = '';
-    montarDias(); montarExtras(); atualizar();
+  
+  montarDias(); montarExtras(); atualizar();
   });
   document.addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-qtd]');
@@ -693,6 +694,19 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     }, { passive:false });
     $('diaEsq').addEventListener('click', function(){ faixaEl.scrollLeft -= 200; });
     $('diaDir').addEventListener('click', function(){ faixaEl.scrollLeft += 200; });
+  })();
+
+
+  /* baixa as artes do contrato só quando a pessoa abre */
+  (function(){
+    var d = document.querySelector('details.artes');
+    if (!d) return;
+    d.addEventListener('toggle', function(){
+      if (!d.open) return;
+      [].forEach.call(d.querySelectorAll('img[data-src]'), function(im){
+        im.src = im.getAttribute('data-src'); im.removeAttribute('data-src');
+      });
+    });
   })();
 
   montarDias(); montarExtras(); atualizar();
