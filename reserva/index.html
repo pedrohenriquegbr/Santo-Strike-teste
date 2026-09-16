@@ -302,10 +302,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <details class="artes">
         <summary>Ver o contrato e a tabela da casa</summary>
         <div class="fotos">
-          <img src="/assets/catalogo/contrato-1.jpg" alt="Contrato de reserva do Santo Strike" loading="lazy" decoding="async">
-          <img src="/assets/catalogo/regras-funcionamento.jpg" alt="Regras de funcionamento da casa" loading="lazy" decoding="async">
-          <img src="/assets/catalogo/tabela-precos.jpg" alt="Tabela de valores dos rodízios" loading="lazy" decoding="async">
-          <img src="/assets/catalogo/bebidas.jpg" alt="Regras do refrigerante" loading="lazy" decoding="async">
+          <img src="/assets/catalogo/contrato-1.jpg" width="700" height="1242" alt="Contrato de reserva do Santo Strike" loading="lazy" decoding="async">
+          <img src="/assets/catalogo/regras-funcionamento.jpg" width="700" height="1202" alt="Regras de funcionamento da casa" loading="lazy" decoding="async">
+          <img src="/assets/catalogo/tabela-precos.jpg" width="700" height="1244" alt="Tabela de valores dos rodízios" loading="lazy" decoding="async">
+          <img src="/assets/catalogo/bebidas.jpg" width="700" height="1244" alt="Regras do refrigerante" loading="lazy" decoding="async">
         </div>
       </details>
     </div>
@@ -459,7 +459,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       var p = precoExtra(e);
       var div = document.createElement('div');
       div.className = 'extra';
-      div.innerHTML = (e.foto ? '<img src="' + e.foto + '" alt="" loading="lazy" decoding="async">'
+      div.innerHTML = (e.foto ? '<img src="' + e.foto + '" alt="" width="420" height="746" loading="lazy" decoding="async">'
                               : '<span class="semfoto" aria-hidden="true">' + (e.ico || '+') + '</span>') +
         '<b>' + e.nome + '</b><span class="val" id="p_' + e.id + '">' + (p ? moeda(p) : 'cortesia') + '</span>' +
         '<em>' + e.desc + '</em>' +
