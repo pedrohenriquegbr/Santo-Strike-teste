@@ -23,9 +23,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
 /* Reserva do Santo Strike. Preços, extras e regras vindos do catálogo
-   oficial do WhatsApp da casa (lido em 15/09/2026). Feito para o celular.
-   Enquanto a conta de pagamento não existe, a reserva termina no WhatsApp
-   da casa, que confirma e envia o Pix. */
+   oficial do WhatsApp da casa (lido em 15/09/2026 e conferido nas artes em
+   16/09/2026). Feito para o celular. Enquanto a conta de pagamento não
+   existe, a reserva termina no WhatsApp da casa, que confirma e envia o Pix. */
 :root{
   --canvas:#0B0705; --panel:#150F0A; --panel-2:#1E150D;
   --accent:#E3B23C; --accent-2:#F2C65A; --ember:#C2410C;
@@ -37,6 +37,8 @@
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
+/* os blocos abaixo usam display:flex/grid, que venceria o atributo hidden */
+[hidden]{display:none !important}
 body{margin:0;background:var(--canvas);color:var(--ink);font:400 1rem/1.55 var(--body);
   -webkit-font-smoothing:antialiased}
 .app{max-width:30rem;margin:0 auto;padding:0 1.1rem 10rem}
@@ -122,6 +124,7 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .pm button{width:2.2rem;height:2.2rem;border-radius:50%;border:1px solid var(--line-strong);
   background:none;color:var(--ink);font:400 1.2rem/1 var(--body);cursor:pointer}
 .pm button:hover{border-color:var(--accent);color:var(--accent)}
+.pm button:disabled{opacity:.35;cursor:not-allowed}
 .pm output{font:500 1.05rem/1 var(--mono);min-width:1.4rem;text-align:center}
 
 /* extras com foto */
@@ -143,6 +146,7 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .extra .val{grid-column:3;grid-row:1;font:500 .84rem/1 var(--mono);color:var(--accent);white-space:nowrap}
 .extra .pm{grid-column:3;grid-row:2 / span 2;justify-self:end}
 .extra .pm button{width:1.9rem;height:1.9rem;font-size:1rem}
+.extra.fora img,.extra.fora .val{opacity:.5}
 
 /* campos */
 .fld{display:block;margin-bottom:.9rem}
@@ -154,6 +158,9 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent);outline:none}
 .check{display:grid;grid-template-columns:1.2rem 1fr;gap:.7rem;align-items:start;font-size:.9rem;color:var(--ink-2);margin-top:1rem}
 .check input{width:1.2rem;height:1.2rem;accent-color:var(--accent);margin-top:.15rem}
+.check b{color:var(--ink)}
+.aniv{display:grid;grid-template-columns:1fr 1fr;gap:0 .7rem;margin-top:.9rem}
+.aniv .fld{margin-bottom:0}
 
 /* contrato */
 .contrato{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:1rem 1.1rem}
@@ -175,6 +182,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 .linhas .l--cab{background:var(--panel-2);font-weight:700;font-size:.72rem;letter-spacing:.14em;
   text-transform:uppercase;color:var(--ink-2)}
 .linhas .l--extra span:first-child::before{content:"+ ";color:var(--ember);font-weight:700}
+.linhas .l--desc span:last-child{color:var(--accent)}
 .linhas .l--total{border-bottom:0;font-weight:700;font-size:1.05rem;color:var(--accent)}
 
 /* confirmado */
@@ -229,11 +237,22 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <label class="op"><input type="radio" name="onde" value="2º piso" data-tipo="mesa" data-piso="2">
         <b>2º piso</b><em>Fusion Food com churrasco</em><span class="val">de R$ 69,99<br>a R$ 79,99</span></label>
       <label class="op"><input type="radio" name="onde" value="Boliche" data-tipo="pista">
-        <b>Boliche</b><em>Pista por hora, até 6 pessoas</em><span class="val">R$ 80 ou<br>R$ 120 a hora</span></label>
+        <b>Boliche</b><em>Pista por hora, até 6 pessoas</em><span class="val">de R$ 40<br>a R$ 300</span></label>
       <label class="op"><input type="radio" name="onde" value="Festa" data-tipo="festa">
         <b>Festa ou evento</b><em>15 anos, casamento, confraternização</em><span class="val">orçamento</span></label>
     </div>
-    <div class="aviso">A casa trabalha <b>só no sistema de rodízio</b>. Todo mundo que entra participa e paga o valor do dia, inclusive acompanhantes.</div>
+    <div id="subBoliche" hidden>
+      <span class="rot">Vão comer no rodízio também?</span>
+      <div class="ops" id="comRodizio">
+        <label class="op"><input type="radio" name="comRodizio" value="1" checked>
+          <b>Sim, no 1º piso</b><em>Pista com preço de cliente do rodízio</em><span class="val">de R$ 40<br>a R$ 120</span></label>
+        <label class="op"><input type="radio" name="comRodizio" value="2">
+          <b>Sim, no 2º piso</b><em>Pista com preço de cliente do rodízio</em><span class="val">de R$ 40<br>a R$ 120</span></label>
+        <label class="op"><input type="radio" name="comRodizio" value="0">
+          <b>Não, só jogar</b><em>Uso avulso da pista, sem rodízio</em><span class="val">R$ 200 ou<br>R$ 300</span></label>
+      </div>
+    </div>
+    <div class="aviso" id="avisoOnde">A casa trabalha <b>só no sistema de rodízio</b>. Todo mundo que entra participa e paga o valor do dia, inclusive acompanhantes.</div>
   </section>
 
   <!-- 2. QUANDO -->
@@ -244,8 +263,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <div class="dias-wrap"><div class="dias" id="dias"></div></div>
     <div class="setas"><button type="button" id="diaEsq" aria-label="Ver dias anteriores">&#8592;</button>
       <button type="button" id="diaDir" aria-label="Ver próximos dias">&#8594;</button></div>
-    <span class="rot">Horário de chegada</span>
+    <span class="rot" id="rotHora">Horário de chegada</span>
     <div class="horas" id="horas"></div>
+    <label class="check" id="caixaExclusiva"><input type="checkbox" id="exclusiva"><span><b>Quero mesa exclusiva.</b> A mesa fica com o grupo a noite toda, sem limite de chegada. Todos os lugares são pagos antes e lugar vazio não é reembolsado.</span></label>
     <div class="aviso" id="avisoDia">Reservando com <b>7 dias de antecedência</b> e pagando no ato da reserva, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.</div>
   </section>
 
@@ -254,30 +274,57 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <h1>Quem vai?</h1>
     <p class="sub" id="subPessoas">Criança tem valor próprio, por idade.</p>
     <div class="conta">
-      <div><b>Adultos</b><span id="vAdulto">R$ 54,99 cada</span></div>
-      <div class="pm"><button type="button" data-qtd="adultos" data-d="-1" aria-label="Menos um adulto">&minus;</button>
+      <div><b id="rotAdultos">Adultos</b><span id="vAdulto">R$ 54,99 cada</span></div>
+      <div class="pm"><button type="button" data-qtd="adultos" data-d="-1" aria-label="Menos um">&minus;</button>
         <output id="qAdultos">2</output>
-        <button type="button" data-qtd="adultos" data-d="1" aria-label="Mais um adulto">+</button></div>
+        <button type="button" data-qtd="adultos" data-d="1" aria-label="Mais um">+</button></div>
     </div>
-    <div class="conta caixa-crianca">
+    <div class="conta caixa-rodizio">
+      <div><b>Bariátricos</b><span id="vBari">30% de desconto, com comprovação</span></div>
+      <div class="pm"><button type="button" data-qtd="bari" data-d="-1" aria-label="Menos um bariátrico">&minus;</button>
+        <output id="qBari">0</output>
+        <button type="button" data-qtd="bari" data-d="1" aria-label="Mais um bariátrico">+</button></div>
+    </div>
+    <div class="conta caixa-rodizio">
       <div><b>Crianças de 3 a 5 anos</b><span id="vCrianca35">R$ 19,99 cada</span></div>
       <div class="pm"><button type="button" data-qtd="c35" data-d="-1" aria-label="Menos uma criança de 3 a 5">&minus;</button>
         <output id="qC35">0</output>
         <button type="button" data-qtd="c35" data-d="1" aria-label="Mais uma criança de 3 a 5">+</button></div>
     </div>
-    <div class="conta caixa-crianca">
+    <div class="conta caixa-rodizio">
       <div><b>Crianças de 6 a 8 anos</b><span id="vCrianca68">R$ 34,99 cada</span></div>
       <div class="pm"><button type="button" data-qtd="c68" data-d="-1" aria-label="Menos uma criança de 6 a 8">&minus;</button>
         <output id="qC68">0</output>
         <button type="button" data-qtd="c68" data-d="1" aria-label="Mais uma criança de 6 a 8">+</button></div>
     </div>
-    <div class="conta caixa-crianca">
+    <div class="conta caixa-rodizio">
       <div><b>Até 2 anos</b><span>Não paga</span></div>
       <div class="pm"><button type="button" data-qtd="bebes" data-d="-1" aria-label="Menos um bebê">&minus;</button>
         <output id="qBebes">0</output>
         <button type="button" data-qtd="bebes" data-d="1" aria-label="Mais um bebê">+</button></div>
     </div>
-    <div class="aviso caixa-crianca">Para o valor infantil é <b>obrigatório apresentar RG ou certidão</b> da criança no caixa. Bariátricos têm 30% de desconto, com comprovação.</div>
+
+    <div class="conta caixa-pista">
+      <div><b>Pistas</b><span id="vPistas">Até 6 pessoas em cada</span></div>
+      <div class="pm"><button type="button" data-qtd="pistas" data-d="-1" aria-label="Menos uma pista">&minus;</button>
+        <output id="qPistas">1</output>
+        <button type="button" data-qtd="pistas" data-d="1" aria-label="Mais uma pista">+</button></div>
+    </div>
+    <div class="conta caixa-pista">
+      <div><b>Horas de jogo</b><span id="vHoras">Por pista</span></div>
+      <div class="pm"><button type="button" data-qtd="horas" data-d="-1" aria-label="Menos uma hora">&minus;</button>
+        <output id="qHoras">1</output>
+        <button type="button" data-qtd="horas" data-d="1" aria-label="Mais uma hora">+</button></div>
+    </div>
+
+    <label class="check caixa-rodizio"><input type="checkbox" id="temAniv"><span>Tem <b>aniversariante</b> no grupo</span></label>
+    <div class="aniv" id="anivCampos" hidden>
+      <label class="fld"><span>Dia do aniversário</span><select id="anivDia"></select></label>
+      <label class="fld"><span>Mês</span><select id="anivMes"></select></label>
+    </div>
+    <div class="aviso" id="avisoAniv" hidden></div>
+
+    <div class="aviso caixa-rodizio">Para o valor infantil é <b>obrigatório apresentar RG ou certidão</b> da criança no caixa. O <b>PlayKids é grátis</b> para quem paga o rodízio infantil: é só retirar a pulseirinha no caixa (fliperama à parte). Bariátricos precisam de comprovação.</div>
   </section>
 
   <!-- 4. EXTRAS -->
@@ -309,12 +356,15 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <div class="contrato" style="margin-top:1rem">
       <h2>Contrato de reserva</h2>
       <ul>
-        <li><b>Chegada:</b> a casa abre às 18h. A tolerância vai <span id="tolerancia">até 19h30 de terça a sexta</span>. Passou disso e tendo fila, a mesa pode ser liberada.</li>
-        <li><b>Cancelamento:</b> reembolso total se você pedir pelo WhatsApp oficial em até 7 dias da contratação. Depois desse prazo não há reembolso.</li>
-        <li><b>Remarcação:</b> avisando com 24 horas de antecedência, a data pode ser remarcada e usada em até 30 dias, conforme a agenda.</li>
-        <li><b>Não comparecer</b> ou chegar fora da tolerância sem avisar é no-show, sem reembolso e sem remarcação.</li>
-        <li><b>A reserva garante entrada com prioridade</b> dentro da tolerância, não escolha de mesa nem espaço bloqueado.</li>
-        <li><b>Bolo trazido por você:</b> pode. Usando pratos, talheres e estrutura da casa, a taxa é de R$ 60,00.</li>
+        <li><span><b>Chegada:</b> <span id="tolerancia">a casa abre às 18h e a tolerância vai até 19h30 de terça a sexta. Passou disso e tendo fila, a mesa pode ser liberada.</span></span></li>
+        <li id="regraExclusiva" hidden><span><b>Mesa exclusiva:</b> a mesa fica bloqueada para o grupo a noite toda. Todos os lugares reservados são pagos antes e os que não forem usados não são reembolsados.</span></li>
+        <li id="regraPista" hidden><span><b>Boliche:</b> o valor é por pista, que leva até 6 pessoas, com pagamento integral no ato da reserva e conforme a disponibilidade de pistas.</span></li>
+        <li id="regraAniv" hidden><span><b>Aniversário:</b> um aniversariante por reserva, promoções não cumulativas e RG do aniversariante apresentado até 20h30.</span></li>
+        <li><span><b>Cancelamento:</b> reembolso total se você pedir pelo WhatsApp oficial em até 7 dias da contratação. Depois desse prazo não há reembolso.</span></li>
+        <li><span><b>Remarcação:</b> avisando com 24 horas de antecedência, a data pode ser remarcada e usada em até 30 dias, conforme a agenda.</span></li>
+        <li><span><b>Não comparecer</b> ou chegar fora da tolerância sem avisar é no-show, sem reembolso e sem remarcação.</span></li>
+        <li><span><b>A reserva garante entrada com prioridade</b> dentro da tolerância, não escolha de mesa nem espaço bloqueado.</span></li>
+        <li><span><b>Bolo trazido por você:</b> pode. Usando pratos, talheres e estrutura da casa, a taxa é de R$ 60,00.</span></li>
       </ul>
       <details class="artes">
         <summary>Ver o contrato e a tabela da casa</summary>
@@ -322,6 +372,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
           <img data-src="/assets/catalogo/contrato-1.jpg" width="700" height="1242" alt="Contrato de reserva do Santo Strike" decoding="async">
           <img data-src="/assets/catalogo/regras-funcionamento.jpg" width="700" height="1202" alt="Regras de funcionamento da casa" decoding="async">
           <img data-src="/assets/catalogo/tabela-precos.jpg" width="700" height="1244" alt="Tabela de valores dos rodízios" decoding="async">
+          <img data-src="/assets/catalogo/boliche.jpg" width="700" height="876" alt="Valores da pista de boliche" decoding="async">
+          <img data-src="/assets/catalogo/aniversario.jpg" width="700" height="1244" alt="Promoção de aniversário" decoding="async">
           <img data-src="/assets/catalogo/bebidas.jpg" width="700" height="1244" alt="Regras do refrigerante" decoding="async">
         </div>
       </details>
@@ -355,13 +407,13 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
 <script>
 (function(){
-  /* Tabela oficial do catálogo do WhatsApp da casa, lida em 15/09/2026.
-     Online a pessoa paga no Pix, então o valor usado é o do Pix. O da
-     promoção de 7 dias e o do dinheiro aparecem como aviso. */
-  /* O catálogo diz: "o Pix tem o mesmo valor do desconto em dinheiro somente
+  /* Tabela oficial do catálogo do WhatsApp da casa (lida em 15/09/2026,
+     conferida nas artes em 16/09/2026).
+     O catálogo diz: "o Pix tem o mesmo valor do desconto em dinheiro somente
      quando realizado antecipadamente no pagamento da reserva". Como aqui a
-     pessoa paga no ato, vale o valor com desconto. O valor de caixa fica
-     como comparação. */
+     pessoa paga no ato, vale o valor com desconto (online). O de caixa fica
+     como comparação. "Terça a quinta" é sempre "exceto feriado e véspera de
+     feriado": nesses dias vale o preço de sexta e domingo. */
   var TABELA = {
     1: { terQui:{ online:54.99, caixa:59.99, promo:49.99 },
          sexDom:{ online:59.99, caixa:64.99 },
@@ -371,84 +423,207 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
          sexDom:{ online:79.99, caixa:84.99 },
          crianca:{ c35:24.99, c68:34.99 } }
   };
+  /* Boliche, por pista e por hora (arte "Valores da pista de boliche"):
+     - cliente do rodízio, com reserva: R$ 80 de terça a quinta (2ª hora seguida
+       pela metade) e R$ 120 de sexta a domingo, feriados e vésperas;
+     - promoção das 18h: R$ 40, só para cliente do rodízio;
+     - uso avulso, sem rodízio: R$ 200 / R$ 300;
+     - sem reserva, no balcão: R$ 100 / R$ 150 (só aparece nos avisos). */
+  var PISTA = { rodizio:{ util:80, fim:120 }, avulso:{ util:200, fim:300 },
+                semReserva:{ util:100, fim:150 }, promo18:40, maxPistas:4 };
   var WHATSAPP_CASA = '5521988799699';
-  var pistaDoDia = function(d){ var w = d ? d.getDay() : 2; return (w >= 2 && w <= 4) ? 80 : 120; };
+
+  /* Feriados de Duque de Caxias (RJ): nacionais, estaduais (São Jorge e terça
+     de Carnaval) e o municipal de Santo Antônio. Para somar um feriado, é só
+     pôr o "mês-dia" na lista. Sexta-feira Santa e Carnaval são calculados. */
+  var FERIADOS = ['01-01','04-21','04-23','05-01','06-13','09-07','10-12','11-02','11-15','11-20','12-25'];
+  function pascoa(ano){
+    var a = ano % 19, b = Math.floor(ano / 100), c = ano % 100, d = Math.floor(b / 4), e = b % 4,
+        f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30,
+        i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451),
+        n = h + l - 7 * m + 114;
+    return new Date(ano, Math.floor(n / 31) - 1, (n % 31) + 1);
+  }
+  var soDia = function(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+  var doisDig = function(n){ return ('0' + n).slice(-2); };
+  function feriado(d){
+    if (FERIADOS.indexOf(doisDig(d.getMonth() + 1) + '-' + doisDig(d.getDate())) >= 0) return true;
+    var dif = Math.round((soDia(d) - pascoa(d.getFullYear())) / 86400000);
+    return dif === -47 || dif === -2;      /* terça de Carnaval e Sexta-feira Santa */
+  }
+  function vespera(d){ return feriado(new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1)); }
+  function especial(d){ return !!d && (feriado(d) || vespera(d)); }
+  /* terça a quinta sem feriado nem véspera. Sem dia escolhido, conta como terça. */
+  function diaUtil(d){
+    if (!d) return true;
+    var w = d.getDay();
+    return w >= 2 && w <= 4 && !especial(d);
+  }
+  /* tolerância de chegada: 19h aos sábados, domingos e feriados */
+  function toleranciaCurta(d){ return !!d && (d.getDay() === 0 || d.getDay() === 6 || feriado(d)); }
 
   function faixa(d, piso){
-    var w = d ? d.getDay() : 2;
-    if (piso === 1){
-      if (w >= 2 && w <= 4) return 'terQui';
-      if (w === 6) return 'sabado';
-      return 'sexDom';
-    }
-    return (w >= 2 && w <= 4) ? 'terQui' : 'sexDom';
+    if (piso === 1 && d && d.getDay() === 6) return 'sabado';
+    return diaUtil(d) ? 'terQui' : 'sexDom';
   }
   function diasDeAntecedencia(d){
     if (!d) return 0;
-    var hoje = new Date(); hoje.setHours(0,0,0,0);
+    var hoje = soDia(new Date());
     return Math.round((d - hoje) / 86400000);
   }
-  /* promoção dos R$ 49,99: 1º piso, terça a quinta, 7 dias de antecedência
-     e pagamento no ato, que é exatamente o que este fluxo faz */
+  /* promoção dos R$ 49,99: 1º piso, terça a quinta (sem feriado nem véspera),
+     7 dias de antecedência e pagamento no ato, que é o que este fluxo faz */
   function temPromo(d, piso){
-    return piso === 1 && faixa(d, 1) === 'terQui' && diasDeAntecedencia(d) >= 7;
+    return piso === 1 && !!d && diaUtil(d) && diasDeAntecedencia(d) >= 7;
   }
-  function valorAdulto(d, piso){
-    var f = TABELA[piso][faixa(d, piso)];
-    return temPromo(d, piso) ? TABELA[1].terQui.promo : f.online;
-  }
+  var arred = function(v){ return Math.round(v * 100 + 1e-6) / 100; };
 
   var EXTRAS = [
-    { id:'kit',  nome:'Kit Festa + Bolo', preco:119.99, foto:'/assets/catalogo/kit-festa.jpg',
-      desc:'Bolo de 10 fatias, 10 cupcakes e mesa decorada. Pago no ato da reserva.' },
+    { id:'kit',  nome:'Kit Festa + Bolo', preco:119.99, max:1, foto:'/assets/catalogo/kit-festa.jpg',
+      desc:'Bolo de 10 fatias, 10 cupcakes e mesa decorada, com tema à sua escolha. Não vale aos sábados e depende da disponibilidade do andar.' },
     { id:'refri', nome:'Refrigerante 2L', preco:15, ico:'copo',
-      desc:'R$ 15 com reserva. No 1º piso, de terça a sexta, é cortesia.' },
+      desc:'R$ 15 com reserva (R$ 20 sem). No 1º piso, de terça a sexta, refrigerante e refresco são cortesia.' },
     { id:'bolo', nome:'Taxa de bolo próprio', preco:60, ico:'bolo',
-      desc:'Só se você trouxer o bolo e usar pratos, talheres e estrutura da casa.' },
-    { id:'pista', nome:'Hora extra de pista', preco:80, porDia:true, ico:'bola',
-      desc:'A segunda hora seguida sai pela metade de terça a quinta.' }
+      desc:'Só se você trouxer o bolo e usar pratos, talheres e estrutura da casa. Com descartáveis seus, não paga.' }
   ];
   /* ícones em ouro, no lugar de emoji, para não destoar da casa */
   var ICONES = {
     copo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6.5 7h11l-1.1 12.1a2 2 0 0 1-2 1.9H9.6a2 2 0 0 1-2-1.9L6.5 7Z"/><path d="M8 4.5h8"/><path d="M7.4 12h9.2"/></svg>',
-    bolo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 20.5h16V14H4v6.5Z"/><path d="M4 14.5c1.8-2 3.6-2 5.4 0s3.6 2 5.4 0 3.4-2 5.2 0"/><path d="M12 4v3.5"/><circle cx="12" cy="3" r="1"/></svg>',
-    bola:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><circle cx="10" cy="9.2" r=".95" fill="currentColor" stroke="none"/><circle cx="13.7" cy="8.6" r=".95" fill="currentColor" stroke="none"/><circle cx="11.6" cy="12.3" r=".95" fill="currentColor" stroke="none"/></svg>'
+    bolo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 20.5h16V14H4v6.5Z"/><path d="M4 14.5c1.8-2 3.6-2 5.4 0s3.6 2 5.4 0 3.4-2 5.2 0"/><path d="M12 4v3.5"/><circle cx="12" cy="3" r="1"/></svg>'
   };
 
   var NOMES = ['Onde','Quando','Quem vai','Extras','Seus dados','Contrato','Enviar'];
   var DIAS_CURTO = ['dom','seg','ter','qua','qui','sex','sáb'];
   var MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  var MESES_LONGOS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
+  /* piso: 1 ou 2 é o andar do rodízio; 0 é boliche sem rodízio (uso avulso) */
   var st = { tela:0, tipo:'mesa', piso:1, onde:'1º piso', data:null, hora:null,
-             adultos:2, c35:0, c68:0, bebes:0, extras:{}, relogio:null };
+             adultos:2, bari:0, c35:0, c68:0, bebes:0, pistas:1, horas:1, exclusiva:false,
+             aniv:{ on:false, dia:0, mes:0 }, extras:{} };
 
   var $ = function(id){ return document.getElementById(id); };
   var telas = [].slice.call(document.querySelectorAll('.tela'));
   var moeda = function(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); };
+  var somar = function(l){ return l.reduce(function(s, i){ return s + i.valor; }, 0); };
+
+  function comRodizio(){ return st.tipo === 'mesa' || (st.tipo === 'pista' && st.piso > 0); }
+  function avulso(){ return st.tipo === 'pista' && !st.piso; }
+  function ondeTexto(){
+    if (st.tipo === 'pista') return st.piso ? 'Boliche + rodízio do ' + st.piso + 'º piso' : 'Boliche avulso, sem rodízio';
+    return st.onde;
+  }
 
   /* só a segunda é fechada */
   function fechado(d){ return d.getDay() === 1; }
 
+  /* ---------- boliche ---------- */
+  function precoPista(d, h){
+    var util = diaUtil(d);
+    if (!st.piso) return util ? PISTA.avulso.util : PISTA.avulso.fim;
+    if (h === 0 && st.hora === '18:00') return PISTA.promo18;
+    if (h === 1 && util) return PISTA.rodizio.util / 2;      /* 2ª hora seguida com 50% */
+    return util ? PISTA.rodizio.util : PISTA.rodizio.fim;
+  }
+  /* a pista acaba até as 22h */
+  function maxHoras(){ var H = parseInt(st.hora || '18', 10); return Math.max(1, Math.min(3, 22 - H)); }
+  function linhasPista(){
+    var out = [], H = parseInt(st.hora || '18', 10);
+    for (var h = 0; h < st.horas; h++){
+      var p = precoPista(st.data, h), tag = '';
+      if (st.piso && h === 0 && st.hora === '18:00') tag = ' (promoção)';
+      else if (st.piso && h === 1 && diaUtil(st.data)) tag = ' (50%)';
+      out.push({ nome:(st.pistas > 1 ? st.pistas + ' pistas às ' : 'Pista às ') + (H + h) + 'h' + tag, valor:p * st.pistas });
+    }
+    return out;
+  }
+
+  /* ---------- aniversário (arte "Promoção de aniversário") ----------
+     100% grátis: 10 pagantes + o aniversariante, no dia do aniversário;
+     às quartas e quintas vale até 5 dias antes ou depois.
+     50%: com reserva antecipada, menos aos sábados. */
+  function distAniv(d){
+    var menor = 999;
+    [-1, 0, 1].forEach(function(k){
+      var a = new Date(d.getFullYear() + k, st.aniv.mes - 1, st.aniv.dia);
+      menor = Math.min(menor, Math.abs(Math.round((a - soDia(d)) / 86400000)));
+    });
+    return menor;
+  }
+  function anivRegra(){
+    if (!st.aniv.on || !comRodizio() || !st.data || !st.aniv.dia) return '';
+    var w = st.data.getDay(), dist = distAniv(st.data);
+    var pagantes = st.adultos + st.bari - 1 + st.c35 + st.c68;
+    if (pagantes >= 10 && (dist === 0 || ((w === 3 || w === 4) && dist <= 5))) return 'gratis';
+    return w === 6 ? 'sabado' : 'meia';
+  }
+
+  /* ---------- rodízio ---------- */
+  function valorCheio(d){ return TABELA[st.piso][faixa(d, st.piso)].online; }
+  function linhasRodizio(usarPromo){
+    var d = st.data, cheio = valorCheio(d);
+    var va = usarPromo ? TABELA[1].terQui.promo : cheio;
+    var vb = Math.min(va, arred(cheio * 0.7));               /* bariátrico: 30% sobre o valor do dia */
+    var cr = TABELA[st.piso].crianca, out = [];
+    if (st.adultos) out.push({ nome:st.adultos + ' adulto' + (st.adultos > 1 ? 's' : '') + ' × ' + moeda(va), valor:va * st.adultos });
+    if (st.bari) out.push({ nome:st.bari + ' bariátrico' + (st.bari > 1 ? 's' : '') + ' × ' + moeda(vb), valor:vb * st.bari });
+    if (st.c35) out.push({ nome:st.c35 + ' criança 3 a 5 × ' + moeda(cr.c35), valor:cr.c35 * st.c35 });
+    if (st.c68) out.push({ nome:st.c68 + ' criança 6 a 8 × ' + moeda(cr.c68), valor:cr.c68 * st.c68 });
+    if (st.bebes) out.push({ nome:st.bebes + ' até 2 anos', valor:0 });
+    var regra = usarPromo ? '' : anivRegra();
+    if (regra === 'gratis' || regra === 'meia'){
+      var base = st.adultos ? va : vb;
+      var desc = regra === 'gratis' ? base : arred(base / 2);
+      out.push({ nome:'Aniversariante ' + (regra === 'gratis' ? 'não paga' : 'com 50%'), valor:-desc, desconto:true });
+    }
+    return out;
+  }
+  /* promoções não cumulativas: num dia de R$ 49,99 com aniversariante,
+     fica a opção que sai mais barata para o grupo */
+  function usaPromo(){
+    if (!comRodizio() || !temPromo(st.data, st.piso)) return false;
+    return somar(linhasRodizio(true)) <= somar(linhasRodizio(false));
+  }
+
+  /* ---------- extras ---------- */
   function precoExtra(e){
     if (e.id === 'refri' && st.piso === 1 && st.data && st.data.getDay() >= 2 && st.data.getDay() <= 5) return 0;
-    /* segunda hora seguida de pista: 50% de terça a quinta */
-    if (e.id === 'pista'){ var v = pistaDoDia(st.data); return v === 80 ? 40 : v; }
-    return e.porDia ? pistaDoDia(st.data) : e.preco;
+    return e.preco;
   }
+  function indisponivel(e){
+    return e.id === 'kit' && !!st.data && st.data.getDay() === 6;
+  }
+
+  /* ---------- conta ---------- */
+  function itens(){
+    var out = [];
+    if (comRodizio()) out = out.concat(linhasRodizio(usaPromo()));
+    if (st.tipo === 'pista') out = out.concat(linhasPista());
+    if (!avulso()){
+      EXTRAS.forEach(function(e){
+        var q = st.extras[e.id] || 0, p = precoExtra(e);
+        if (q) out.push({ nome:(q > 1 ? q + '× ' : '') + e.nome + (p ? '' : ' (cortesia)'), valor:p * q, extra:true });
+      });
+    }
+    return out;
+  }
+  function total(){ return somar(itens()); }
 
   /* ---------- dias ---------- */
   function montarDias(){
     var box = $('dias'); box.innerHTML = '';
-    var d = new Date(); d.setHours(0,0,0,0);
+    var d = soDia(new Date());
     var achados = 0;
     while (achados < 14){
       d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
       if (fechado(d)) continue;
       achados++;
-      var v = st.tipo === 'pista' ? pistaDoDia(d) : (st.tipo === 'festa' ? 0 : valorAdulto(d, st.piso));
+      var v = st.tipo === 'pista' ? precoPista(d, 2)
+            : st.tipo === 'festa' ? 0
+            : (temPromo(d, st.piso) ? TABELA[1].terQui.promo : valorCheio(d));
       var lab = document.createElement('label');
       lab.className = 'dia' + (st.tipo === 'mesa' && temPromo(d, st.piso) ? ' promo' : '');
-      lab.innerHTML = '<input type="radio" name="dia" value="' + d.toISOString().slice(0,10) + '">' +
+      lab.innerHTML = '<input type="radio" name="dia" value="' + d.getFullYear() + '-' + doisDig(d.getMonth() + 1) + '-' + doisDig(d.getDate()) + '">' +
         '<i>' + DIAS_CURTO[d.getDay()] + '</i><b>' + d.getDate() + '</b>' +
         '<u>' + (v ? moeda(v).replace(/\s/g,'') : 'orçar') + '</u>';
       (function(dd, input){
@@ -457,81 +632,115 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       box.appendChild(lab);
     }
   }
+  /* A reserva segura a entrada só até a tolerância do contrato (19h30 de
+     terça a sexta, 19h nos fins de semana e feriados). Depois disso só com
+     mesa exclusiva. Rodízio até 22h30, entrada até 21h50. */
+  function horarios(){
+    if (st.tipo === 'pista') return ['18:00','19:00','20:00','21:00'];
+    var lista = ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30'];
+    if (st.tipo === 'festa' || st.exclusiva) return lista;
+    var limite = toleranciaCurta(st.data) ? '19:00' : '19:30';
+    return lista.filter(function(h){ return h <= limite; });
+  }
   function montarHoras(){
     var box = $('horas'); box.innerHTML = '';
-    /* rodízio servido das 18h30 às 22h30, com entrada até 21h50 (catálogo da casa) */
-    ['18:30','19:00','19:30','20:00','20:30','21:00','21:30'].forEach(function(h){
+    var lista = horarios();
+    if (lista.indexOf(st.hora) < 0) st.hora = null;
+    lista.forEach(function(h){
       var lab = document.createElement('label');
       lab.className = 'hora';
-      lab.innerHTML = '<input type="radio" name="hora" value="' + h + '">' + h;
+      lab.innerHTML = '<input type="radio" name="hora" value="' + h + '"' + (h === st.hora ? ' checked' : '') + '>' + h +
+        (st.tipo === 'pista' && st.piso && h === '18:00' ? ' · R$ 40' : '');
       lab.querySelector('input').addEventListener('change', function(){ st.hora = h; atualizar(); });
       box.appendChild(lab);
     });
   }
 
-  /* ---------- extras ---------- */
+  /* ---------- extras na tela ---------- */
   function montarExtras(){
     var box = $('extras'); box.innerHTML = '';
+    if (avulso()){
+      box.innerHTML = '<div class="aviso" style="margin-top:0">Kit festa, refrigerante e taxa de bolo são para quem vai no rodízio. Na pista avulsa, é só seguir.</div>';
+      return;
+    }
     EXTRAS.forEach(function(e){
-      var p = precoExtra(e);
+      var p = precoExtra(e), fora = indisponivel(e);
+      if (fora) st.extras[e.id] = 0;
       var div = document.createElement('div');
-      div.className = 'extra' + (e.foto ? ' extra--arte' : '');
+      div.className = 'extra' + (e.foto ? ' extra--arte' : '') + (fora ? ' fora' : '');
       div.innerHTML = (e.foto ? '<img src="' + e.foto + '" alt="" width="420" height="746" loading="lazy" decoding="async">'
                               : '<span class="semfoto" aria-hidden="true">' + (ICONES[e.ico] || '') + '</span>') +
-        '<b>' + e.nome + '</b><span class="val" id="p_' + e.id + '">' + (p ? moeda(p) : 'cortesia') + '</span>' +
+        '<b>' + e.nome + '</b><span class="val" id="p_' + e.id + '">' + (fora ? 'fora aos sábados' : p ? moeda(p) : 'cortesia') + '</span>' +
         '<em>' + e.desc + '</em>' +
         '<div class="pm"><button type="button" data-ex="' + e.id + '" data-d="-1" aria-label="Menos">&minus;</button>' +
         '<output id="q_' + e.id + '">' + (st.extras[e.id] || 0) + '</output>' +
-        '<button type="button" data-ex="' + e.id + '" data-d="1" aria-label="Mais">+</button></div>';
+        '<button type="button" data-ex="' + e.id + '" data-d="1" aria-label="Mais"' + (fora ? ' disabled' : '') + '>+</button></div>';
       box.appendChild(div);
     });
   }
   document.addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-ex]');
     if (!b) return;
-    var id = b.getAttribute('data-ex');
-    st.extras[id] = Math.max(0, (st.extras[id] || 0) + (+b.getAttribute('data-d')));
-    $('q_' + id).textContent = st.extras[id];
+    var id = b.getAttribute('data-ex'), d = +b.getAttribute('data-d');
+    var e = EXTRAS.filter(function(x){ return x.id === id; })[0];
+    var atual = st.extras[id] || 0, v = Math.max(0, atual + d);
+    if (e.max && v > e.max){ v = e.max; avisa('O kit festa é um por reserva.'); }
+    if (indisponivel(e)) v = 0;
+    st.extras[id] = v;
+    $('q_' + id).textContent = v;
     atualizar();
   });
 
-  /* ---------- conta ---------- */
-  function itens(){
-    var out = [], d = st.data;
-    if (st.tipo === 'pista'){
-      out.push({ nome:'Pista por 1 hora', valor:pistaDoDia(d) });
-    } else if (st.tipo === 'mesa'){
-      var va = valorAdulto(d, st.piso);
-      out.push({ nome:st.adultos + ' adulto' + (st.adultos > 1 ? 's' : '') + ' × ' + moeda(va), valor:va * st.adultos });
-      var cr = TABELA[st.piso].crianca;
-      if (st.c35) out.push({ nome:st.c35 + ' criança 3 a 5 × ' + moeda(cr.c35), valor:cr.c35 * st.c35 });
-      if (st.c68) out.push({ nome:st.c68 + ' criança 6 a 8 × ' + moeda(cr.c68), valor:cr.c68 * st.c68 });
-      if (st.bebes) out.push({ nome:st.bebes + ' até 2 anos', valor:0 });
-    }
-    EXTRAS.forEach(function(e){
-      var q = st.extras[e.id] || 0, p = precoExtra(e);
-      if (q) out.push({ nome:(q > 1 ? q + '× ' : '') + e.nome + (p ? '' : ' (cortesia)'), valor:p * q, extra:true });
-    });
-    return out;
-  }
-  function total(){ return itens().reduce(function(s,i){ return s + i.valor; }, 0); }
+  /* ---------- tela ---------- */
+  function mostra(sel, sim){ [].forEach.call(document.querySelectorAll(sel), function(el){ el.hidden = !sim; }); }
 
   function atualizar(){
-    var d = st.data, cr = TABELA[st.piso].crianca;
-    var va = st.tipo === 'pista' ? pistaDoDia(d) : valorAdulto(d, st.piso);
-    $('vAdulto').textContent = moeda(va) + ' cada' + (temPromo(d, st.piso) ? ' · promoção' : '');
-    $('vCrianca35').textContent = moeda(cr.c35) + ' cada';
-    $('vCrianca68').textContent = moeda(cr.c68) + ' cada';
-    $('qAdultos').textContent = st.adultos;
-    $('qC35').textContent = st.c35; $('qC68').textContent = st.c68; $('qBebes').textContent = st.bebes;
-    [].forEach.call(document.querySelectorAll('.caixa-crianca'), function(el){ el.hidden = st.tipo !== 'mesa'; });
-    EXTRAS.forEach(function(e){ var el = $('p_' + e.id); if (el){ var p = precoExtra(e); el.textContent = p ? moeda(p) : 'cortesia'; } });
+    var d = st.data, rod = comRodizio(), promo = usaPromo();
+    if (st.horas > maxHoras()) st.horas = maxHoras();
 
+    /* passo 3 */
+    mostra('.caixa-rodizio', rod);
+    mostra('.caixa-pista', st.tipo === 'pista');
+    $('anivCampos').hidden = !(rod && st.aniv.on);
+    if (rod){
+      var cheio = valorCheio(d), va = promo ? TABELA[1].terQui.promo : cheio, cr = TABELA[st.piso].crianca;
+      $('rotAdultos').textContent = 'Adultos';
+      $('vAdulto').textContent = moeda(va) + ' cada' + (promo ? ' · promoção' : '');
+      $('vBari').textContent = moeda(Math.min(va, arred(cheio * 0.7))) + ' cada · 30% de desconto';
+      $('vCrianca35').textContent = moeda(cr.c35) + ' cada';
+      $('vCrianca68').textContent = moeda(cr.c68) + ' cada';
+      $('subPessoas').textContent = st.tipo === 'pista' ? 'Quem vai no rodízio e quantas pistas.' : 'Criança tem valor próprio, por idade.';
+    } else if (avulso()){
+      $('rotAdultos').textContent = 'Jogadores';
+      $('vAdulto').textContent = 'Até 6 em cada pista';
+      $('subPessoas').textContent = 'Quantas pessoas vão jogar e por quanto tempo.';
+    } else {
+      $('rotAdultos').textContent = 'Pessoas';
+      $('vAdulto').textContent = 'Número aproximado, para o orçamento';
+      $('subPessoas').textContent = 'A casa monta o orçamento com esse número.';
+    }
+    $('qAdultos').textContent = st.adultos; $('qBari').textContent = st.bari;
+    $('qC35').textContent = st.c35; $('qC68').textContent = st.c68; $('qBebes').textContent = st.bebes;
+    $('qPistas').textContent = st.pistas; $('qHoras').textContent = st.horas;
+    var mh = maxHoras();
+    $('vPistas').textContent = 'Até 6 pessoas em cada';
+    $('vHoras').textContent = st.hora ? 'Por pista, das ' + st.hora + ' · até ' + mh + (mh > 1 ? ' horas' : ' hora') : 'Por pista';
+    EXTRAS.forEach(function(e){
+      var el = $('p_' + e.id);
+      if (el){ var p = precoExtra(e); el.textContent = indisponivel(e) ? 'fora aos sábados' : p ? moeda(p) : 'cortesia'; }
+    });
+
+    /* rodapé */
     if (st.tipo === 'festa'){
       $('totalRot').textContent = 'Festa'; $('total').textContent = 'a combinar';
     } else if (st.tela <= 1){
-      $('totalRot').textContent = st.tipo === 'pista' ? 'Pista' : 'Por pessoa';
-      $('total').textContent = moeda(va) + (st.tipo === 'pista' ? ' / hora' : '');
+      if (st.tipo === 'pista'){
+        $('totalRot').textContent = 'Pista';
+        $('total').textContent = moeda(precoPista(d, 0)) + ' / hora';
+      } else {
+        $('totalRot').textContent = 'Por pessoa';
+        $('total').textContent = moeda(promo ? TABELA[1].terQui.promo : valorCheio(d));
+      }
     } else {
       $('totalRot').textContent = st.tela >= 5 ? 'Total a pagar' : 'Total';
       $('total').textContent = moeda(total());
@@ -540,30 +749,88 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     $('passoNome').textContent = NOMES[st.tela];
     $('passoNum').textContent = (st.tela + 1) + ' de 7';
 
-    /* avisos que mudam com o dia escolhido */
-    var fim = d && (d.getDay() === 6 || d.getDay() === 0);
-    $('tolerancia').textContent = fim ? 'até 19h aos sábados, domingos e feriados' : 'até 19h30 de terça a sexta';
+    /* passo 1 */
+    $('subBoliche').hidden = st.tipo !== 'pista';
+    $('avisoOnde').innerHTML = st.tipo === 'pista'
+      ? 'O valor é <b>por pista</b>, não por pessoa, e cada pista leva até 6 pessoas. Reservando, quem vai no rodízio paga de <b>R$ 40 a R$ 120</b> a hora. ' +
+        'Na hora, sem reserva, a pista sai por R$ 100 de terça a quinta e R$ 150 de sexta a domingo. Sem rodízio, R$ 200 ou R$ 300.'
+      : st.tipo === 'festa'
+      ? 'Festa e evento têm <b>orçamento próprio</b>. A casa te chama no WhatsApp com os valores e os pacotes para a data.'
+      : 'A casa trabalha <b>só no sistema de rodízio</b>. Todo mundo que entra participa e paga o valor do dia, inclusive acompanhantes. ' +
+        'Quer jogar boliche também? Escolha <b>Boliche</b> e marque o andar: quem vai no rodízio paga bem menos na pista.';
+
+    /* passo 2 */
+    var curta = toleranciaCurta(d);
+    $('rotHora').textContent = st.tipo === 'pista' ? 'Horário da pista' : 'Horário de chegada';
+    $('caixaExclusiva').hidden = st.tipo !== 'mesa';
+    var nota = !d ? '' : feriado(d) ? 'Este dia é <b>feriado</b>, então vale o preço de fim de semana. '
+             : vespera(d) ? 'Este dia é <b>véspera de feriado</b>, então vale o preço de fim de semana. ' : '';
     var av = $('avisoDia');
-    if (st.tipo !== 'mesa'){
-      av.innerHTML = 'O valor é <b>por pista</b>, que leva até 6 pessoas: R$ 80 de terça a quinta e R$ 120 de sexta a domingo, com reserva. ' +
-        'Quem faz rodízio paga <b>R$ 40 na pista das 18h</b>, reservando e pagando no ato.';
-    } else if (temPromo(d, st.piso)){
-      av.innerHTML = 'Este dia está na <b>promoção de R$ 49,99</b>: reserva com 7 dias de antecedência e pagamento no ato.';
-    } else if (d){
-      var f = TABELA[st.piso][faixa(d, st.piso)];
-      av.innerHTML = 'Pagando o Pix no ato da reserva, você fica com o valor de desconto: <b>' + moeda(f.online) +
-        '</b> por adulto. Deixando para pagar no caixa, no cartão ou no Pix na hora, sai por ' + moeda(f.caixa) + '.';
+    if (st.tipo === 'pista' && st.piso){
+      av.innerHTML = nota + 'Para quem vai no rodízio, a pista das <b>18h sai por R$ 40</b>. Nos outros horários, R$ 80 a hora de terça a quinta, ' +
+        'com a 2ª hora seguida por R$ 40, e R$ 120 de sexta a domingo, feriados e vésperas. ' +
+        'A chegada para o rodízio segue a tolerância: ' +
+        (!d ? 'até 19h30 de terça a sexta e até 19h nos fins de semana e feriados.' : 'até ' + (curta ? '19h' : '19h30') + ' neste dia.');
+    } else if (st.tipo === 'pista'){
+      av.innerHTML = nota + 'Uso avulso, sem rodízio: <b>R$ 200</b> a hora de terça a quinta e <b>R$ 300</b> de sexta a domingo, feriados e vésperas. ' +
+        'Indo no rodízio, a mesma pista sai a partir de R$ 40.';
+    } else if (st.tipo === 'festa'){
+      av.innerHTML = 'Escolha a data e o horário que você imagina para a festa. A casa confirma a disponibilidade no orçamento.';
     } else {
-      av.innerHTML = 'Reservando com <b>7 dias de antecedência</b> e pagando no ato da reserva, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.';
+      var txt;
+      if (temPromo(d, st.piso)){
+        txt = 'Este dia está na <b>promoção de R$ 49,99</b>, com refrigerante: reserva com 7 dias de antecedência e pagamento no ato.';
+      } else if (d){
+        var f = TABELA[st.piso][faixa(d, st.piso)];
+        txt = nota + 'Pagando o Pix no ato da reserva, você fica com o valor de desconto: <b>' + moeda(f.online) +
+          '</b> por adulto. Deixando para pagar no caixa, no cartão ou no Pix na hora, sai por ' + moeda(f.caixa) + '. Não aceitamos VR.';
+      } else {
+        txt = 'Reservando com <b>7 dias de antecedência</b> e pagando no ato da reserva, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta, fora feriados e vésperas.';
+      }
+      if (d && !st.exclusiva){
+        txt += ' A reserva segura sua entrada até <b>' + (curta ? '19h' : '19h30') + '</b>. Para chegar mais tarde, marque a mesa exclusiva.';
+      }
+      av.innerHTML = txt;
     }
+
+    /* aniversário */
+    var aa = $('avisoAniv'), regra = anivRegra();
+    aa.hidden = !(rod && st.aniv.on);
+    if (!st.aniv.dia){
+      aa.innerHTML = 'Escolha o dia e o mês do aniversário para ver o desconto.';
+    } else if (promo && (regra === 'gratis' || regra === 'meia')){
+      aa.innerHTML = 'As promoções não se somam. Neste dia a <b>promoção de R$ 49,99</b> saiu mais barata para o grupo, então ficou ela. Leve o RG do aniversariante até 20h30.';
+    } else if (regra === 'gratis'){
+      aa.innerHTML = 'O aniversariante <b>não paga</b>: são 10 pagantes mais ele' +
+        (distAniv(d) === 0 ? ', no dia do aniversário.' : ', dentro dos 5 dias que valem às quartas e quintas.') +
+        ' Leve o RG dele até 20h30.';
+    } else if (regra === 'meia'){
+      aa.innerHTML = 'O aniversariante tem <b>50% de desconto</b>. Com 10 pagantes, ele não paga no dia do aniversário ' +
+        '(às quartas e quintas, até 5 dias antes ou depois). Leve o RG dele até 20h30.';
+    } else {
+      aa.innerHTML = 'Aos sábados o desconto de 50% não vale. Com 10 pagantes e a reserva no dia do aniversário, o aniversariante não paga. Leve o RG dele até 20h30.';
+    }
+
+    /* contrato */
+    var exclusiva = st.exclusiva && st.tipo === 'mesa';
+    $('tolerancia').textContent = avulso()
+      ? 'a casa abre às 18h e a pista fica reservada no horário escolhido.'
+      : exclusiva
+      ? 'a casa abre às 18h. Na mesa exclusiva não há limite de chegada: a mesa fica com o grupo a noite toda.'
+      : 'a casa abre às 18h e a tolerância vai ' + (curta ? 'até 19h aos sábados, domingos e feriados' : 'até 19h30 de terça a sexta') +
+        '. Passou disso e tendo fila, a mesa pode ser liberada.';
+    $('regraExclusiva').hidden = !exclusiva;
+    $('regraPista').hidden = st.tipo !== 'pista';
+    $('regraAniv').hidden = !(rod && st.aniv.on);
   }
 
   function pintarResumo(el){
     var d = st.data, lin = '';
-    lin += '<div class="l l--cab"><span>' + st.onde + '</span><i></i><span>' +
+    lin += '<div class="l l--cab"><span>' + ondeTexto() + '</span><i></i><span>' +
       (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + MESES[d.getMonth()] : '') + ' · ' + (st.hora || '') + '</span></div>';
     itens().forEach(function(i){
-      lin += '<div class="l' + (i.extra ? ' l--extra' : '') + '"><span>' + i.nome + '</span><i></i><span>' + moeda(i.valor) + '</span></div>';
+      lin += '<div class="l' + (i.extra ? ' l--extra' : '') + (i.desconto ? ' l--desc' : '') + '"><span>' + i.nome +
+        '</span><i></i><span>' + moeda(i.valor) + '</span></div>';
     });
     lin += '<div class="l l--total"><span>Total</span><i></i><span>' + moeda(total()) + '</span></div>';
     el.innerHTML = lin;
@@ -577,18 +844,34 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       '(enviado pelo site de reservas)',
       '',
       '• Pedido: ' + $('codigoRes').textContent,
-      '• Onde: ' + st.onde,
-      '• Dia: ' + (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) : '-') + ' às ' + (st.hora || '-')
+      '• Onde: ' + ondeTexto(),
+      '• Dia: ' + (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) : '-') +
+        (st.tipo === 'pista' ? ', pista às ' : ' às ') + (st.hora || '-')
     ];
-    if (st.tipo === 'mesa'){
+    if (comRodizio()){
       linhas.push('• Pessoas: ' + st.adultos + ' adulto(s)' +
+        (st.bari ? ', ' + st.bari + ' bariátrico(s)' : '') +
         (st.c35 ? ', ' + st.c35 + ' de 3 a 5 anos' : '') +
         (st.c68 ? ', ' + st.c68 + ' de 6 a 8 anos' : '') +
         (st.bebes ? ', ' + st.bebes + ' até 2 anos' : ''));
-      if (temPromo(d, st.piso)) linhas.push('• Promoção de R$ 49,99 (7 dias de antecedência, pago no ato)');
+      if (usaPromo()) linhas.push('• Promoção de R$ 49,99 (7 dias de antecedência, pago no ato)');
+    } else if (st.tipo === 'pista'){
+      linhas.push('• Jogadores: ' + st.adultos);
+    } else {
+      linhas.push('• Pessoas: cerca de ' + st.adultos);
     }
-    var ex = EXTRAS.filter(function(e){ return st.extras[e.id]; })
-                   .map(function(e){ return st.extras[e.id] + 'x ' + e.nome; });
+    if (st.tipo === 'pista'){
+      linhas.push('• Pista: ' + st.pistas + (st.pistas > 1 ? ' pistas' : ' pista') + ' por ' + st.horas + (st.horas > 1 ? ' horas' : ' hora') +
+        (st.piso && st.hora === '18:00' ? ', com a promoção das 18h' : ''));
+    }
+    if (st.exclusiva && st.tipo === 'mesa') linhas.push('• Mesa exclusiva, sem tolerância de chegada');
+    if (comRodizio() && st.aniv.on){
+      var regra = usaPromo() ? '' : anivRegra();
+      linhas.push('• Aniversariante: dia ' + doisDig(st.aniv.dia) + '/' + doisDig(st.aniv.mes) +
+        (regra === 'gratis' ? ' (não paga, 10 pagantes)' : regra === 'meia' ? ' (50% de desconto)' : ' (sem desconto neste dia)'));
+    }
+    var ex = avulso() ? [] : EXTRAS.filter(function(e){ return st.extras[e.id]; })
+                                   .map(function(e){ return st.extras[e.id] + 'x ' + e.nome; });
     if (ex.length) linhas.push('• Extras: ' + ex.join(', '));
     if (!festa) linhas.push('• Total: ' + moeda(total()));
     linhas.push('', '• Nome: ' + $('nome').value.trim(), '• Ocasião: ' + $('ocasiao').value);
@@ -614,7 +897,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     atualizar();
   }
   function valida(n){
-    if (n === 1 && (!st.data || !st.hora)) return 'Escolha o dia e o horário.';
+    if (n === 1 && (!st.data || !st.hora)) return st.tipo === 'pista' ? 'Escolha o dia e o horário da pista.' : 'Escolha o dia e o horário.';
+    if (n === 2 && comRodizio() && st.aniv.on && !st.aniv.dia) return 'Escolha o dia e o mês do aniversário.';
     if (n === 4 && (!$('nome').value.trim() || $('fone').value.replace(/\D/g,'').length < 10)) return 'Preencha o nome e o WhatsApp.';
     if (n === 5 && !$('aceite').checked) return 'Marque que você concorda com o contrato para continuar.';
     return '';
@@ -639,22 +923,75 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   document.addEventListener('change', function(){ avisa(''); });
   $('voltar').addEventListener('click', function(){ ir(Math.max(0, st.tela - 1)); });
 
-  $('onde').addEventListener('change', function(ev){
-    var i = ev.target;
+  /* cada pista leva até 6 jogadores: no uso avulso o número de pistas acompanha */
+  function ajustaPistas(){
+    if (!avulso()) return;
+    st.adultos = Math.min(st.adultos, 6 * PISTA.maxPistas);
+    st.pistas = Math.max(st.pistas, Math.ceil(st.adultos / 6));
+  }
+
+  function escolherOnde(){
+    var i = document.querySelector('#onde input:checked');
     st.tipo = i.getAttribute('data-tipo');
-    st.piso = +(i.getAttribute('data-piso') || 1);
+    st.piso = st.tipo === 'pista' ? +document.querySelector('#comRodizio input:checked').value
+                                  : +(i.getAttribute('data-piso') || 1);
     st.onde = i.value;
     st.data = null; st.hora = null; $('horas').innerHTML = '';
-  
-  montarDias(); montarExtras(); atualizar();
+    ajustaPistas();
+    montarDias(); montarExtras(); atualizar();
+  }
+  $('onde').addEventListener('change', function(){
+    escolherOnde();
+    /* no celular a pergunta do rodízio fica abaixo da dobra */
+    if (st.tipo === 'pista') $('subBoliche').scrollIntoView({ block:'center', behavior:'smooth' });
   });
+  $('comRodizio').addEventListener('change', escolherOnde);
+
+  $('exclusiva').addEventListener('change', function(){
+    st.exclusiva = this.checked;
+    if (st.data) montarHoras();
+    atualizar();
+  });
+
   document.addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-qtd]');
     if (!b) return;
-    var k = b.getAttribute('data-qtd');
-    st[k] = Math.max(k === 'adultos' ? 1 : 0, st[k] + (+b.getAttribute('data-d')));
+    var k = b.getAttribute('data-qtd'), passo = +b.getAttribute('data-d');
+    var min = { adultos:(st.bari && comRodizio()) ? 0 : 1, pistas:1, horas:1 }[k] || 0;
+    var max = { pistas:PISTA.maxPistas, horas:maxHoras() }[k];
+    var v = Math.max(min, st[k] + passo);
+    if (max) v = Math.min(max, v);
+    if (k === 'pistas' && avulso() && v < Math.ceil(st.adultos / 6)){
+      avisa('Cada pista leva até 6 pessoas.');
+      v = st.pistas;
+    }
+    st[k] = v;
+    if (k === 'bari' && !st.bari && !st.adultos) st.adultos = 1;
+    ajustaPistas();
     atualizar();
   });
+
+  /* aniversariante */
+  (function(){
+    var sd = $('anivDia'), sm = $('anivMes'), h = '<option value="">Dia</option>';
+    for (var i = 1; i <= 31; i++) h += '<option value="' + i + '">' + i + '</option>';
+    sd.innerHTML = h;
+    h = '<option value="">Mês</option>';
+    MESES_LONGOS.forEach(function(m, i){ h += '<option value="' + (i + 1) + '">' + m + '</option>'; });
+    sm.innerHTML = h;
+    function ler(){
+      st.aniv.mes = +sm.value || 0;
+      st.aniv.dia = (sd.value && sm.value) ? +sd.value : 0;
+      atualizar();
+    }
+    sd.addEventListener('change', ler);
+    sm.addEventListener('change', ler);
+    $('temAniv').addEventListener('change', function(){
+      st.aniv.on = this.checked;
+      if (this.checked) $('ocasiao').value = 'Aniversário';
+      atualizar();
+    });
+  })();
 
   /* arrastar a faixa de dias com o mouse (no dedo o navegador já faz) */
   (function(){

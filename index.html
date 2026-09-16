@@ -1212,7 +1212,9 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
           <ul>
             <li>Pizza servida na mesa, sem pedir</li>
             <li>Bufê quente e frio, você se serve</li>
-            <li>R$&nbsp;49,99 na promoção: reserva com 7 dias de antecedência e pagamento no ato, de terça a quinta</li>
+            <li>R$&nbsp;49,99 na promoção: reserva com 7 dias de antecedência e pagamento no ato, de terça a quinta, fora feriados e vésperas</li>
+            <li>Refrigerante e refresco cortesia de terça a sexta, para quem reserva</li>
+            <li>Feriado e véspera de feriado pagam o valor de sexta e domingo</li>
             <li>Até 2 anos grátis &middot; 3 a 5 anos R$&nbsp;19,99 &middot; 6 a 8 anos R$&nbsp;34,99</li>
             <li>Bariátricos têm 30% de desconto</li>
           </ul>
@@ -1234,7 +1236,9 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
           <ul>
             <li>Churrasco na brasa, comida oriental e pizza</li>
             <li>Bufê de massas, petiscos e sobremesas especiais</li>
+            <li>Feriado e véspera de feriado pagam o valor de sexta a domingo</li>
             <li>Até 2 anos grátis &middot; 3 a 5 anos R$&nbsp;24,99 &middot; 6 a 8 anos R$&nbsp;34,99</li>
+            <li>Bariátricos têm 30% de desconto</li>
             <li>Bebidas à parte, sem refil</li>
           </ul>
         </article>
@@ -1266,40 +1270,45 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
       </div>
 
       <div class="cat is-on" id="cat-pizza" role="tabpanel" aria-labelledby="tb-pizza">
-        <p class="cat__where">1º piso &middot; Rodízio Tradicional</p>
+        <p class="cat__where">Nos dois pisos</p>
         <ul class="dishes">
-          <li><span>Pizzas salgadas, servidas na sua mesa</span><em>à vontade</em></li>
+          <li><span>Pizzas salgadas</span><em>à vontade</em></li>
           <li><span>Pizzas doces</span><em>à vontade</em></li>
-          <li><span>Massa fina assada no forno</span><em>à vontade</em></li>
+          <li><span>Pizzas premium no 2º piso</span><em>Fusion Food</em></li>
         </ul>
       </div>
       <div class="cat" id="cat-bufe" role="tabpanel" aria-labelledby="tb-bufe" hidden>
-        <p class="cat__where">Nos dois pisos</p>
+        <p class="cat__where">1º piso &middot; Rodízio Tradicional</p>
         <ul class="dishes">
-          <li><span>Bufê quente</span><em>à vontade</em></li>
-          <li><span>Bufê frio e saladas</span><em>à vontade</em></li>
-          <li><span>Sobremesa</span><em>à vontade</em></li>
+          <li><span>Arroz, feijão, batata frita, baião de dois e caldos</span><em>à vontade</em></li>
+          <li><span>Macarrão, lasanha e panqueca</span><em>à vontade</em></li>
+          <li><span>Saladas variadas</span><em>à vontade</em></li>
+          <li><span>Salgadinhos, dadinho de tapioca e frango a passarinho</span><em>à vontade</em></li>
+          <li><span>Yakisoba</span><em>à vontade</em></li>
+          <li><span>Sobremesa, açaí e sorvete</span><em>todo dia</em></li>
+          <li><span>Churrasco misto, hamburguinho, hot roll cru e risoto de camarão</span><em>sáb. e dom.</em></li>
         </ul>
       </div>
       <div class="cat" id="cat-churrasco" role="tabpanel" aria-labelledby="tb-churrasco" hidden>
         <p class="cat__where">2º piso &middot; Rodízio Fusion Food</p>
         <ul class="dishes">
-          <li><span>Carnes servidas na mesa</span><em>à vontade</em></li>
-          <li><span>Açaí</span><em>à vontade</em></li>
-          <li><span>Acompanhamentos da casa</span><em>à vontade</em></li>
-          <li><span>Culinária fusion</span><em>à vontade</em></li>
+          <li><span>Churrasco na brasa: carne, porco, frango, linguiça e coração</span><em>à vontade</em></li>
+          <li><span>Rodada especial: pastel, risoto de camarão e hamburguinho</span><em>à vontade</em></li>
+          <li><span>Oriental: hot roll frito, hot roll cru e yakisoba</span><em>à vontade</em></li>
+          <li><span>Massas, saladas, petiscos e costelinha</span><em>à vontade</em></li>
+          <li><span>Sobremesas especiais, açaí e sorvete</span><em>à vontade</em></li>
         </ul>
       </div>
       <div class="cat" id="cat-bebida" role="tabpanel" aria-labelledby="tb-bebida" hidden>
-        <p class="cat__where">1º piso &middot; incluso no Tradicional</p>
+        <p class="cat__where">Cortesia só para quem reserva</p>
         <ul class="dishes">
-          <li><span>Refrigerante liberado</span><em>incluso</em></li>
-          <li><span>Água</span><em>incluso</em></li>
-          <li><span>Carta de bebidas</span><em>à parte</em></li>
+          <li><span>Refrigerante e refresco no 1º piso, de terça a sexta</span><em>cortesia</em></li>
+          <li><span>Refrigerante 2 litros com reserva, nos outros dias e no 2º piso</span><em>R$ 15</em></li>
+          <li><span>Refrigerante 2 litros sem reserva</span><em>R$ 20</em></li>
+          <li><span>Drinks e demais bebidas</span><em>à parte</em></li>
         </ul>
       </div>
-      <p class="fineprint rv">O cardápio completo de cada piso precisa da confirmação da casa
-        antes de ir ao ar.</p>
+      <p class="fineprint rv">Cardápio sujeito a alteração sem aviso prévio.</p>
     </div>
   </section>
 
@@ -1312,8 +1321,8 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
         <p class="lede rv">A espera da mesa deixa de ser espera. E quem chega com criança
           pequena não precisa escolher entre jantar e ficar de olho.</p>
         <ul class="feats rv">
-          <li><b>Boliche</b><span>Pista aberta a noite toda, para grupo ou dupla.</span></li>
-          <li><b>PlayKids</b><span>Espaço próprio para as crianças, dentro da casa.</span></li>
+          <li><b>Boliche</b><span>Pista por hora, até 6 pessoas. Quem vai no rodízio joga a partir de R$&nbsp;40.</span></li>
+          <li><b>PlayKids</b><span>Grátis para a criança que paga o rodízio infantil. Fliperama à parte.</span></li>
           <li><b>Dois andares</b><span>Rodízio embaixo, churrasco em cima, boliche junto.</span></li>
         </ul>
       </div>
@@ -1328,10 +1337,10 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
   <!-- ========== SUA FESTA AQUI (momento interativo) ========== -->
   <section class="sec" id="festa">
     <div class="wrap">
-      <p class="kicker rv">Ticket alto, decisão difícil</p>
+      <p class="kicker rv">Festas e eventos</p>
       <h2 class="rv">Sua festa cabe aqui.</h2>
       <p class="lede rv">Quinze anos, casamento, aniversário, confraternização de fim de ano.
-        A casa inteira ou um andar só, com boliche incluso e cozinha própria.</p>
+        A casa inteira ou um andar só, com pista de boliche e cozinha própria.</p>
 
       <div class="strike rv">
         <p class="strike__hint" id="strikeHint">Segure para lançar</p>
@@ -1360,11 +1369,11 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
         <article class="pack"><span class="pack__n">02</span><h3>Casamento</h3>
           <p>Recepção com bufê próprio, sem fornecedor de fora para a comida.</p></article>
         <article class="pack"><span class="pack__n">03</span><h3>Aniversário</h3>
-          <p>Do infantil com PlayKids ao adulto com rodízio e boliche.</p></article>
+          <p>Aniversariante com 50% no rodízio, ou grátis com 10 pagantes no dia.</p></article>
         <article class="pack"><span class="pack__n">04</span><h3>Confraternização</h3>
           <p>Empresa ou turma grande, com andar reservado.</p></article>
       </div>
-      <p class="fineprint rv">Cada festa tem orçamento próprio. O pedido abaixo já chega
+      <p class="fineprint rv">Cada festa tem orçamento próprio. O pedido pela reserva já chega
         com data, número de pessoas e ocasião.</p>
     </div>
   </section>
@@ -1415,12 +1424,12 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
     <div class="wrap">
       <p class="kicker rv">Reserva</p>
       <h2 class="rv">Reserve em poucos toques.</h2>
-      <p class="lede rv">Escolha o andar, o dia e quantas pessoas vão. Dá pra somar bolo, kit festa
-        e hora extra de pista, e ver o total antes de confirmar.</p>
+      <p class="lede rv">Escolha o andar, o dia e quantas pessoas vão. Dá pra somar pista de boliche
+        e kit festa, usar o desconto de aniversário e ver o total antes de confirmar.</p>
       <div class="atalhos-res rv">
         <a class="atalho-res" href="/reserva/?onde=1piso"><b>1º piso</b><span>Rodízio de pizza e bufê</span><em>a partir de R$&nbsp;49,99</em></a>
         <a class="atalho-res" href="/reserva/?onde=2piso"><b>2º piso</b><span>Fusion Food com churrasco</span><em>a partir de R$&nbsp;69,99</em></a>
-        <a class="atalho-res" href="/reserva/?onde=boliche"><b>Boliche</b><span>Pista por hora</span><em>a partir de R$&nbsp;80</em></a>
+        <a class="atalho-res" href="/reserva/?onde=boliche"><b>Boliche</b><span>Pista por hora</span><em>a partir de R$&nbsp;40</em></a>
         <a class="atalho-res" href="/reserva/?onde=festa"><b>Festa</b><span>15 anos, casamento</span><em>orçamento</em></a>
       </div>
       <div class="reserva-cta rv"><a class="btn btn--gold" href="/reserva/">Fazer minha reserva</a></div>
@@ -2081,16 +2090,7 @@ var CASA = {
   /* Preços: tabela oficial da casa (catálogo do WhatsApp). */
 
   /* A casa abre às 18h. Rodízio das 18h30 às 22h30, entrada até 21h50. */
-  abre: '18h30', fecha: '22h30',
-  horarios: {
-    0: ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'],
-    1: [],
-    2: ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'],
-    3: ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'],
-    4: ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'],
-    5: ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'],
-    6: ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00']
-  }
+  abre: '18h30', fecha: '22h30'
 };
 var DIAS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
 
@@ -2098,8 +2098,6 @@ function terceiroDomingo(d){
   if (d.getDay() !== 0) return false;
   return Math.floor((d.getDate() - 1) / 7) === 2;
 }
-function soData(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
-function diffDias(a, b){ return Math.round((soData(b) - soData(a)) / 86400000); }
 
 /* ===========================================================
    CARDÁPIO — tabs
@@ -2188,324 +2186,8 @@ function diffDias(a, b){ return Math.round((soData(b) - soData(a)) / 86400000); 
 })();
 
 /* ===========================================================
-   RESERVA — 3 passos: Reserva, Seus dados, Confirmar.
-   O calendário aplica sozinho as regras da casa, incluindo os
-   os dias fechados, e mostra o preço do dia escolhido.
-   =========================================================== */
-(function(){
-  var form = document.getElementById('book');
-  if (!form) return;
-
-  var steps   = [].slice.call(form.querySelectorAll('.step'));
-  var marcas  = [].slice.call(document.querySelectorAll('#stepper li'));
-  var next    = document.getElementById('next');
-  var backFt  = document.getElementById('backFoot');
-  var send    = document.getElementById('send');
-  var erro    = document.getElementById('erro');
-  var grid    = document.getElementById('calGrid');
-  var rotulo  = document.getElementById('calLabel');
-  var regras  = document.getElementById('calRules');
-  var regrasF = document.getElementById('regrasFinal');
-  var atalhos = document.getElementById('atalhos');
-  var slotBox = document.getElementById('slots');
-  var slotAj  = document.getElementById('slotAjuda');
-  var saida   = document.getElementById('people');
-  var resumo  = document.getElementById('resumo');
-
-  var i = 0, pessoas = 4, escolhido = null, horario = null;
-  var hoje = new Date();
-  var mes = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-
-  /* O prazo de 7 dias era de uma promoção encerrada. A regra de reserva
-     antecipada com pagamento integral no ato é do BOLICHE, e continua
-     valendo. */
-  function bolicheAtivo(){
-    var r = form.querySelector('input[name="onde"]:checked');
-    return !!r && r.dataset.boliche === '1';
-  }
-  function ondeTexto(){
-    var r = form.querySelector('input[name="onde"]:checked');
-    return r ? r.value : '';
-  }
-
-  /* ---------- regras por dia ---------- */
-  function estadoDoDia(d){
-    if (diffDias(hoje, d) < 0) return 'passado';
-    if (CASA.fechaSegunda && d.getDay() === 1) return 'fechado';
-    if (CASA.fechaTerceiroDomingo && terceiroDomingo(d)) return 'terceiro';
-    return 'ok';
-  }
-  function motivo(st){
-    return st === 'fechado'  ? 'A casa fecha às segundas'
-         : st === 'terceiro' ? 'Fechado no 3º domingo do mês'
-         : '';
-  }
-  /* preço muda por dia e por forma de pagamento */
-  function faixaDoDia(d){
-    if (!d) return null;
-    var dia = d.getDay();
-    var r = form.querySelector('input[name="onde"]:checked');
-    var v = r ? r.value : '';
-    if (v.indexOf('1º piso') === 0){
-      if (dia >= 2 && dia <= 4) return 'R$ 54,99 em dinheiro ou R$ 59,99 no cartão';
-      if (dia === 6) return 'R$ 64,99 em dinheiro ou R$ 69,99 no cartão';
-      return 'R$ 59,99 em dinheiro ou R$ 64,99 no cartão';
-    }
-    if (v.indexOf('2º piso') === 0){
-      if (dia >= 2 && dia <= 4) return 'R$ 69,99 em dinheiro ou R$ 74,99 no cartão';
-      return 'R$ 79,99 em dinheiro ou R$ 84,99 no cartão';
-    }
-    if (v === 'Boliche'){
-      if (dia >= 2 && dia <= 4) return 'R$ 80 por hora com reserva. R$ 40 na promoção das 18h, para quem faz rodízio';
-      return 'R$ 120 por hora com reserva, sexta a domingo';
-    }
-    return null;
-  }
-
-  function listaDeRegras(){
-    var itens = [
-      { t: 'A casa abre de terça a domingo e fecha às segundas.', key: false },
-      { t: 'Fecha também no 3º domingo de cada mês.', key: false }
-    ];
-    var faixa = faixaDoDia(escolhido);
-    if (faixa) itens.push({ t: 'Nesse dia: ' + faixa + '.', key: true });
-    if (bolicheAtivo()){
-      itens.push({ t: 'A pista pede reserva antecipada e pagamento integral no ato.', key: true });
-      itens.push({ t: 'Cada pista comporta até 6 pessoas, sujeita à disponibilidade.', key: false });
-    } else {
-      itens.push({ t: 'Feriado e véspera de feriado seguem o preço de fim de semana.', key: false });
-      itens.push({ t: 'Crianças pagam por faixa de idade e a casa pede o RG.', key: false });
-      itens.push({ t: 'Bariátricos têm 30% de desconto.', key: false });
-    }
-    itens.push({ t: 'Chegue no horário marcado. A casa pode liberar a mesa se houver fila.', key: false });
-    return itens;
-  }
-  function desenharRegras(alvo){
-    if (!alvo) return;
-    var ul = document.createElement('ul');
-    listaDeRegras().forEach(function(o){
-      var li = document.createElement('li');
-      li.textContent = o.t;
-      if (o.key) li.className = 'is-key';
-      ul.appendChild(li);
-    });
-    alvo.innerHTML = '';
-    alvo.appendChild(ul);
-  }
-
-  /* ---------- atalhos de data ---------- */
-  function desenharAtalhos(){
-    atalhos.innerHTML = '';
-    var achados = 0, d = new Date(hoje);
-    for (var passo = 0; passo < 90 && achados < 3; passo++){
-      d = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + passo);
-      if (estadoDoDia(d) !== 'ok') continue;
-      (function(dia, n){
-        var b = document.createElement('button');
-        b.type = 'button'; b.className = 'atalho';
-        b.textContent = n === 0 && diffDias(hoje, dia) === 0 ? 'Hoje'
-          : diffDias(hoje, dia) === 1 ? 'Amanhã'
-          : DIAS[dia.getDay()] + ' · ' + dia.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-        if (escolhido && soData(escolhido).getTime() === soData(dia).getTime()) b.classList.add('is-sel');
-        b.addEventListener('click', function(){
-          escolhido = dia;
-          mes = new Date(dia.getFullYear(), dia.getMonth(), 1);
-          horario = null;
-          desenharMes(); desenharAtalhos(); desenharSlots();
-        });
-        atalhos.appendChild(b);
-      })(d, achados);
-      achados++;
-    }
-  }
-
-  /* ---------- calendário ---------- */
-  function desenharMes(){
-    var nomeMes = mes.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-    rotulo.textContent = nomeMes.charAt(0).toUpperCase() + nomeMes.slice(1);
-    grid.innerHTML = '';
-    var primeiro = new Date(mes.getFullYear(), mes.getMonth(), 1);
-    var total = new Date(mes.getFullYear(), mes.getMonth() + 1, 0).getDate();
-    for (var v = 0; v < primeiro.getDay(); v++){
-      var e = document.createElement('div'); e.className = 'day is-empty'; grid.appendChild(e);
-    }
-    for (var n = 1; n <= total; n++){
-      (function(n){
-        var d = new Date(mes.getFullYear(), mes.getMonth(), n);
-        var st = estadoDoDia(d);
-        var b = document.createElement('button');
-        b.type = 'button'; b.className = 'day'; b.textContent = n;
-        b.disabled = st !== 'ok';
-        var m = motivo(st);
-        if (m){ b.title = m; b.setAttribute('aria-label', n + '. ' + m); }
-        if (escolhido && soData(escolhido).getTime() === soData(d).getTime()) b.classList.add('is-sel');
-        b.addEventListener('click', function(){
-          escolhido = d; horario = null;
-          [].forEach.call(grid.children, function(c){ c.classList.remove('is-sel'); });
-          b.classList.add('is-sel');
-          desenharAtalhos(); desenharSlots(); limparErro();
-        });
-        grid.appendChild(b);
-      })(n);
-    }
-  }
-
-  /* ---------- horários ---------- */
-  function desenharSlots(){
-    slotBox.innerHTML = '';
-    if (!escolhido){
-      slotAj.hidden = false;
-      slotAj.textContent = 'Escolha a data primeiro.';
-      return;
-    }
-    var lista = CASA.horarios[escolhido.getDay()] || [];
-    if (!lista.length){
-      slotAj.hidden = false;
-      slotAj.textContent = 'Sem horários nesse dia.';
-      return;
-    }
-    lista.forEach(function(h){
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'slot'; b.textContent = h;
-      if (horario === h) b.classList.add('is-sel');
-      b.addEventListener('click', function(){
-        horario = h;
-        [].forEach.call(slotBox.children, function(c){ c.classList.remove('is-sel'); });
-        b.classList.add('is-sel');
-        limparErro();
-      });
-      slotBox.appendChild(b);
-    });
-    slotAj.hidden = false;
-    slotAj.textContent = 'Horários de ' + DIAS[escolhido.getDay()].toLowerCase() + ', a confirmar com a casa.';
-  }
-
-  /* ---------- resumo ---------- */
-  function dataLonga(){
-    return escolhido
-      ? escolhido.toLocaleDateString('pt-BR', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' })
-      : 'a combinar';
-  }
-  function desenharResumo(){
-    var linhas = [
-      ['Onde',    ondeTexto()],
-      ['Pessoas', pessoas + (pessoas > 1 ? ' pessoas' : ' pessoa')],
-      ['Data',    dataLonga()],
-      ['Horário', horario || 'a combinar'],
-      ['Ocasião', document.getElementById('ocasiao').value],
-      ['Nome',    (document.getElementById('nome').value || '').trim()],
-      ['WhatsApp',(document.getElementById('fone').value || '').trim()]
-    ];
-    var mail = (document.getElementById('email').value || '').trim();
-    if (mail) linhas.push(['E-mail', mail]);
-    resumo.innerHTML = '';
-    linhas.forEach(function(par, n){
-      var div = document.createElement('div');
-      if (n === 0) div.className = 'destaque';
-      var dt = document.createElement('dt'); dt.textContent = par[0];
-      var dd = document.createElement('dd'); dd.textContent = par[1];
-      div.appendChild(dt); div.appendChild(dd);
-      resumo.appendChild(div);
-    });
-  }
-
-  /* ---------- navegação ---------- */
-  function limparErro(){ erro.textContent = ''; }
-
-  function valida(passo){
-    if (passo === 0){
-      if (!escolhido){ erro.textContent = 'Escolha uma data para continuar.'; return false; }
-      if (!horario){ erro.textContent = 'Escolha um horário para continuar.'; return false; }
-      return true;
-    }
-    if (passo === 1){
-      var nome = document.getElementById('nome');
-      var fone = document.getElementById('fone');
-      var ok = document.getElementById('lgpd');
-      var faltando = [];
-      [nome, fone].forEach(function(el){
-        var vazio = !(el.value || '').trim();
-        el.setAttribute('aria-invalid', vazio ? 'true' : 'false');
-        if (vazio) faltando.push(el === nome ? 'nome' : 'WhatsApp');
-      });
-      if (faltando.length){ erro.textContent = 'Preencha ' + faltando.join(' e ') + '.'; return false; }
-      if (!ok.checked){ erro.textContent = 'Marque a autorização de contato para continuar.'; return false; }
-      return true;
-    }
-    return true;
-  }
-
-  function mostrar(){
-    steps.forEach(function(s, n){ s.hidden = n !== i; s.classList.toggle('is-on', n === i); });
-    marcas.forEach(function(m, n){
-      m.classList.toggle('is-on', n === i);
-      m.classList.toggle('feito', n < i);
-    });
-    backFt.hidden = i === 0;
-    next.hidden = i === steps.length - 1;
-    send.hidden = i !== steps.length - 1;
-    document.getElementById('back').hidden = true;
-    if (i === 0){ desenharRegras(regras); desenharAtalhos(); desenharMes(); desenharSlots(); }
-    if (i === 2){ desenharResumo(); desenharRegras(regrasF); send.href = montarLink(); }
-    limparErro();
-  }
-
-  function montarLink(){
-    var mail = (document.getElementById('email').value || '').trim();
-    var txt = 'Olá! Quero reservar no Santo Strike.\n'
-      + '• Onde: ' + ondeTexto() + '\n'
-      + '• Pessoas: ' + pessoas + '\n'
-      + '• Data: ' + dataLonga() + '\n'
-      + '• Horário: ' + (horario || 'a combinar') + '\n'
-      + '• Ocasião: ' + document.getElementById('ocasiao').value + '\n'
-      + '• Nome: ' + (document.getElementById('nome').value || '').trim() + '\n'
-      + (mail ? '• E-mail: ' + mail + '\n' : '')
-      + (faixaDoDia(escolhido) ? '• Valor do dia: ' + faixaDoDia(escolhido) + '\n' : '')
-      + (bolicheAtivo() ? '\nSei que a pista pede pagamento integral no ato da reserva. Como faço?' : '');
-    return 'https://wa.me/' + CASA.whatsapp + '?text=' + encodeURIComponent(txt)
-      + '&utm_source=site&utm_medium=reserva';
-  }
-
-  next.addEventListener('click', function(){
-    if (!valida(i)) return;
-    if (i < steps.length - 1){ i++; mostrar(); form.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  });
-  function voltar(){ if (i > 0){ i--; mostrar(); form.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
-  backFt.addEventListener('click', voltar);
-  [].forEach.call(form.querySelectorAll('[data-back]'), function(b){ b.addEventListener('click', voltar); });
-
-  document.getElementById('plus').addEventListener('click', function(){
-    pessoas = Math.min(40, pessoas + 1); saida.textContent = pessoas;
-  });
-  document.getElementById('minus').addEventListener('click', function(){
-    pessoas = Math.max(1, pessoas - 1); saida.textContent = pessoas;
-  });
-  document.getElementById('prevM').addEventListener('click', function(){
-    mes = new Date(mes.getFullYear(), mes.getMonth() - 1, 1); desenharMes();
-  });
-  document.getElementById('nextM').addEventListener('click', function(){
-    mes = new Date(mes.getFullYear(), mes.getMonth() + 1, 1); desenharMes();
-  });
-  [].forEach.call(form.querySelectorAll('input[name="onde"]'), function(r){
-    r.addEventListener('change', function(){
-      /* trocar de piso muda as regras: a data escolhida pode ter deixado
-         de ser válida, então o calendário e o horário zeram junto */
-      if (escolhido && estadoDoDia(escolhido) !== 'ok'){ escolhido = null; horario = null; }
-      desenharRegras(regras); desenharAtalhos(); desenharMes(); desenharSlots();
-    });
-  });
-  send.addEventListener('click', function(ev){
-    if (!valida(1)){ ev.preventDefault(); i = 1; mostrar(); return; }
-    send.href = montarLink();
-  });
-
-  mostrar();
-})();
-
-/* ===========================================================
    ABERTO AGORA + TABELA DE DIAS
-   Só afirma o que se sabe de verdade: os DIAS. O horário
-   exato fica marcado como a confirmar.
+   Mostra os dias da semana com o horário do rodízio.
    =========================================================== */
 (function(){
   var st = document.getElementById('status');
