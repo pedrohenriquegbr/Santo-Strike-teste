@@ -237,7 +237,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   <!-- 2. QUANDO -->
   <section class="tela" data-tela="1">
     <h1>Que dia?</h1>
-    <p class="sub">A casa abre de terça a domingo, a partir das 18h.</p>
+    <p class="sub">A casa abre às 18h. O rodízio é servido das 18h30 às 22h30, com entrada até 21h50.</p>
     <span class="rot">Escolha o dia</span>
     <div class="dias-wrap"><div class="dias" id="dias"></div></div>
     <div class="setas"><button type="button" id="diaEsq" aria-label="Ver dias anteriores">&#8592;</button>
@@ -369,13 +369,17 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   /* Tabela oficial do catálogo do WhatsApp da casa, lida em 15/09/2026.
      Online a pessoa paga no Pix, então o valor usado é o do Pix. O da
      promoção de 7 dias e o do dinheiro aparecem como aviso. */
+  /* O catálogo diz: "o Pix tem o mesmo valor do desconto em dinheiro somente
+     quando realizado antecipadamente no pagamento da reserva". Como aqui a
+     pessoa paga no ato, vale o valor com desconto. O valor de caixa fica
+     como comparação. */
   var TABELA = {
-    1: { terQui:{ pix:59.99, dinheiro:54.99, promo:49.99 },
-         sexDom:{ pix:64.99, dinheiro:59.99 },
-         sabado:{ pix:69.99, dinheiro:64.99 },
+    1: { terQui:{ online:54.99, caixa:59.99, promo:49.99 },
+         sexDom:{ online:59.99, caixa:64.99 },
+         sabado:{ online:64.99, caixa:69.99 },
          crianca:{ c35:19.99, c68:34.99 } },
-    2: { terQui:{ pix:74.99, dinheiro:69.99 },
-         sexDom:{ pix:84.99, dinheiro:79.99 },
+    2: { terQui:{ online:69.99, caixa:74.99 },
+         sexDom:{ online:79.99, caixa:84.99 },
          crianca:{ c35:24.99, c68:34.99 } }
   };
   var WHATSAPP_CASA = '5521988799699';
@@ -402,7 +406,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   }
   function valorAdulto(d, piso){
     var f = TABELA[piso][faixa(d, piso)];
-    return temPromo(d, piso) ? TABELA[1].terQui.promo : f.pix;
+    return temPromo(d, piso) ? TABELA[1].terQui.promo : f.online;
   }
 
   var EXTRAS = [
@@ -413,7 +417,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     { id:'bolo', nome:'Taxa de bolo próprio', preco:60, ico:'bolo',
       desc:'Só se você trouxer o bolo e usar pratos, talheres e estrutura da casa.' },
     { id:'pista', nome:'Hora extra de pista', preco:80, porDia:true, ico:'bola',
-      desc:'Uma hora a mais no boliche, no valor do dia.' }
+      desc:'A segunda hora seguida sai pela metade de terça a quinta.' }
   ];
   /* ícones em ouro, no lugar de emoji, para não destoar da casa */
   var ICONES = {
@@ -438,6 +442,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
   function precoExtra(e){
     if (e.id === 'refri' && st.piso === 1 && st.data && st.data.getDay() >= 2 && st.data.getDay() <= 5) return 0;
+    /* segunda hora seguida de pista: 50% de terça a quinta */
+    if (e.id === 'pista'){ var v = pistaDoDia(st.data); return v === 80 ? 40 : v; }
     return e.porDia ? pistaDoDia(st.data) : e.preco;
   }
 
@@ -464,7 +470,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   }
   function montarHoras(){
     var box = $('horas'); box.innerHTML = '';
-    ['18:00','18:30','19:00','19:30','20:00','21:00'].forEach(function(h){
+    /* rodízio servido das 18h30 às 22h30, com entrada até 21h50 (catálogo da casa) */
+    ['18:30','19:00','19:30','20:00','20:30','21:00','21:30'].forEach(function(h){
       var lab = document.createElement('label');
       lab.className = 'hora';
       lab.innerHTML = '<input type="radio" name="hora" value="' + h + '">' + h;
@@ -549,12 +556,14 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     $('tolerancia').textContent = fim ? 'até 19h aos sábados, domingos e feriados' : 'até 19h30 de terça a sexta';
     var av = $('avisoDia');
     if (st.tipo !== 'mesa'){
-      av.innerHTML = 'A pista é reservada por hora e o valor muda: <b>R$ 80</b> de terça a quinta e <b>R$ 120</b> de sexta a domingo.';
+      av.innerHTML = 'O valor é <b>por pista</b>, que leva até 6 pessoas: R$ 80 de terça a quinta e R$ 120 de sexta a domingo, com reserva. ' +
+        'Quem faz rodízio paga <b>R$ 40 na pista das 18h</b>, reservando e pagando no ato.';
     } else if (temPromo(d, st.piso)){
       av.innerHTML = 'Este dia está na <b>promoção de R$ 49,99</b>: reserva com 7 dias de antecedência e pagamento agora.';
     } else if (d){
       var f = TABELA[st.piso][faixa(d, st.piso)];
-      av.innerHTML = 'Pagando agora no Pix, o valor deste dia é <b>' + moeda(f.pix) + '</b> por adulto. No caixa, em dinheiro, sai por ' + moeda(f.dinheiro) + '.';
+      av.innerHTML = 'Pagando agora no Pix, você fica com o valor de desconto: <b>' + moeda(f.online) +
+        '</b> por adulto. Deixando para pagar no caixa, no cartão ou no Pix na hora, sai por ' + moeda(f.caixa) + '.';
     } else {
       av.innerHTML = 'Reservando com <b>7 dias de antecedência</b> e pagando agora, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.';
     }
