@@ -6,12 +6,15 @@
 <title>Santo Strike | Boliche e Gastronomia em Duque de Caxias</title>
 <meta name="description" content="Rodízio de pizza e bufê a partir de R$ 49,99, rodízio fusion com churrasco, boliche e PlayKids. Terça a domingo em Duque de Caxias. Reserve sua mesa.">
 <meta name="theme-color" content="#0B0705">
-<!-- Demo de proposta: fora do Google para ninguém confundir com o site oficial.
-     Tirar esta linha quando o Santo Strike fechar e o site virar o oficial. -->
-<meta name="robots" content="noindex, nofollow">
-<!-- DEPLOY: URL absoluta do projeto demo-santo-strike no Vercel. Trocar se o domínio mudar. -->
-<meta property="og:url" content="https://demo-santo-strike.vercel.app/">
-<meta property="og:image" content="https://demo-santo-strike.vercel.app/assets/hero-poster.jpg">
+<meta name="robots" content="index, follow">
+<!-- Domínio do site. Ao trocar, rode na pasta do projeto: node trocar-dominio.js https://novo-dominio -->
+<link rel="canonical" href="https://santo-strike.vercel.app/">
+<meta property="og:url" content="https://santo-strike.vercel.app/">
+<meta property="og:image" content="https://santo-strike.vercel.app/assets/hero-poster.jpg">
+<meta property="og:site_name" content="Santo Strike">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Santo Strike","description":"Boliche e gastronomia em Duque de Caxias: rodízio de pizza e bufê no 1º piso, rodízio Fusion Food com churrasco no 2º piso, boliche e área kids.","url":"https://santo-strike.vercel.app/","image":"https://santo-strike.vercel.app/assets/hero-poster.jpg","telephone":"+55 21 98879-9699","servesCuisine":["Pizza","Churrasco","Rodízio"],"priceRange":"R$ 49,99 a R$ 84,99","acceptsReservations":"https://santo-strike.vercel.app/reserva/","address":{"@type":"PostalAddress","streetAddress":"Rua Beira Linha, 84","addressLocality":"Duque de Caxias","addressRegion":"RJ","postalCode":"25045-366","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-22.714826,"longitude":-43.3209277},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"18:00","closes":"22:30"}],"sameAs":["https://www.instagram.com/santo_strike_oficial/"]}</script>
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:title" content="Santo Strike | Boliche e Gastronomia">
@@ -1508,9 +1511,10 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
     </div>
   </div>
   <p class="disclosure">
-    Esta página é uma demonstração criada para apresentar uma proposta de site ao Santo Strike.
-    Não é o site oficial do estabelecimento. Preços e horários foram tirados do perfil público
-    deles e precisam de confirmação antes de qualquer publicação.
+    Santo Strike Boliche e Gastronomia &middot; Rua Beira Linha, 84, Jardim Glória, Duque de Caxias, RJ, CEP 25045-366 &middot;
+    WhatsApp <a href="https://wa.me/5521988799699" target="_blank" rel="noopener">(21) 98879-9699</a> &middot;
+    <a href="/politica-de-privacidade/">Política de privacidade</a> &middot;
+    Site por Next Level Dev
   </p>
 </footer>
 
@@ -2058,7 +2062,7 @@ document.addEventListener('error', function(ev){
 
 /* ===========================================================
    CONFIG DA CASA
-   >>> CONFIRMAR COM O SANTO STRIKE ANTES DE PUBLICAR <<<
+   Dados do catálogo oficial do WhatsApp da casa, conferidos em 15/09/2026.
    =========================================================== */
 var CASA = {
   whatsapp: '5521988799699',        /* WhatsApp de reservas enviado pela dona em 15/09/2026 */
@@ -2073,11 +2077,9 @@ var CASA = {
 
   fechaSegunda: true,
   fechaTerceiroDomingo: false,   /* a dona pediu para tirar em 15/09/2026 */
-  /* Preços conferidos nos posts oficiais de agosto de 2026.
-     >>> RECONFERIR COM A CASA ANTES DE PUBLICAR <<< */
+  /* Preços: tabela oficial da casa (catálogo do WhatsApp). */
 
-  /* Casa de jantar: terça a domingo, das 18h às 23h.
-     Última entrada às 22h. >>> CONFIRMAR COM A CASA. <<< */
+  /* A casa abre às 18h. Rodízio das 18h30 às 22h30, entrada até 21h50. */
   abre: '18h30', fecha: '22h30',
   horarios: {
     0: ['18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00'],

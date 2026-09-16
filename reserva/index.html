@@ -2,16 +2,30 @@
 <html lang="pt-BR">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="noindex, nofollow">
+<meta name="robots" content="index, follow">
+<meta name="description" content="Reserve sua mesa ou pista no Santo Strike, em Duque de Caxias: escolha o andar, o dia, quantas pessoas vão e some bolo e kit festa. Promoção de R$ 49,99 com 7 dias de antecedência.">
+<link rel="canonical" href="https://santo-strike.vercel.app/reserva/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Santo Strike">
+<meta property="og:title" content="Reserva | Santo Strike">
+<meta property="og:description" content="Escolha o andar, o dia e quantas pessoas vão. Rodízio a partir de R$ 49,99 com 7 dias de antecedência.">
+<meta property="og:url" content="https://santo-strike.vercel.app/reserva/">
+<meta property="og:image" content="https://santo-strike.vercel.app/assets/hero-poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0B0705">
-<title>Reserva Santo Strike</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Reserva | Santo Strike Boliche e Gastronomia</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0705'/%3E%3Cellipse cx='16' cy='13' rx='10' ry='3.4' fill='none' stroke='%23E3B23C' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
 /* Reserva do Santo Strike. Preços, extras e regras vindos do catálogo
-   oficial do WhatsApp da casa (lido em 15/09/2026). Feito para o celular. */
+   oficial do WhatsApp da casa (lido em 15/09/2026). Feito para o celular.
+   Enquanto a conta de pagamento não existe, a reserva termina no WhatsApp
+   da casa, que confirma e envia o Pix. */
 :root{
   --canvas:#0B0705; --panel:#150F0A; --panel-2:#1E150D;
   --accent:#E3B23C; --accent-2:#F2C65A; --ember:#C2410C;
@@ -29,8 +43,6 @@ body{margin:0;background:var(--canvas);color:var(--ink);font:400 1rem/1.55 var(-
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 img{max-width:100%}
 
-.demo{background:var(--accent);color:var(--canvas);font:700 .66rem/1.4 var(--mono);
-  letter-spacing:.16em;text-transform:uppercase;text-align:center;padding:.5rem .8rem}
 
 .top{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:1.1rem 0 .9rem}
 .marca{display:flex;align-items:center;gap:.8rem;color:var(--ink);text-decoration:none}
@@ -165,15 +177,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 .linhas .l--extra span:first-child::before{content:"+ ";color:var(--ember);font-weight:700}
 .linhas .l--total{border-bottom:0;font-weight:700;font-size:1.05rem;color:var(--accent)}
 
-/* pix */
-.pix{text-align:center}
-.qr{background:#fff;border-radius:14px;padding:.9rem;display:inline-block;margin:.4rem 0 1rem}
-.qr svg{display:block;width:190px;height:190px}
-.codigo{display:flex;gap:.5rem;align-items:center;background:var(--panel);border:1px solid var(--line);
-  border-radius:10px;padding:.7rem .8rem;font:400 .72rem/1.4 var(--mono);color:var(--ink-2);word-break:break-all;text-align:left}
-.relogio{font:500 .78rem/1 var(--mono);letter-spacing:.1em;color:var(--ink-2);margin:.8rem 0 0}
-.relogio b{color:var(--accent)}
-
 /* confirmado */
 .ok{text-align:center;padding:1rem 0}
 .ok .selo{width:76px;height:76px;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);
@@ -203,7 +206,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 @media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:active{transform:none}}
 </style>
 
-<div class="demo">Demonstração · nenhuma cobrança é feita aqui</div>
 
 <div class="app">
   <header class="top">
@@ -215,7 +217,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   </header>
 
   <div class="barra"><i id="barra" style="transform:scaleX(.125)"></i></div>
-  <p class="passo-nome"><span id="passoNome">Onde</span><span id="passoNum">1 de 8</span></p>
+  <p class="passo-nome"><span id="passoNome">Onde</span><span id="passoNum">1 de 7</span></p>
 
   <!-- 1. ONDE -->
   <section class="tela on" data-tela="0">
@@ -244,7 +246,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <button type="button" id="diaDir" aria-label="Ver próximos dias">&#8594;</button></div>
     <span class="rot">Horário de chegada</span>
     <div class="horas" id="horas"></div>
-    <div class="aviso" id="avisoDia">Reservando com <b>7 dias de antecedência</b> e pagando agora, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.</div>
+    <div class="aviso" id="avisoDia">Reservando com <b>7 dias de antecedência</b> e pagando no ato da reserva, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.</div>
   </section>
 
   <!-- 3. QUEM VAI -->
@@ -329,26 +331,14 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <p class="erro" id="erro"></p>
   </section>
 
-  <!-- 7. PIX -->
+  <!-- 7. PRONTO -->
   <section class="tela" data-tela="6">
-    <h1>Pague com Pix</h1>
-    <p class="sub">Abra o app do banco, aponte a câmera ou cole o código.</p>
-    <div class="pix">
-      <div class="qr" id="qr"></div>
-      <div class="codigo"><span id="pixCodigo"></span></div>
-      <button type="button" class="btn btn--fantasma" id="copiar" style="margin-top:.8rem;width:100%">Copiar código Pix</button>
-      <p class="relogio">O código vale por <b id="relogio">30:00</b></p>
-    </div>
-  </section>
-
-  <!-- 8. PRONTO -->
-  <section class="tela" data-tela="7">
     <div class="ok">
       <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></div>
-      <h1 id="tituloOk">Reserva confirmada</h1>
+      <h1 id="tituloOk">Falta só enviar</h1>
       <p class="codigo-res" id="codigoRes">SS-0000</p>
       <div class="linhas" id="resumoOk"></div>
-      <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a reserva pro WhatsApp do Santo Strike.</p>
+      <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a sua reserva pro WhatsApp do Santo Strike. A casa confirma a data e te envia o Pix para garantir a vaga.</p>
       <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar reserva no WhatsApp</a>
     </div>
   </section>
@@ -363,7 +353,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 (function(){
   /* Tabela oficial do catálogo do WhatsApp da casa, lida em 15/09/2026.
@@ -426,7 +415,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     bola:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><circle cx="10" cy="9.2" r=".95" fill="currentColor" stroke="none"/><circle cx="13.7" cy="8.6" r=".95" fill="currentColor" stroke="none"/><circle cx="11.6" cy="12.3" r=".95" fill="currentColor" stroke="none"/></svg>'
   };
 
-  var NOMES = ['Onde','Quando','Quem vai','Extras','Seus dados','Contrato','Pix','Pronto'];
+  var NOMES = ['Onde','Quando','Quem vai','Extras','Seus dados','Contrato','Enviar'];
   var DIAS_CURTO = ['dom','seg','ter','qua','qui','sex','sáb'];
   var MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 
@@ -547,9 +536,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       $('totalRot').textContent = st.tela >= 5 ? 'Total a pagar' : 'Total';
       $('total').textContent = moeda(total());
     }
-    $('barra').style.transform = 'scaleX(' + Math.min(1, (st.tela + 1) / 8) + ')';
+    $('barra').style.transform = 'scaleX(' + Math.min(1, (st.tela + 1) / 7) + ')';
     $('passoNome').textContent = NOMES[st.tela];
-    $('passoNum').textContent = (st.tela + 1) + ' de 8';
+    $('passoNum').textContent = (st.tela + 1) + ' de 7';
 
     /* avisos que mudam com o dia escolhido */
     var fim = d && (d.getDay() === 6 || d.getDay() === 0);
@@ -559,13 +548,13 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       av.innerHTML = 'O valor é <b>por pista</b>, que leva até 6 pessoas: R$ 80 de terça a quinta e R$ 120 de sexta a domingo, com reserva. ' +
         'Quem faz rodízio paga <b>R$ 40 na pista das 18h</b>, reservando e pagando no ato.';
     } else if (temPromo(d, st.piso)){
-      av.innerHTML = 'Este dia está na <b>promoção de R$ 49,99</b>: reserva com 7 dias de antecedência e pagamento agora.';
+      av.innerHTML = 'Este dia está na <b>promoção de R$ 49,99</b>: reserva com 7 dias de antecedência e pagamento no ato.';
     } else if (d){
       var f = TABELA[st.piso][faixa(d, st.piso)];
-      av.innerHTML = 'Pagando agora no Pix, você fica com o valor de desconto: <b>' + moeda(f.online) +
+      av.innerHTML = 'Pagando o Pix no ato da reserva, você fica com o valor de desconto: <b>' + moeda(f.online) +
         '</b> por adulto. Deixando para pagar no caixa, no cartão ou no Pix na hora, sai por ' + moeda(f.caixa) + '.';
     } else {
-      av.innerHTML = 'Reservando com <b>7 dias de antecedência</b> e pagando agora, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.';
+      av.innerHTML = 'Reservando com <b>7 dias de antecedência</b> e pagando no ato da reserva, o rodízio do 1º piso sai por <b>R$ 49,99</b> de terça a quinta.';
     }
   }
 
@@ -585,9 +574,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var d = st.data, festa = st.tipo === 'festa';
     var linhas = [
       festa ? 'Olá! Quero um orçamento de festa no Santo Strike.' : 'Olá! Quero reservar no Santo Strike.',
-      '(enviado pelo site de reserva, versão de demonstração)',
+      '(enviado pelo site de reservas)',
       '',
-      '• Código: ' + $('codigoRes').textContent,
+      '• Pedido: ' + $('codigoRes').textContent,
       '• Onde: ' + st.onde,
       '• Dia: ' + (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) : '-') + ' às ' + (st.hora || '-')
     ];
@@ -604,6 +593,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if (!festa) linhas.push('• Total: ' + moeda(total()));
     linhas.push('', '• Nome: ' + $('nome').value.trim(), '• Ocasião: ' + $('ocasiao').value);
     if ($('obs').value.trim()) linhas.push('• Observação: ' + $('obs').value.trim());
+    if (!festa) linhas.push('• Pagamento: aguardo o Pix para confirmar a reserva.');
     linhas.push('• Li e concordo com o contrato de reserva.');
     return 'https://wa.me/' + WHATSAPP_CASA + '?text=' + encodeURIComponent(linhas.join('\n'));
   }
@@ -612,12 +602,14 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   function ir(n){
     st.tela = n;
     telas.forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-tela') === n); });
-    $('voltar').hidden = n === 0 || n === 7;
-    $('avancar').hidden = n === 6 || n === 7;
-    $('avancar').textContent = n === 5 ? 'Pagar com Pix' : 'Continuar';
+    $('voltar').hidden = n === 0 || n === 6;
+    $('avancar').hidden = n === 6;
+    $('avancar').textContent = n === 5 ? 'Enviar reserva' : 'Continuar';
     if (n === 5) pintarResumo($('resumo'));
-    if (n === 6) iniciarPix();
-    if (n === 7){ pintarResumo($('resumoOk')); $('enviarWpp').href = linkWhatsApp(); }
+    if (n === 6){
+      if (st.tipo !== 'festa') $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
+      pintarResumo($('resumoOk')); $('enviarWpp').href = linkWhatsApp();
+    }
     window.scrollTo(0,0);
     atualizar();
   }
@@ -639,9 +631,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       $('tituloOk').textContent = 'Pedido enviado';
       $('codigoRes').textContent = 'ORÇAMENTO';
       $('textoOk').textContent = 'A casa vai te chamar no WhatsApp com o orçamento da festa.';
-      ir(7); return;
+      ir(6); return;
     }
-    ir(Math.min(7, st.tela + 1));
+    ir(Math.min(6, st.tela + 1));
   });
   document.addEventListener('input', function(){ avisa(''); });
   document.addEventListener('change', function(){ avisa(''); });
@@ -662,40 +654,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var k = b.getAttribute('data-qtd');
     st[k] = Math.max(k === 'adultos' ? 1 : 0, st[k] + (+b.getAttribute('data-d')));
     atualizar();
-  });
-
-  /* ---------- pix de demonstração ---------- */
-  function iniciarPix(){
-    var codigo = '00020126BR.GOV.BCB.PIX.DEMONSTRACAO.SANTOSTRIKE' + Date.now().toString().slice(-8) +
-                 '5204000053039865802BR5913SANTO STRIKE6009CAXIAS62070503***6304DEMO';
-    $('pixCodigo').textContent = codigo;
-    try {
-      var qr = qrcode(0, 'M'); qr.addData(codigo); qr.make();
-      $('qr').innerHTML = qr.createSvgTag({ cellSize:4, margin:1 });
-    } catch(e){ $('qr').textContent = 'QR de demonstração'; }
-
-    var resta = 30 * 60;
-    clearInterval(st.relogio);
-    st.relogio = setInterval(function(){
-      resta--;
-      var m = String(Math.floor(resta / 60)).padStart(2,'0'), s = String(resta % 60).padStart(2,'0');
-      $('relogio').textContent = m + ':' + s;
-      if (resta <= 0) clearInterval(st.relogio);
-    }, 1000);
-
-    /* na demonstração o pagamento cai sozinho depois de 6 segundos */
-    setTimeout(function(){
-      if (st.tela !== 6) return;
-      clearInterval(st.relogio);
-      $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
-      ir(7);
-    }, 6000);
-  }
-  $('copiar').addEventListener('click', function(){
-    var t = $('pixCodigo').textContent;
-    if (navigator.clipboard) navigator.clipboard.writeText(t);
-    $('copiar').textContent = 'Código copiado';
-    setTimeout(function(){ $('copiar').textContent = 'Copiar código Pix'; }, 2000);
   });
 
   /* arrastar a faixa de dias com o mouse (no dedo o navegador já faz) */
