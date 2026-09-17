@@ -135,6 +135,10 @@ a{color:inherit}
 .brand .halo{width:64px;margin-bottom:.15rem;opacity:.9}
 .brand b{font-family:var(--display);font-size:1.32rem;font-weight:400;letter-spacing:.01em}
 .brand i{font-family:var(--display);font-style:italic;color:var(--accent);font-size:1rem;margin-top:-.1rem}
+/* logo oficial da casa, em PNG com fundo transparente */
+.brand img{display:block;width:auto;height:54px}
+.foot .brand img{height:76px}
+@media (max-width:640px){ .brand img{height:46px} .foot .brand img{height:64px} }
 .nav-links{display:flex;gap:1.75rem;align-items:center}
 .nav-links a{
   text-decoration:none;color:var(--text-secondary);font-size:.94rem;
@@ -1101,9 +1105,8 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
 <div class="progress" id="progress" aria-hidden="true"><i></i></div>
 
 <nav class="nav" id="nav">
-  <a class="brand" href="#main">
-    <svg class="halo" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
-    <b>Santo</b><i>Strike</i>
+  <a class="brand" href="#main" aria-label="Santo Strike, início da página">
+    <img src="assets/logo-menu.png" alt="Santo Strike Boliche e Gastronomia" width="560" height="447" decoding="async">
   </a>
   <div class="nav-links" id="navLinks">
     <a href="#andares">Os dois andares</a>
@@ -1510,9 +1513,8 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
 
 <footer class="foot">
   <div class="wrap">
-    <a class="brand" href="#main">
-      <svg class="halo" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
-      <b>Santo</b><i>Strike</i>
+    <a class="brand" href="#main" aria-label="Santo Strike, início da página">
+      <img src="assets/logo.png" alt="Santo Strike Boliche e Gastronomia" width="700" height="624" loading="lazy" decoding="async">
     </a>
     <div>
       <p><a href="https://www.instagram.com/santo_strike_oficial/" target="_blank" rel="noopener">Instagram</a></p>

@@ -11,13 +11,12 @@
 <meta property="og:title" content="Reserva | Santo Strike">
 <meta property="og:description" content="Escolha o andar, o dia e quantas pessoas vão. Rodízio a partir de R$ 49,99 com 7 dias de antecedência.">
 <meta property="og:url" content="https://santo-strike.vercel.app/reserva/">
-<meta property="og:image" content="https://santo-strike.vercel.app/assets/hero-poster.jpg">
+<meta property="og:image" content="https://santo-strike.vercel.app/assets/og-logo.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0B0705">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>Reserva | Santo Strike Boliche e Gastronomia</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0705'/%3E%3Cellipse cx='16' cy='13' rx='10' ry='3.4' fill='none' stroke='%23E3B23C' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
@@ -47,10 +46,10 @@ img{max-width:100%}
 
 
 .top{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:1.1rem 0 .9rem}
-.marca{display:flex;align-items:center;gap:.8rem;color:var(--ink);text-decoration:none}
-.marca svg{width:34px;height:20px;color:var(--accent);flex:none}
-.marca b{font:400 1.15rem/1 var(--display)}
-.marca span{font:500 .62rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:block;margin-top:.25rem}
+.marca{display:flex;align-items:center;gap:.75rem;color:var(--ink);text-decoration:none}
+/* logo oficial da casa, em PNG com fundo transparente */
+.marca img{display:block;width:auto;height:46px;flex:none}
+.marca span{font:500 .62rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
 .volta{font:500 .66rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
   text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.55rem .8rem}
 .volta:hover{color:var(--accent);border-color:var(--line-strong)}
@@ -100,6 +99,19 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .dia.promo::before{content:"7 dias";position:absolute;top:-.55rem;left:50%;transform:translateX(-50%);
   background:var(--accent);color:var(--canvas);font:700 .5rem/1 var(--mono);letter-spacing:.08em;
   text-transform:uppercase;padding:.2rem .3rem;border-radius:4px;white-space:nowrap}
+/* decorações: cartões que passam para o lado, como um cardápio de fotos */
+.decor{flex:none;width:12.6rem;border:1px solid var(--line);background:var(--panel);border-radius:14px;
+  overflow:hidden;cursor:pointer;scroll-snap-align:start;position:relative}
+.decor input{position:absolute;opacity:0;pointer-events:none}
+.decor img{width:100%;height:13.5rem;object-fit:cover;display:block;background:var(--panel-2)}
+.decor .nada{height:13.5rem;display:grid;place-items:center;background:var(--panel-2);color:var(--ink-2);
+  font:500 .66rem/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:0 1rem}
+.decor b{display:block;padding:.75rem .85rem .15rem;font-size:.95rem}
+.decor em{display:block;padding:0 .85rem .85rem;font-style:normal;color:var(--ink-2);font-size:.8rem;line-height:1.35}
+.decor:has(input:checked){border-color:var(--accent);background:var(--panel-2)}
+.decor:has(input:checked)::after{content:"escolhida";position:absolute;top:.6rem;right:.6rem;
+  background:var(--accent);color:var(--canvas);font:700 .56rem/1 var(--mono);letter-spacing:.08em;
+  text-transform:uppercase;padding:.38rem .5rem;border-radius:999px}
 .setas{display:flex;gap:.4rem;justify-content:flex-end;margin-top:.5rem}
 .setas button{width:2.2rem;height:2.2rem;border-radius:50%;border:1px solid var(--line-strong);
   background:none;color:var(--ink);cursor:pointer;font:400 1rem/1 var(--body)}
@@ -218,14 +230,14 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 <div class="app">
   <header class="top">
     <a class="marca" href="https://santo-strike.vercel.app/" aria-label="Voltar ao site do Santo Strike">
-      <svg viewBox="0 0 34 20" aria-hidden="true"><ellipse cx="17" cy="10" rx="15" ry="5.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-      <div><b>Santo Strike</b><span>Reserva</span></div>
+      <img src="/assets/logo-menu.png" alt="Santo Strike Boliche e Gastronomia" width="560" height="447">
+      <span>Reserva</span>
     </a>
     <a class="volta" href="https://santo-strike.vercel.app/">Ver o site</a>
   </header>
 
   <div class="barra"><i id="barra" style="transform:scaleX(.125)"></i></div>
-  <p class="passo-nome"><span id="passoNome">Onde</span><span id="passoNum">1 de 7</span></p>
+  <p class="passo-nome"><span id="passoNome">Onde</span><span id="passoNum">1 de 8</span></p>
 
   <!-- 1. ONDE -->
   <section class="tela on" data-tela="0">
@@ -335,8 +347,18 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <div class="aviso">Confete explosivo, glitter e parecidos <b>não são permitidos</b>. O uso gera taxa de limpeza de R$ 300,00.</div>
   </section>
 
-  <!-- 5. DADOS -->
+  <!-- 5. DECORAÇÃO -->
   <section class="tela" data-tela="4">
+    <h1>Quer decoração?</h1>
+    <p class="sub">Arraste para o lado e escolha o estilo. São festas que já aconteceram aqui.</p>
+    <div class="dias-wrap"><div class="dias" id="decors"></div></div>
+    <div class="setas"><button type="button" id="decorEsq" aria-label="Ver decorações anteriores">&#8592;</button>
+      <button type="button" id="decorDir" aria-label="Ver próximas decorações">&#8594;</button></div>
+    <div class="aviso">A decoração é <b>orçada à parte</b>: depende da data, do número de pessoas e da disponibilidade. A casa passa o valor junto com o Pix da reserva.</div>
+  </section>
+
+  <!-- 6. DADOS -->
+  <section class="tela" data-tela="5">
     <h1>Seus dados</h1>
     <p class="sub">É por aqui que a casa confirma com você.</p>
     <label class="fld"><span>Nome completo</span><input id="nome" type="text" placeholder="Maria Souza" autocomplete="name"></label>
@@ -347,8 +369,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <div class="aviso">O <b>2º piso não tem acessibilidade</b>. Quem precisa de acesso sem escada fica no 1º piso.</div>
   </section>
 
-  <!-- 6. CONTRATO E RESUMO -->
-  <section class="tela" data-tela="5">
+  <!-- 7. CONTRATO E RESUMO -->
+  <section class="tela" data-tela="6">
     <h1>Confira e concorde</h1>
     <p class="sub">A reserva só entra na agenda depois do pagamento.</p>
     <div class="linhas" id="resumo"></div>
@@ -383,8 +405,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <p class="erro" id="erro"></p>
   </section>
 
-  <!-- 7. PRONTO -->
-  <section class="tela" data-tela="6">
+  <!-- 8. PRONTO -->
+  <section class="tela" data-tela="7">
     <div class="ok">
       <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></div>
       <h1 id="tituloOk">Falta só enviar</h1>
@@ -492,7 +514,18 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     bolo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 20.5h16V14H4v6.5Z"/><path d="M4 14.5c1.8-2 3.6-2 5.4 0s3.6 2 5.4 0 3.4-2 5.2 0"/><path d="M12 4v3.5"/><circle cx="12" cy="3" r="1"/></svg>'
   };
 
-  var NOMES = ['Onde','Quando','Quem vai','Extras','Seus dados','Contrato','Enviar'];
+  /* decorações: fotos de festas feitas na casa, tiradas do Instagram oficial.
+     O valor é orçado pela casa, então aqui a pessoa só escolhe o estilo. */
+  var DECORS = [
+    { id:'',                 nome:'Sem decoração',          desc:'Só a mesa reservada, do jeito que a casa já monta.' },
+    { id:'Infantil colorida', nome:'Infantil colorida',      desc:'Balões, painel e mesa do bolo, perto do PlayKids.', foto:'/assets/decoracoes/infantil.jpg' },
+    { id:'15 anos, azul e branco', nome:'15 anos, azul',      desc:'Arco de balões, flores e neon Happy Birthday.',      foto:'/assets/decoracoes/quinze-azul.jpg' },
+    { id:'15 anos, rosa',     nome:'15 anos, rosa',           desc:'Laço, balões em tons de rosa e número iluminado.',   foto:'/assets/decoracoes/quinze-rosa.jpg' },
+    { id:'18 anos, azul e dourado', nome:'18 anos, dourada',  desc:'Azul com dourado, flores e número iluminado.',       foto:'/assets/decoracoes/dezoito-dourado.jpg' },
+    { id:'Boho dourada',     nome:'Boho dourada',            desc:'Arco de flores, tons dourados e verde. Casamento e chá.', foto:'/assets/decoracoes/boho-dourada.jpg' }
+  ];
+
+  var NOMES = ['Onde','Quando','Quem vai','Extras','Decoração','Seus dados','Contrato','Enviar'];
   var DIAS_CURTO = ['dom','seg','ter','qua','qui','sex','sáb'];
   var MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   var MESES_LONGOS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -500,7 +533,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   /* piso: 1 ou 2 é o andar do rodízio; 0 é boliche sem rodízio (uso avulso) */
   var st = { tela:0, tipo:'mesa', piso:1, onde:'1º piso', data:null, hora:null,
              adultos:2, bari:0, c35:0, c68:0, bebes:0, pistas:1, horas:1, exclusiva:false,
-             aniv:{ on:false, dia:0, mes:0 }, extras:{} };
+             aniv:{ on:false, dia:0, mes:0 }, extras:{}, decor:'' };
 
   var $ = function(id){ return document.getElementById(id); };
   var telas = [].slice.call(document.querySelectorAll('.tela'));
@@ -509,6 +542,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
   function comRodizio(){ return st.tipo === 'mesa' || (st.tipo === 'pista' && st.piso > 0); }
   function avulso(){ return st.tipo === 'pista' && !st.piso; }
+  /* quem só joga boliche não tem mesa, então pula a tela de decoração */
+  function ativas(){ return [0,1,2,3,4,5,6,7].filter(function(n){ return n !== 4 || !avulso(); }); }
   function ondeTexto(){
     if (st.tipo === 'pista') return st.piso ? 'Boliche + rodízio do ' + st.piso + 'º piso' : 'Boliche avulso, sem rodízio';
     return st.onde;
@@ -604,6 +639,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         var q = st.extras[e.id] || 0, p = precoExtra(e);
         if (q) out.push({ nome:(q > 1 ? q + '× ' : '') + e.nome + (p ? '' : ' (cortesia)'), valor:p * q, extra:true });
       });
+      if (st.decor) out.push({ nome:'Decoração: ' + st.decor, valor:0, texto:'a combinar' });
     }
     return out;
   }
@@ -678,6 +714,27 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       box.appendChild(div);
     });
   }
+  /* ---------- decorações ---------- */
+  function montarDecors(){
+    var box = $('decors'); box.innerHTML = '';
+    DECORS.forEach(function(d){
+      var lab = document.createElement('label');
+      lab.className = 'decor';
+      lab.innerHTML = '<input type="radio" name="decor" value="' + d.id + '"' + (st.decor === d.id ? ' checked' : '') + '>' +
+        (d.foto ? '<img data-src="' + d.foto + '" alt="Decoração ' + d.nome + ' montada no Santo Strike" width="640" height="800" decoding="async">'
+                : '<span class="nada">Sem<br>decoração</span>') +
+        '<b>' + d.nome + '</b><em>' + d.desc + '</em>';
+      lab.querySelector('input').addEventListener('change', function(){ st.decor = d.id; atualizar(); });
+      box.appendChild(lab);
+    });
+  }
+  /* as fotos só baixam quando a pessoa chega perto desse passo */
+  function carregarDecors(){
+    [].forEach.call(document.querySelectorAll('#decors img[data-src]'), function(im){
+      im.src = im.getAttribute('data-src'); im.removeAttribute('data-src');
+    });
+  }
+
   document.addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-ex]');
     if (!b) return;
@@ -742,12 +799,13 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         $('total').textContent = moeda(promo ? TABELA[1].terQui.promo : valorCheio(d));
       }
     } else {
-      $('totalRot').textContent = st.tela >= 5 ? 'Total a pagar' : 'Total';
+      $('totalRot').textContent = st.tela >= 6 ? 'Total a pagar' : 'Total';
       $('total').textContent = moeda(total());
     }
-    $('barra').style.transform = 'scaleX(' + Math.min(1, (st.tela + 1) / 7) + ')';
+    var passos = ativas(), atual = passos.indexOf(st.tela) + 1;
+    $('barra').style.transform = 'scaleX(' + Math.min(1, atual / passos.length) + ')';
     $('passoNome').textContent = NOMES[st.tela];
-    $('passoNum').textContent = (st.tela + 1) + ' de 7';
+    $('passoNum').textContent = atual + ' de ' + passos.length;
 
     /* passo 1 */
     $('subBoliche').hidden = st.tipo !== 'pista';
@@ -830,9 +888,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + MESES[d.getMonth()] : '') + ' · ' + (st.hora || '') + '</span></div>';
     itens().forEach(function(i){
       lin += '<div class="l' + (i.extra ? ' l--extra' : '') + (i.desconto ? ' l--desc' : '') + '"><span>' + i.nome +
-        '</span><i></i><span>' + moeda(i.valor) + '</span></div>';
+        '</span><i></i><span>' + (i.texto || moeda(i.valor)) + '</span></div>';
     });
-    lin += '<div class="l l--total"><span>Total</span><i></i><span>' + moeda(total()) + '</span></div>';
+    lin += '<div class="l l--total"><span>Total</span><i></i><span>' +
+      (st.tipo === 'festa' ? 'a combinar' : moeda(total())) + '</span></div>';
     el.innerHTML = lin;
   }
 
@@ -873,7 +932,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var ex = avulso() ? [] : EXTRAS.filter(function(e){ return st.extras[e.id]; })
                                    .map(function(e){ return st.extras[e.id] + 'x ' + e.nome; });
     if (ex.length) linhas.push('• Extras: ' + ex.join(', '));
-    if (!festa) linhas.push('• Total: ' + moeda(total()));
+    if (st.decor && !avulso()) linhas.push('• Decoração: ' + st.decor + ' (me passa o valor, por favor)');
+    if (!festa) linhas.push('• Total: ' + moeda(total()) + (st.decor && !avulso() ? ', fora a decoração' : ''));
     linhas.push('', '• Nome: ' + $('nome').value.trim(), '• Ocasião: ' + $('ocasiao').value);
     if ($('obs').value.trim()) linhas.push('• Observação: ' + $('obs').value.trim());
     if (!festa) linhas.push('• Pagamento: aguardo o Pix para confirmar a reserva.');
@@ -885,43 +945,49 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   function ir(n){
     st.tela = n;
     telas.forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-tela') === n); });
-    $('voltar').hidden = n === 0 || n === 6;
-    $('avancar').hidden = n === 6;
-    $('avancar').textContent = n === 5 ? 'Enviar reserva' : 'Continuar';
-    if (n === 5) pintarResumo($('resumo'));
-    if (n === 6){
+    $('voltar').hidden = n === 0 || n === 7;
+    $('avancar').hidden = n === 7;
+    $('avancar').textContent = n === 6 ? 'Enviar reserva' : 'Continuar';
+    if (n >= 3) carregarDecors();
+    if (n === 6) pintarResumo($('resumo'));
+    if (n === 7){
       if (st.tipo !== 'festa') $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
       pintarResumo($('resumoOk')); $('enviarWpp').href = linkWhatsApp();
     }
     window.scrollTo(0,0);
     atualizar();
   }
+  /* anda pelas telas que valem para esta reserva */
+  function vizinha(passo){
+    var a = ativas(), i = a.indexOf(st.tela);
+    return a[Math.min(a.length - 1, Math.max(0, i + passo))];
+  }
   function valida(n){
     if (n === 1 && (!st.data || !st.hora)) return st.tipo === 'pista' ? 'Escolha o dia e o horário da pista.' : 'Escolha o dia e o horário.';
     if (n === 2 && comRodizio() && st.aniv.on && !st.aniv.dia) return 'Escolha o dia e o mês do aniversário.';
-    if (n === 4 && (!$('nome').value.trim() || $('fone').value.replace(/\D/g,'').length < 10)) return 'Preencha o nome e o WhatsApp.';
-    if (n === 5 && !$('aceite').checked) return 'Marque que você concorda com o contrato para continuar.';
+    if (n === 5 && (!$('nome').value.trim() || $('fone').value.replace(/\D/g,'').length < 10)) return 'Preencha o nome e o WhatsApp.';
+    if (n === 6 && !$('aceite').checked) return 'Marque que você concorda com o contrato para continuar.';
     return '';
   }
   function avisa(msg){
-    $('erro').textContent = st.tela === 5 ? msg : '';
+    $('erro').textContent = st.tela === 6 ? msg : '';
     $('erroGeral').textContent = msg;
   }
   $('avancar').addEventListener('click', function(){
     var msg = valida(st.tela);
     if (msg){ avisa(msg); return; }
     avisa('');
-    if (st.tela === 5 && st.tipo === 'festa'){
+    if (st.tela === 6 && st.tipo === 'festa'){
       $('tituloOk').textContent = 'Pedido enviado';
       $('codigoRes').textContent = 'ORÇAMENTO';
       $('textoOk').textContent = 'A casa vai te chamar no WhatsApp com o orçamento da festa.';
-      ir(6); return;
+      ir(7); return;
     }
-    ir(Math.min(6, st.tela + 1));
+    ir(vizinha(1));
   });
   document.addEventListener('input', function(){ avisa(''); });
   document.addEventListener('change', function(){ avisa(''); });
-  $('voltar').addEventListener('click', function(){ ir(Math.max(0, st.tela - 1)); });
+  $('voltar').addEventListener('click', function(){ ir(vizinha(-1)); });
 
   /* cada pista leva até 6 jogadores: no uso avulso o número de pistas acompanha */
   function ajustaPistas(){
@@ -993,9 +1059,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     });
   })();
 
-  /* arrastar a faixa de dias com o mouse (no dedo o navegador já faz) */
-  (function(){
-    var faixaEl = $('dias'), baixo = false, x0 = 0, s0 = 0, andou = 0;
+  /* arrastar a faixa com o mouse (no dedo o navegador já faz) */
+  function arrastavel(faixaEl, btnEsq, btnDir, salto){
+    var baixo = false, x0 = 0, s0 = 0, andou = 0;
     faixaEl.addEventListener('pointerdown', function(ev){
       if (ev.pointerType === 'touch') return;
       baixo = true; andou = 0; x0 = ev.clientX; s0 = faixaEl.scrollLeft;
@@ -1016,9 +1082,11 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       if (Math.abs(ev.deltaY) <= Math.abs(ev.deltaX)) return;
       ev.preventDefault(); faixaEl.scrollLeft += ev.deltaY;
     }, { passive:false });
-    $('diaEsq').addEventListener('click', function(){ faixaEl.scrollLeft -= 200; });
-    $('diaDir').addEventListener('click', function(){ faixaEl.scrollLeft += 200; });
-  })();
+    btnEsq.addEventListener('click', function(){ faixaEl.scrollLeft -= salto; });
+    btnDir.addEventListener('click', function(){ faixaEl.scrollLeft += salto; });
+  }
+  arrastavel($('dias'), $('diaEsq'), $('diaDir'), 200);
+  arrastavel($('decors'), $('decorEsq'), $('decorDir'), 230);
 
 
   /* baixa as artes do contrato só quando a pessoa abre */
@@ -1033,7 +1101,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     });
   })();
 
-  montarDias(); montarExtras(); atualizar();
+  montarDias(); montarExtras(); montarDecors(); atualizar();
 
   /* atalho do site: /reserva/?onde=2piso já chega com o andar escolhido */
   (function(){
