@@ -533,7 +533,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   /* piso: 1 ou 2 é o andar do rodízio; 0 é boliche sem rodízio (uso avulso) */
   var st = { tela:0, tipo:'mesa', piso:1, onde:'1º piso', data:null, hora:null,
              adultos:2, bari:0, c35:0, c68:0, bebes:0, pistas:1, horas:1, exclusiva:false,
-             aniv:{ on:false, dia:0, mes:0 }, extras:{}, decor:'' };
+             aniv:{ on:false, dia:0, mes:0 }, extras:{}, decor:null };   /* null = ainda não escolheu */
 
   var $ = function(id){ return document.getElementById(id); };
   var telas = [].slice.call(document.querySelectorAll('.tela'));
