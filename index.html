@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Santo Strike | Boliche e Gastronomia em Duque de Caxias</title>
 <meta name="description" content="Rodízio de pizza e bufê a partir de R$ 49,99, rodízio fusion com churrasco, boliche e PlayKids. Terça a domingo em Duque de Caxias. Reserve sua mesa.">
-<meta name="theme-color" content="#0B0705">
+<meta name="theme-color" content="#1F130C">
 <meta name="robots" content="index, follow">
 <!-- Domínio do site. Ao trocar, rode na pasta do projeto: node trocar-dominio.js https://novo-dominio -->
 <link rel="canonical" href="https://santo-strike.vercel.app/">
@@ -20,7 +20,6 @@
 <meta property="og:title" content="Santo Strike | Boliche e Gastronomia">
 <meta property="og:description" content="Dois andares, dois rodízios, boliche e PlayKids em Duque de Caxias.">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230B0705'/%3E%3Cellipse cx='16' cy='13' rx='10' ry='3.4' fill='none' stroke='%23E3B23C' stroke-width='2'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -29,17 +28,22 @@
    TOKENS — ouro amostrado do logo do Santo Strike
    ============================================================ */
 :root{
-  --canvas:#0B0705;
-  --panel:#150F0A;
-  --panel-2:#1E150D;
-  --accent:#E3B23C;
-  --accent-hover:#F2C65A;
-  --accent-muted:#5A431C;
-  --ember:#C2410C;
+  /* marrom premium: o chocolate é a base, o ouro é o luxo, o fogo é a energia */
+  --canvas:#1F130C;          /* chocolate escuro */
+  --panel:#2B1B11;           /* cartões: couro */
+  --panel-2:#372316;         /* hover: marrom tostado */
+  --brown:#3A2314;           /* pé das faixas marrons */
+  --accent:#F0B94B;          /* ouro forte: títulos pequenos, preços, fios */
+  --accent-hover:#FFD98A;
+  --accent-muted:#6B4A1C;
+  --brasa:#FF6A00;           /* laranja-fogo: brilhos e degradê */
+  --fogo:#E63312;            /* vermelho-fogo: só em brilho, nunca em texto */
+  --ember:#FF5A3C;           /* fogo claro: status fechado e erros (passa no contraste) */
+  --grad-fogo:linear-gradient(100deg,var(--accent) 0%,var(--brasa) 48%,var(--fogo) 100%);
   --text-primary:#F6F1E6;
-  --text-secondary:#B9AC98;
-  --line:rgba(227,178,60,.18);
-  --line-strong:rgba(227,178,60,.42);
+  --text-secondary:#C4B5A0;
+  --line:rgba(240,185,75,.18);
+  --line-strong:rgba(240,185,75,.42);
 
   --display:'Prata',Georgia,serif;
   --body:'DM Sans',system-ui,sans-serif;
@@ -47,7 +51,7 @@
 
   --ease:cubic-bezier(.4,0,.2,1);
   --ease-out:cubic-bezier(.16,1,.3,1);
-  --tshadow:0 1px 2px rgba(5,5,10,.95),0 3px 12px rgba(5,5,10,.78),0 10px 44px rgba(5,5,10,.8);
+  --tshadow:0 1px 2px rgba(12,7,4,.95),0 3px 12px rgba(12,7,4,.78),0 10px 44px rgba(12,7,4,.8);
 
   /* Medido em Chrome headless: com 750vh o hero sozinho ocupava 6750px
      e a primeira foto do site só aparecia no pixel 9057, dez telas
@@ -88,8 +92,9 @@ a{color:inherit}
 .ambient{
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%,rgba(227,178,60,.07),transparent 70%),
-    radial-gradient(ellipse 60% 40% at 15% 80%,rgba(194,65,12,.05),transparent 70%);
+    radial-gradient(ellipse 80% 50% at 50% 0%,rgba(240,185,75,.08),transparent 70%),
+    radial-gradient(ellipse 60% 40% at 15% 85%,rgba(255,106,0,.09),transparent 70%),
+    radial-gradient(ellipse 50% 35% at 90% 100%,rgba(230,51,18,.07),transparent 70%);
   animation:drift 72s var(--ease) infinite;
 }
 @keyframes drift{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(0,-2%,0) scale(1.06)}}
@@ -100,7 +105,7 @@ a{color:inherit}
 .halo{display:block;width:100%;height:auto;overflow:visible}
 .halo ellipse{
   fill:none;stroke:var(--accent);stroke-width:2.5;
-  filter:drop-shadow(0 0 6px rgba(227,178,60,.55));
+  filter:drop-shadow(0 0 6px rgba(240,185,75,.55));
 }
 .halo--sm{max-width:120px}
 .halo--md{max-width:190px}
@@ -120,13 +125,13 @@ a{color:inherit}
    Sem este scrim os links somem dentro das chamas. */
 .nav::before{
   content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:linear-gradient(180deg,rgba(11,7,5,.85) 0%,rgba(11,7,5,.55) 55%,rgba(11,7,5,0) 100%);
+  background:linear-gradient(180deg,rgba(31,19,12,.85) 0%,rgba(31,19,12,.55) 55%,rgba(31,19,12,0) 100%);
   transition:opacity .35s var(--ease);
 }
 .nav.stuck::before{opacity:0}
 .nav.stuck{
   padding:.7rem clamp(1rem,4vw,3rem);
-  background:rgba(11,7,5,.88);backdrop-filter:blur(14px);
+  background:rgba(31,19,12,.88);backdrop-filter:blur(14px);
   border-bottom-color:var(--line);
 }
 .nav-links a{color:var(--text-primary);opacity:.82}
@@ -167,10 +172,10 @@ a{color:inherit}
 .btn:hover::after{left:100%}
 .btn:hover{transform:scale(1.02);filter:brightness(1.08)}
 .btn:active{transform:scale(.97)}
-.btn--gold{background:var(--accent);color:#120B04;font-weight:500}
-.btn--gold:hover{background:var(--accent-hover)}
+.btn--gold{background:#E3B23C;color:#120B04;font-weight:500}
+.btn--gold:hover{background:#F2C65A}
 .btn--ghost{border-color:var(--line-strong);color:var(--text-primary);background:transparent}
-.btn--ghost:hover{border-color:var(--accent);background:rgba(227,178,60,.07)}
+.btn--ghost:hover{border-color:var(--accent);background:rgba(240,185,75,.07)}
 /* sombra de texto em rótulo de botão lê como sujeira: mata em todo botão */
 .btn{text-shadow:none}
 
@@ -238,7 +243,7 @@ a{color:inherit}
   content:"";position:absolute;inset:-4%;pointer-events:none;z-index:0;
   opacity:calc(.25 + .75 * var(--k,1));
   background:radial-gradient(ellipse 82% 66% at 30% 50%,
-    rgba(5,5,10,.74) 0%,rgba(5,5,10,.52) 48%,rgba(5,5,10,0) 78%);
+    rgba(12,7,4,.74) 0%,rgba(12,7,4,.52) 48%,rgba(12,7,4,0) 78%);
 }
 .band h1,.band .line{
   font-family:var(--display);font-size:clamp(2.1rem,6.2vw,5rem);
@@ -259,7 +264,7 @@ a{color:inherit}
 }
 .band--settle{align-items:center;justify-content:center;text-align:center}
 .band--settle::before{background:radial-gradient(ellipse 78% 66% at 50% 48%,
-  rgba(5,5,10,.72) 0%,rgba(5,5,10,.5) 46%,rgba(5,5,10,0) 78%)}
+  rgba(12,7,4,.72) 0%,rgba(12,7,4,.5) 46%,rgba(12,7,4,0) 78%)}
 .band--settle .band-mark{width:min(74vw,300px);margin:0 auto 1.2rem}
 .band--settle h1{font-size:clamp(2.8rem,9vw,6.6rem);max-width:none}
 .band--settle .sub{max-width:38ch;margin-left:auto;margin-right:auto}
@@ -321,12 +326,12 @@ a{color:inherit}
 .static-hero .bg::after{
   content:"";position:absolute;inset:0;
   background:
-    radial-gradient(ellipse 100% 55% at 50% 78%,rgba(5,4,8,.55) 0%,rgba(5,4,8,.25) 60%,rgba(5,4,8,0) 85%),
+    radial-gradient(ellipse 100% 55% at 50% 78%,rgba(12,7,4,.55) 0%,rgba(12,7,4,.25) 60%,rgba(12,7,4,0) 85%),
     linear-gradient(180deg,
-      rgba(11,7,5,.62) 0%,
-      rgba(11,7,5,.80) 22%,
-      rgba(11,7,5,.90) 48%,
-      rgba(11,7,5,.97) 100%);
+      rgba(31,19,12,.62) 0%,
+      rgba(31,19,12,.80) 22%,
+      rgba(31,19,12,.90) 48%,
+      rgba(31,19,12,.97) 100%);
 }
 /* a linha de apoio some no queijo claro se ficar na cor secundária */
 .static-hero .sub{color:var(--text-primary);opacity:.92}
@@ -356,7 +361,7 @@ a{color:inherit}
 /* trust bar */
 .trust{
   border-top:1px solid var(--line);border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,rgba(227,178,60,.04),transparent);
+  background:linear-gradient(180deg,rgba(240,185,75,.04),transparent);
   padding:1.6rem clamp(1.25rem,6vw,5rem);position:relative;z-index:1;
 }
 .trust ul{
@@ -376,7 +381,7 @@ a{color:inherit}
 }
 .floor::before{
   content:"";position:absolute;inset:0;opacity:0;pointer-events:none;
-  background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(227,178,60,.14),transparent 70%);
+  background:radial-gradient(ellipse 90% 60% at 50% 0%,rgba(240,185,75,.14),transparent 70%);
   transition:opacity .35s var(--ease);
 }
 .floor:hover{transform:translateY(-10px);border-color:var(--line-strong);box-shadow:0 24px 60px rgba(0,0,0,.5)}
@@ -391,7 +396,7 @@ a{color:inherit}
   transform:scale(1.03);transition:transform .8s var(--ease-out)}
 .floor:hover .floor__foto img{transform:scale(1.09)}
 .floor__foto::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(11,7,5,.1) 40%,var(--panel) 100%)}
+  background:linear-gradient(180deg,rgba(31,19,12,.1) 40%,var(--panel) 100%)}
 .floor .halo{max-width:150px;margin-bottom:1.4rem;opacity:.85}
 .floor .tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-secondary)}
 .floor h3{font-size:clamp(1.5rem,2.6vw,2.1rem);margin:.55rem 0 .1rem}
@@ -438,7 +443,12 @@ a{color:inherit}
 /* ============================================================
    SEÇÕES NOVAS
    ============================================================ */
-.sec--dark{background:linear-gradient(180deg,rgba(0,0,0,.34),rgba(0,0,0,.34)),var(--canvas)}
+.sec--dark{background:
+  radial-gradient(90% 60% at 50% 120%,rgba(255,106,0,.30),rgba(255,106,0,0) 70%),
+  radial-gradient(55% 40% at 90% 108%,rgba(230,51,18,.22),rgba(230,51,18,0) 70%),
+  radial-gradient(45% 35% at 8% 112%,rgba(240,185,75,.14),rgba(240,185,75,0) 70%),
+  linear-gradient(180deg,#1A0F09 0%,var(--brown) 100%);
+  border-block:1px solid rgba(240,185,75,.16)}
 .fineprint{margin-top:1.6rem;font-size:.84rem;color:var(--text-secondary);opacity:.72;max-width:56ch}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 
@@ -482,15 +492,15 @@ a{color:inherit}
 .foto-real--retrato{max-width:460px;width:100%;margin-inline:auto}
 .foto-real--retrato img{height:auto;aspect-ratio:900/1258}
 .foto-real::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(11,7,5,0) 55%,rgba(11,7,5,.5) 100%)}
+  background:linear-gradient(180deg,rgba(31,19,12,0) 55%,rgba(31,19,12,.5) 100%)}
 .lane{
   position:relative;aspect-ratio:4/3;border:1px solid var(--line);
-  background:radial-gradient(ellipse 70% 90% at 80% 50%,rgba(227,178,60,.10),transparent 70%),var(--panel);
+  background:radial-gradient(ellipse 70% 90% at 80% 50%,rgba(240,185,75,.10),transparent 70%),var(--panel);
   overflow:hidden;
 }
 .lane__floor{
   position:absolute;left:0;right:0;top:18%;bottom:18%;
-  background:repeating-linear-gradient(90deg,rgba(227,178,60,.07) 0 2px,transparent 2px 26px);
+  background:repeating-linear-gradient(90deg,rgba(240,185,75,.07) 0 2px,transparent 2px 26px);
   clip-path:polygon(4% 42%,100% 8%,100% 92%,4% 58%);
 }
 .lane__pins{position:absolute;right:9%;top:50%;transform:translateY(-50%);
@@ -498,11 +508,11 @@ a{color:inherit}
 .lane__pins i{
   display:block;aspect-ratio:1/2.4;border-radius:50% 50% 42% 42%;
   background:linear-gradient(180deg,var(--text-primary),#9d937f);
-  box-shadow:0 0 10px rgba(227,178,60,.2);
+  box-shadow:0 0 10px rgba(240,185,75,.2);
 }
 .lane__ball{
   position:absolute;left:7%;top:50%;width:13%;aspect-ratio:1;border-radius:50%;
-  background:radial-gradient(circle at 34% 32%,var(--accent-hover),#7a5a14 70%);
+  background:radial-gradient(circle at 34% 32%,var(--accent-hover),#8A2A12 70%);
   transform:translateY(-50%);animation:roll 6s var(--ease) infinite;
 }
 @keyframes roll{0%,72%{transform:translate(0,-50%) scale(1)}
@@ -564,7 +574,7 @@ a{color:inherit}
   filter:saturate(.94) contrast(1.04)}
 .gal__i--has::after{
   content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(11,7,5,0) 38%,rgba(11,7,5,.82) 100%);
+  background:linear-gradient(180deg,rgba(31,19,12,0) 38%,rgba(31,19,12,.82) 100%);
   transition:opacity .35s var(--ease)}
 .gal__i figcaption{
   position:relative;z-index:1;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;
@@ -577,7 +587,7 @@ a{color:inherit}
 .gal__i:hover figcaption{transform:none;opacity:1}
 .gal__i--wait{border-style:dashed;opacity:.6;align-items:center;justify-content:center}
 .gal__i--wait::before{content:"";position:absolute;inset:0;
-  background:repeating-linear-gradient(45deg,rgba(227,178,60,.05) 0 10px,transparent 10px 20px)}
+  background:repeating-linear-gradient(45deg,rgba(240,185,75,.05) 0 10px,transparent 10px 20px)}
 .gal__i--wait span{position:relative;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;
   text-transform:uppercase;color:var(--text-secondary)}
 /* Imagem que falhou não mostra ícone quebrado nem texto alternativo
@@ -635,7 +645,7 @@ img.img-falhou{opacity:0 !important}
              border-color .3s var(--ease),transform .3s var(--ease);
 }
 .stepper li.is-on{color:var(--accent)}
-.stepper li.is-on b{background:var(--accent);color:#120B04;border-color:var(--accent);transform:scale(1.06)}
+.stepper li.is-on b{background:var(--accent);color:#1A0F08;border-color:var(--accent);transform:scale(1.06)}
 .stepper li.feito{color:var(--text-primary)}
 .stepper li.feito b{background:var(--accent-muted);color:var(--text-primary);border-color:var(--accent-muted)}
 .stepper li.feito::before,.stepper li.is-on::before{background:var(--accent)}
@@ -652,7 +662,7 @@ img.img-falhou{opacity:0 !important}
   width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:1rem;line-height:1;
   transition:border-color .2s var(--ease),color .2s var(--ease),background .2s var(--ease);
 }
-.voltar:hover{border-color:var(--accent);color:var(--accent);background:rgba(227,178,60,.08)}
+.voltar:hover{border-color:var(--accent);color:var(--accent);background:rgba(240,185,75,.08)}
 
 .campo{margin-bottom:2rem}
 .rot{display:block;font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;
@@ -668,7 +678,7 @@ img.img-falhou{opacity:0 !important}
 .pick span{color:var(--text-secondary);font-size:.85rem}
 .pick em{font-family:var(--mono);font-style:normal;color:var(--accent);font-size:.95rem;margin-top:.35rem}
 .pick:hover{border-color:var(--line-strong)}
-.pick:has(input:checked){border-color:var(--accent);background:rgba(227,178,60,.07)}
+.pick:has(input:checked){border-color:var(--accent);background:rgba(240,185,75,.07)}
 .pick:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
 
 .counter{display:flex;align-items:center;gap:1.2rem}
@@ -676,7 +686,7 @@ img.img-falhou{opacity:0 !important}
 .cbtn{width:48px;height:48px;border:1px solid var(--line-strong);background:transparent;
   color:var(--text-primary);font-size:1.25rem;cursor:pointer;border-radius:50%;
   transition:border-color .2s var(--ease),background .2s var(--ease),transform .15s var(--ease)}
-.cbtn:hover{border-color:var(--accent);background:rgba(227,178,60,.1)}
+.cbtn:hover{border-color:var(--accent);background:rgba(240,185,75,.1)}
 .cbtn:active{transform:scale(.93)}
 
 /* atalhos de data, o toque que mais economiza clique */
@@ -687,8 +697,8 @@ img.img-falhou{opacity:0 !important}
   cursor:pointer;min-height:40px;
   transition:border-color .2s var(--ease),background .2s var(--ease),color .2s var(--ease);
 }
-.atalho:hover{border-color:var(--accent);background:rgba(227,178,60,.08)}
-.atalho.is-sel{background:var(--accent);color:#120B04;border-color:var(--accent)}
+.atalho:hover{border-color:var(--accent);background:rgba(240,185,75,.08)}
+.atalho.is-sel{background:var(--accent);color:#1A0F08;border-color:var(--accent)}
 
 .cal{border:1px solid var(--line);padding:1rem}
 .cal__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem}
@@ -702,9 +712,9 @@ img.img-falhou{opacity:0 !important}
 .day{aspect-ratio:1;border:1px solid transparent;background:transparent;color:var(--text-primary);
   font-family:var(--mono);font-size:.8rem;cursor:pointer;border-radius:4px;
   transition:background .18s var(--ease),border-color .18s var(--ease)}
-.day:hover:not(:disabled){border-color:var(--accent);background:rgba(227,178,60,.1)}
+.day:hover:not(:disabled){border-color:var(--accent);background:rgba(240,185,75,.1)}
 .day:disabled{color:rgba(185,172,152,.24);cursor:not-allowed}
-.day.is-sel{background:var(--accent);color:#120B04;border-color:var(--accent);font-weight:700}
+.day.is-sel{background:var(--accent);color:#1A0F08;border-color:var(--accent);font-weight:700}
 .day.is-empty{border:0;cursor:default}
 
 /* faixas de horário */
@@ -715,15 +725,15 @@ img.img-falhou{opacity:0 !important}
   cursor:pointer;min-height:48px;
   transition:border-color .2s var(--ease),background .2s var(--ease),color .2s var(--ease);
 }
-.slot:hover:not(:disabled){border-color:var(--accent);background:rgba(227,178,60,.1)}
+.slot:hover:not(:disabled){border-color:var(--accent);background:rgba(240,185,75,.1)}
 .slot:disabled{color:rgba(185,172,152,.24);cursor:not-allowed}
-.slot.is-sel{background:var(--accent);color:#120B04;border-color:var(--accent);font-weight:700}
+.slot.is-sel{background:var(--accent);color:#1A0F08;border-color:var(--accent);font-weight:700}
 .slots:empty{display:none}
 
 /* caixa de regras da casa */
 .regras{
   border:1px solid var(--line-strong);border-left-width:3px;
-  background:rgba(227,178,60,.06);padding:1.1rem 1.2rem;margin-top:1.5rem;
+  background:rgba(240,185,75,.06);padding:1.1rem 1.2rem;margin-top:1.5rem;
 }
 .regras ul{list-style:none;padding:0;margin:0;display:grid;gap:.55rem}
 .regras li{font-size:.88rem;color:var(--text-secondary);display:flex;gap:.6rem;align-items:baseline}
@@ -799,7 +809,7 @@ img.img-falhou{opacity:0 !important}
 .av::before{content:"\201C";position:absolute;top:.2rem;right:1.1rem;font-family:var(--display);
   font-size:7rem;line-height:1;color:var(--accent);opacity:.12;pointer-events:none}
 .av__brilho{position:absolute;inset:0;pointer-events:none;opacity:0;
-  background:radial-gradient(circle at 56px 58px,rgba(227,178,60,.22),transparent 55%)}
+  background:radial-gradient(circle at 56px 58px,rgba(240,185,75,.22),transparent 55%)}
 .av.on .av__brilho{animation:avBrilho 1.4s var(--ease-out)}
 @keyframes avBrilho{0%{opacity:0}25%{opacity:1}100%{opacity:0}}
 
@@ -896,14 +906,14 @@ img.img-falhou{opacity:0 !important}
 /* O filtro escuro vai SÓ na camada de tiles. No container inteiro ele
    passava grayscale no marcador dourado e nos controles, e a casa
    sumia do mapa. */
-#map .leaflet-tile-pane{filter:grayscale(1) invert(.92) hue-rotate(180deg) brightness(.86) contrast(1.08)}
+#map .leaflet-tile-pane{filter:grayscale(1) invert(.92) hue-rotate(180deg) brightness(.84) contrast(1.08) sepia(.35)}
 #map .leaflet-control-zoom a{
   background:var(--panel);color:var(--text-primary);border-color:var(--line);
   transition:background .2s var(--ease),color .2s var(--ease)}
-#map .leaflet-control-zoom a:hover{background:var(--accent);color:#120B04}
+#map .leaflet-control-zoom a:hover{background:var(--accent);color:#1A0F08}
 #map .leaflet-bar{border-color:var(--line)}
 #map .leaflet-control-attribution{
-  background:rgba(11,7,5,.8);color:var(--text-secondary);font-size:.64rem}
+  background:rgba(31,19,12,.8);color:var(--text-secondary);font-size:.64rem}
 #map .leaflet-control-attribution a{color:var(--accent)}
 #map .leaflet-popup-content-wrapper,#map .leaflet-popup-tip{
   background:var(--panel);color:var(--text-primary);
@@ -929,7 +939,7 @@ img.img-falhou{opacity:0 !important}
 .ticker{
   position:relative;z-index:1;overflow:hidden;
   padding:1.15rem 0;border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg,rgba(227,178,60,.055),transparent);
+  background:linear-gradient(180deg,rgba(240,185,75,.055),transparent);
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
   mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
 }
@@ -942,16 +952,15 @@ img.img-falhou{opacity:0 !important}
 .ticker__row i{
   flex:0 0 32px;width:32px;height:10px;display:inline-block;
   border:1.5px solid var(--accent);border-radius:50%;
-  box-shadow:0 0 8px rgba(227,178,60,.35);
+  box-shadow:0 0 8px rgba(240,185,75,.35);
 }
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .ticker:hover .ticker__row{animation-play-state:paused}
 
-/* gradiente de marca varrendo o texto: a assinatura do sistema do Wfit,
-   traduzida para o ouro do Santo Strike */
+/* degradê de marca varrendo o texto: fogo de brasa (âmbar, brasa e rubi) */
 .grad{
   background:linear-gradient(100deg,
-    var(--accent) 0%,#FFF1C8 22%,var(--accent) 44%,#A8781F 66%,var(--accent) 100%);
+    var(--accent) 0%,#FFE3A3 18%,var(--brasa) 44%,var(--fogo) 64%,var(--accent) 100%);
   background-size:300% 100%;
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
@@ -963,7 +972,7 @@ img.img-falhou{opacity:0 !important}
 .floor::after{
   content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
   background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),
-    rgba(227,178,60,.16),transparent 65%);
+    rgba(240,185,75,.16),transparent 65%);
   transition:opacity .35s var(--ease);
 }
 .floor:hover::after{opacity:1}
@@ -979,7 +988,7 @@ img.img-falhou{opacity:0 !important}
 .progress i{
   display:block;height:100%;width:100%;transform:scaleX(var(--p,0));transform-origin:left;
   background:linear-gradient(90deg,var(--accent-muted),var(--accent),var(--accent-hover));
-  box-shadow:0 0 12px rgba(227,178,60,.5);
+  box-shadow:0 0 12px rgba(240,185,75,.5);
 }
 
 /* a auréola se desenha ao entrar na tela */
@@ -1013,15 +1022,15 @@ b[data-count]{font-variant-numeric:tabular-nums}
 .kicker{position:relative;display:inline-block;padding-bottom:.5rem}
 .kicker::after{
   content:"";position:absolute;left:0;bottom:0;height:1px;width:100%;
-  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  background:linear-gradient(90deg,var(--accent),var(--brasa) 70%,var(--fogo));transform:scaleX(0);transform-origin:left;
   transition:transform .9s var(--ease-out) .15s;
 }
 .kicker.in::after,.rv.in .kicker::after,.in > .kicker::after{transform:scaleX(1)}
 
 /* pulso suave na auréola do settle */
 @keyframes haloPulse{
-  0%,100%{filter:drop-shadow(0 0 6px rgba(227,178,60,.5))}
-  50%{filter:drop-shadow(0 0 16px rgba(227,178,60,.85))}
+  0%,100%{filter:drop-shadow(0 0 6px rgba(240,185,75,.5))}
+  50%{filter:drop-shadow(0 0 16px rgba(240,185,75,.85))}
 }
 .band--settle .halo ellipse,.static-hero .band-mark ellipse{
   animation:haloPulse 5.5s var(--ease) -1.4s infinite;
@@ -1062,7 +1071,7 @@ b[data-count]{font-variant-numeric:tabular-nums}
 }
 @media (max-width:720px){
   .nav-links{
-    position:fixed;inset:0;background:rgba(11,7,5,.97);backdrop-filter:blur(20px);
+    position:fixed;inset:0;background:rgba(31,19,12,.97);backdrop-filter:blur(20px);
     flex-direction:column;justify-content:center;gap:2rem;font-size:1.4rem;
     opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s;
   }
@@ -1096,9 +1105,35 @@ b[data-count]{font-variant-numeric:tabular-nums}
   .rv{opacity:1;transform:none}
 }
 body.paused *,body.paused *::before,body.paused *::after{animation-play-state:paused !important}
+/* paleta brasa: fotos um tom mais baixas, com a cor viva preservada */
+.floor__foto img,.foto-real img,.gal__i img{filter:brightness(.88) saturate(1.05) contrast(1.03)}
+.gal__i:hover img{filter:brightness(1) saturate(1.12) contrast(1.06)}
+
+/* --- fogo em volta do site (mesma receita do Caverna's) -------- */
+/* brasas subindo por cima de tudo, sem pegar clique */
+.embers{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:60;opacity:.8}
+/* a tocha: luz quente que segue o mouse no computador */
+.torch{position:fixed;top:0;left:0;width:46vmax;height:46vmax;margin:-23vmax 0 0 -23vmax;
+  pointer-events:none;z-index:2;opacity:0;transition:opacity .6s ease;mix-blend-mode:screen;
+  background:radial-gradient(circle,rgba(255,120,20,.15) 0%,rgba(255,80,0,.06) 34%,transparent 64%)}
+.torch.is-on{opacity:1}
+@media (hover:none){.torch{display:none}}
+/* grão de filme bem fino: textura de luxo, sem pesar */
+body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grao 1.2s steps(4) infinite}
+@keyframes grao{0%,100%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(2%,-3%)}75%{transform:translate(-2%,-2%)}}
+/* botões secundários acendem com o degradê de fogo */
+.btn--ghost:hover{border-color:transparent;background:var(--grad-fogo);color:#1A0E06}
+/* títulos pequenos em ouro que esquenta até a brasa */
+.kicker{background:linear-gradient(90deg,var(--accent) 0%,#FFB347 55%,var(--brasa) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+@media (prefers-reduced-motion:reduce){.embers,.torch{display:none}body::after{animation:none}}
 </style>
 </head>
 <body>
+<canvas class="embers" id="embers" aria-hidden="true"></canvas>
+<div class="torch" id="torch" aria-hidden="true"></div>
 
 <a class="skip" href="#main">Pular para o conteúdo</a>
 <div class="ambient" aria-hidden="true"></div>
@@ -1519,13 +1554,14 @@ body.paused *,body.paused *::before,body.paused *::after{animation-play-state:pa
     <div>
       <p><a href="https://www.instagram.com/santo_strike_oficial/" target="_blank" rel="noopener">Instagram</a></p>
       <p>Duque de Caxias &ndash; RJ</p>
-      <p>Terça a domingo, das 18h30 às 22h30</p>
+      <p>Terça a domingo, das 18h30 às 22h30 · exceto o 3º domingo do mês</p>
     </div>
   </div>
   <p class="disclosure">
     Santo Strike Boliche e Gastronomia &middot; Rua Beira Linha, 84, Jardim Glória, Duque de Caxias, RJ, CEP 25045-366 &middot;
     WhatsApp <a href="https://wa.me/5521988799699" target="_blank" rel="noopener">(21) 98879-9699</a> &middot;
     <a href="/politica-de-privacidade/">Política de privacidade</a> &middot;
+    <a href="/termos/">Termos de uso</a> &middot;
     Site por Next Level Dev
   </p>
 </footer>
@@ -2088,7 +2124,7 @@ var CASA = {
   cep: '25045-366',
 
   fechaSegunda: true,
-  fechaTerceiroDomingo: false,   /* a dona pediu para tirar em 15/09/2026 */
+  fechaTerceiroDomingo: true,    /* a casa fecha todo 3º domingo do mês (confirmado em 21/09/2026) */
   /* Preços: tabela oficial da casa (catálogo do WhatsApp). */
 
   /* A casa abre às 18h. Rodízio das 18h30 às 22h30, entrada até 21h50. */
@@ -2099,6 +2135,34 @@ var DIAS = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
 function terceiroDomingo(d){
   if (d.getDay() !== 0) return false;
   return Math.floor((d.getDate() - 1) / 7) === 2;
+}
+var MESES_NOME = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+function diaSeguinte(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1); }
+function fechadoNoDia(d){
+  return (CASA.fechaSegunda && d.getDay() === 1) || (CASA.fechaTerceiroDomingo && terceiroDomingo(d));
+}
+/* o próximo 3º domingo, contando hoje; a conta vale para qualquer mês e ano */
+function proximoTerceiroDomingo(d){
+  var x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  for (var i = 0; i < 70; i++){ if (terceiroDomingo(x)) return x; x = diaSeguinte(x); }
+  return null;
+}
+function proximoDiaAberto(d){
+  var x = diaSeguinte(d);
+  while (fechadoNoDia(x)) x = diaSeguinte(x);
+  return x;
+}
+/* data e hora de Brasília, para o status não errar em celular com outro fuso */
+function agoraBrasilia(){
+  try {
+    var v = {};
+    new Intl.DateTimeFormat('en-CA', { timeZone:'America/Sao_Paulo', year:'numeric', month:'2-digit', day:'2-digit',
+      hour:'2-digit', minute:'2-digit', hour12:false }).formatToParts(new Date()).forEach(function(p){ v[p.type] = p.value; });
+    return { dia: new Date(+v.year, +v.month - 1, +v.day), min: (+v.hour % 24) * 60 + (+v.minute) };
+  } catch (e) {
+    var n = new Date();
+    return { dia: new Date(n.getFullYear(), n.getMonth(), n.getDate()), min: n.getHours() * 60 + n.getMinutes() };
+  }
 }
 
 /* ===========================================================
@@ -2195,7 +2259,7 @@ function terceiroDomingo(d){
   var st = document.getElementById('status');
   var tb = document.getElementById('hoursBody');
   if (!st || !tb) return;
-  var hoje = new Date();
+  var agora = agoraBrasilia(), hoje = agora.dia;
 
   /* endereço e rota */
   var end = document.getElementById('endereco');
@@ -2220,18 +2284,30 @@ function terceiroDomingo(d){
     tb.appendChild(tr);
   }
   if (CASA.fechaTerceiroDomingo){
+    var td3 = proximoTerceiroDomingo(hoje), ehHoje = td3 && td3.getTime() === hoje.getTime();
     var nota = document.createElement('tr');
-    nota.innerHTML = '<td colspan="2" class="hours-nota">* fecha no 3º domingo de cada mês</td>';
+    nota.innerHTML = '<td colspan="2" class="hours-nota">* Fechado no 3º domingo de cada mês' +
+      (ehHoje ? ', que é hoje.' : td3 ? '. O próximo é ' + td3.getDate() + ' de ' + MESES_NOME[td3.getMonth()] + '.' : '.') + '</td>';
     tb.appendChild(nota);
   }
 
+  /* status: acompanha o dia e a hora. A casa abre às 18h e o rodízio vai até 22h30. */
   var span = st.querySelector('span');
-  if (CASA.fechaSegunda && hoje.getDay() === 1){
-    st.className = 'status is-shut'; span.textContent = 'Fechado hoje · segunda-feira';
-  } else if (CASA.fechaTerceiroDomingo && terceiroDomingo(hoje)){
-    st.className = 'status is-shut'; span.textContent = 'Fechado hoje · 3º domingo do mês';
+  var ABRE = 18 * 60, FECHA = 22 * 60 + 30;
+  function quando(d){
+    return d.getTime() === diaSeguinte(hoje).getTime() ? 'amanhã' : DIAS[d.getDay()].toLowerCase();
+  }
+  if (fechadoNoDia(hoje)){
+    st.className = 'status is-shut';
+    span.textContent = 'Fechado hoje' + (terceiroDomingo(hoje) ? ', 3º domingo do mês' : '') +
+      ' · abre ' + quando(proximoDiaAberto(hoje)) + ' às 18h';
+  } else if (agora.min < ABRE){
+    st.className = 'status is-shut'; span.textContent = 'Abre hoje às 18h';
+  } else if (agora.min < FECHA){
+    st.className = 'status is-open'; span.textContent = 'Aberto agora · rodízio até 22h30';
   } else {
-    st.className = 'status is-open'; span.textContent = 'Aberto hoje · ' + DIAS[hoje.getDay()];
+    st.className = 'status is-shut';
+    span.textContent = 'Fechado agora · abre ' + quando(proximoDiaAberto(hoje)) + ' às 18h';
   }
 })();
 
@@ -2260,12 +2336,12 @@ function terceiroDomingo(d){
         }).addTo(m);
         /* anel pulsando por fora, ponto sólido no centro */
         L.circleMarker([CASA.lat, CASA.lng], {
-          radius: 15, color: '#E3B23C', weight: 2, fill: false,
+          radius: 15, color: '#F0B94B', weight: 2, fill: false,
           className: 'pino-anel', interactive: false
         }).addTo(m);
         L.circleMarker([CASA.lat, CASA.lng], {
-          radius: 8, color: '#0B0705', weight: 2,
-          fillColor: '#E3B23C', fillOpacity: 1
+          radius: 8, color: '#1F130C', weight: 2,
+          fillColor: '#F0B94B', fillOpacity: 1
         }).addTo(m).bindPopup('<b>Santo Strike</b><br>' + CASA.rua + '<br>' + CASA.cidade);
       } catch (err) { box.style.display = 'none'; }
     };
@@ -2444,6 +2520,66 @@ function terceiroDomingo(d){
   montar(); rotulo(); checar();
 })();
 
+})();
+
+/* ===========================================================
+   FOGO EM VOLTA DO SITE: brasas subindo e tocha no cursor.
+   Mesma receita do site do Caverna's, com menos brasas no celular,
+   pausa quando a aba some e nada para quem pede menos movimento.
+   =========================================================== */
+(function(){
+  var calmo = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (calmo) return;
+
+  var torch = document.getElementById('torch');
+  if (torch && matchMedia('(hover: hover)').matches){
+    var tx = innerWidth / 2, ty = innerHeight / 2, cx = tx, cy = ty;
+    addEventListener('pointermove', function(e){ tx = e.clientX; ty = e.clientY; torch.classList.add('is-on'); }, { passive:true });
+    (function segue(){
+      cx += (tx - cx) * 0.09; cy += (ty - cy) * 0.09;
+      torch.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)';
+      requestAnimationFrame(segue);
+    })();
+  }
+
+  var cv = document.getElementById('embers');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d'), w, h, dpr, brasas = [];
+  function medir(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = cv.width = innerWidth * dpr; h = cv.height = innerHeight * dpr;
+  }
+  function nasce(qualquerLugar){
+    return { x: Math.random() * w,
+             y: qualquerLugar ? Math.random() * h : h + Math.random() * 60 * dpr,
+             r: (Math.random() * 1.7 + .5) * dpr,
+             vy: -(Math.random() * .45 + .16) * dpr,
+             vx: (Math.random() - .5) * .28 * dpr,
+             a: Math.random() * .55 + .18, t: Math.random() * 100 };
+  }
+  function semear(){
+    var n = innerWidth < 720 ? 24 : 54;
+    brasas = []; for (var i = 0; i < n; i++) brasas.push(nasce(true));
+  }
+  function quadro(){
+    if (document.hidden){ requestAnimationFrame(quadro); return; }
+    ctx.clearRect(0, 0, w, h);
+    for (var i = 0; i < brasas.length; i++){
+      var p = brasas[i];
+      p.t += .018; p.y += p.vy; p.x += p.vx + Math.sin(p.t) * .32 * dpr;
+      var brilho = p.a * (.65 + Math.sin(p.t * 3.1) * .35);
+      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4.5);
+      g.addColorStop(0, 'rgba(255,205,110,' + brilho + ')');
+      g.addColorStop(.35, 'rgba(255,106,0,' + (brilho * .55) + ')');
+      g.addColorStop(1, 'rgba(230,51,18,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * 4.5, 0, Math.PI * 2); ctx.fill();
+      if (p.y < -20 * dpr) brasas[i] = nasce(false);
+    }
+    requestAnimationFrame(quadro);
+  }
+  medir(); semear(); quadro();
+  addEventListener('resize', function(){ medir(); semear(); }, { passive:true });
 })();
 </script>
 </body>

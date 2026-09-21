@@ -270,7 +270,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   <!-- 2. QUANDO -->
   <section class="tela" data-tela="1">
     <h1>Que dia?</h1>
-    <p class="sub">A casa abre às 18h. O rodízio é servido das 18h30 às 22h30, com entrada até 21h50.</p>
+    <p class="sub">A casa abre às 18h. O rodízio é servido das 18h30 às 22h30, com entrada até 21h50. Fechado às segundas e no 3º domingo do mês.</p>
     <span class="rot">Escolha o dia</span>
     <div class="dias-wrap"><div class="dias" id="dias"></div></div>
     <div class="setas"><button type="button" id="diaEsq" aria-label="Ver dias anteriores">&#8592;</button>
@@ -401,7 +401,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       </details>
     </div>
 
-    <label class="check"><input type="checkbox" id="aceite"><span>Li e concordo com o contrato de reserva.</span></label>
+    <label class="check"><input type="checkbox" id="aceite"><span>Li e concordo com o contrato de reserva e os <a href="/termos/" target="_blank" rel="noopener">termos de uso</a>.</span></label>
     <p class="erro" id="erro"></p>
   </section>
 
@@ -549,8 +549,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     return st.onde;
   }
 
-  /* só a segunda é fechada */
-  function fechado(d){ return d.getDay() === 1; }
+  /* a casa fecha às segundas e no 3º domingo de cada mês (dias 15 a 21) */
+  function terceiroDomingo(d){ return d.getDay() === 0 && Math.floor((d.getDate() - 1) / 7) === 2; }
+  function fechado(d){ return d.getDay() === 1 || terceiroDomingo(d); }
 
   /* ---------- boliche ---------- */
   function precoPista(d, h){
