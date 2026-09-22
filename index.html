@@ -1080,12 +1080,16 @@ b[data-count]{font-variant-numeric:tabular-nums}
 }
 @media (max-width:720px){
   .nav-links{
-    position:fixed;inset:0;background:rgba(31,19,12,.97);backdrop-filter:blur(20px);
+    position:fixed;top:0;left:0;right:0;bottom:0;height:100vh;height:100dvh;z-index:100;
+    background:rgba(31,19,12,.97);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
     flex-direction:column;justify-content:center;gap:2rem;font-size:1.4rem;
     opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s;
   }
   .nav-links a{font-size:1.35rem;font-family:var(--display)}
   .menu-open .nav-links{opacity:1;visibility:visible}
+  /* com o menu aberto a página de trás não rola por baixo dele */
+  body.menu-open{overflow:hidden;touch-action:none}
+  body.menu-open .nav-links{touch-action:auto}
   .burger{display:block;position:relative;z-index:101}
   .nav .btn--gold{display:none}
 }
