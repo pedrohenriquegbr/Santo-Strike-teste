@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Santo Strike | Boliche e Gastronomia em Duque de Caxias</title>
-<meta name="description" content="Rodízio de pizza e bufê a partir de R$ 49,99, rodízio fusion com churrasco, boliche e PlayKids. Terça a domingo em Duque de Caxias. Reserve sua mesa.">
+<meta name="description" content="Rodízio de pizza e bufê a partir de R$ 49,99, rodízio fusion com churrasco, boliche e PlayKids. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias. Reserve sua mesa.">
 <meta name="theme-color" content="#1F130C">
 <meta name="robots" content="index, follow">
 <!-- Domínio do site. Ao trocar, rode na pasta do projeto: node trocar-dominio.js https://novo-dominio -->
@@ -487,11 +487,30 @@ a{color:inherit}
 
 /* --- boliche: split --------------------------------------- */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,5rem);align-items:center}
-.feats{list-style:none;padding:0;margin:2.4rem 0 0;display:grid;gap:1.4rem}
-.feats li{display:grid;gap:.25rem;padding-left:1.3rem;border-left:2px solid var(--accent-muted)}
-.feats b{font-family:var(--display);font-weight:400;font-size:1.28rem}
-.feats span{color:var(--text-secondary);font-size:.96rem}
 .split__viz{margin:0}
+/* tabela da pista: a mesma arte da casa, com a coluna do dia acesa */
+.pista{margin-top:2.2rem}
+.pista__hoje{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .9rem;font-size:.94rem;color:var(--text-secondary)}
+.pista__hoje i{flex:0 0 8px;height:8px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 10px rgba(240,185,75,.7);transform:translateY(-1px)}
+.pista__hoje b{color:var(--accent);font-weight:500}
+.tab-pista{width:100%;border-collapse:collapse;font-size:.92rem}
+.tab-pista th,.tab-pista td{padding:.7rem .6rem;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+.tab-pista th:first-child{padding-left:0}
+.tab-pista thead th{font-family:var(--mono);font-size:.64rem;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--text-secondary);white-space:nowrap}
+.tab-pista thead th:not(:first-child),.tab-pista td{text-align:right}
+.tab-pista tbody th{font-weight:400;color:var(--text-primary)}
+.tab-pista small{display:block;font-family:var(--body);font-size:.76rem;color:var(--text-secondary);
+  letter-spacing:0;margin-top:.2rem;white-space:normal}
+.tab-pista td{font-family:var(--mono);font-size:.98rem;color:var(--accent);white-space:nowrap}
+.tab-pista td small{max-width:8.5rem;margin-left:auto}
+.tab-pista .is-hoje{background:rgba(240,185,75,.08)}
+.tab-pista thead .is-hoje{color:var(--accent)}
+.tab-pista td.is-hoje{color:var(--accent-hover)}
+.tab-pista .is-outro{opacity:.5}
+.pista__nota{margin-top:.7rem;font-size:.8rem;color:var(--text-secondary)}
+#boliche .ctas{display:flex;margin-top:1.8rem}
 .foto-real{border:1px solid var(--line);overflow:hidden;position:relative}
 .foto-real img{width:100%;height:100%;aspect-ratio:4/3;object-fit:cover;display:block;
   transition:transform .8s var(--ease-out)}
@@ -1197,7 +1216,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         <div class="band band--settle" data-a="0.78" data-b="1" data-entrance="rise">
           <svg class="halo band-mark" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
           <h1 data-split="word">Santo Strike</h1>
-          <p class="sub">Rodízio a partir de R$&nbsp;49,99. Terça a domingo, em Duque de Caxias.</p>
+          <p class="sub">Rodízio a partir de R$&nbsp;49,99. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias.</p>
           <div class="ctas">
             <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
             <a class="btn btn--ghost" href="#andares">Ver os rodízios</a>
@@ -1219,7 +1238,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
     <div class="inner">
       <svg class="halo band-mark" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
       <h1>Santo Strike</h1>
-      <p class="sub">Dois andares, dois rodízios, boliche e PlayKids. Terça a domingo, em Duque de Caxias.</p>
+      <p class="sub">Dois andares, dois rodízios, boliche e PlayKids. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias.</p>
       <div class="ctas">
         <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
         <a class="btn btn--ghost" href="#andares">Ver os rodízios</a>
@@ -1232,7 +1251,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
     <ul>
       <li><b data-count="267" data-suffix=" mil">0 mil</b> seguidores no Instagram</li>
       <li><b data-count="2">0</b> andares, dois rodízios</li>
-      <li><b>Boliche</b> e PlayKids no mesmo lugar</li>
+      <li><b>Boliche</b> e PlayKids para a família</li>
       <li><b>Ter&ndash;Dom</b> das 18h30 às 22h30</li>
     </ul>
   </div>
@@ -1354,7 +1373,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         <p class="cat__where">Cortesia só para quem reserva</p>
         <ul class="dishes">
           <li><span>Refrigerante e refresco no 1º piso, de terça a sexta</span><em>cortesia</em></li>
-          <li><span>Refrigerante 2 litros com reserva, nos outros dias e no 2º piso</span><em>R$ 15</em></li>
+          <li><span>Promoção com reserva: refrigerante 2 litros, nos outros dias e no 2º piso</span><em>R$ 15</em></li>
           <li><span>Refrigerante 2 litros sem reserva</span><em>R$ 20</em></li>
           <li><span>Drinks e demais bebidas</span><em>à parte</em></li>
         </ul>
@@ -1364,18 +1383,48 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
   </section>
 
   <!-- ========== BOLICHE + PLAYKIDS ========== -->
+  <!-- Valores da arte "Valores da pista de boliche" da casa. A pista fica em
+       um espaço separado das mesas, então o texto não pode dizer "mesmo lugar".
+       A coluna do dia acende sozinha pelo calendário (ver PISTA HOJE no JS). -->
   <section class="sec sec--dark" id="boliche">
     <div class="wrap split">
       <div class="split__text">
         <p class="kicker rv">Não é só comer</p>
-        <h2 class="rv">A pista e a mesa<br>no mesmo lugar.</h2>
-        <p class="lede rv">A espera da mesa deixa de ser espera. E quem chega com criança
-          pequena não precisa escolher entre jantar e ficar de olho.</p>
-        <ul class="feats rv">
-          <li><b>Boliche</b><span>Pista por hora, até 6 pessoas. Quem vai no rodízio joga a partir de R$&nbsp;40.</span></li>
-          <li><b>PlayKids</b><span>Grátis para a criança que paga o rodízio infantil. Fliperama à parte.</span></li>
-          <li><b>Dois andares</b><span>Rodízio embaixo, churrasco em cima, boliche junto.</span></li>
-        </ul>
+        <h2 class="rv">Rodízio e boliche<br>na mesma noite.</h2>
+        <p class="lede rv">A pista fica em um espaço próprio, separado das mesas do rodízio. Quem vai
+          no rodízio paga bem menos para jogar, e a pista das 18h sai por R$&nbsp;40 a hora.</p>
+
+        <div class="pista rv">
+          <p class="pista__hoje" id="pistaHoje" hidden><i></i><span></span></p>
+          <table class="tab-pista" id="tabPista">
+            <caption class="sr-only">Valores da pista de boliche, por pista e por hora</caption>
+            <thead>
+              <tr><th scope="col">Por pista, por hora</th><th scope="col" data-col="util">Ter a qui</th><th scope="col" data-col="fim">Sex a dom *</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row">Promoção das 18h<small>só para quem vai no rodízio</small></th>
+                <td data-col="util">R$&nbsp;40</td><td data-col="fim">R$&nbsp;40</td></tr>
+              <tr><th scope="row">Com reserva<small>cliente do rodízio</small></th>
+                <td data-col="util">R$&nbsp;80<small>2ª hora: R$&nbsp;40</small></td><td data-col="fim">R$&nbsp;120</td></tr>
+              <tr><th scope="row">Sem reserva<small>cliente do rodízio</small></th>
+                <td data-col="util">R$&nbsp;100</td><td data-col="fim">R$&nbsp;150</td></tr>
+              <tr><th scope="row">Uso avulso<small>sem rodízio</small></th>
+                <td data-col="util">R$&nbsp;200</td><td data-col="fim">R$&nbsp;300</td></tr>
+            </tbody>
+          </table>
+          <p class="pista__nota">* Sexta a domingo, feriados e vésperas de feriado.</p>
+        </div>
+
+        <div class="regras rv">
+          <ul>
+            <li class="is-key">Cada pista comporta até 6 pessoas. O valor é por pista, não por pessoa.</li>
+            <li>Promoção das 18h: exclusiva para clientes do rodízio, com reserva antecipada obrigatória,
+              pagamento integral no ato da reserva e sujeita à disponibilidade de pistas.</li>
+            <li>Reservando 2 horas seguidas de terça a quinta, a 2ª hora tem 50% de desconto e sai por R$&nbsp;40.</li>
+            <li>PlayKids grátis para a criança que paga o rodízio infantil. Fliperama à parte.</li>
+          </ul>
+        </div>
+        <div class="ctas rv"><a class="btn btn--gold" href="/reserva/?onde=boliche">Reservar pista</a></div>
       </div>
       <figure class="split__viz rv foto-real foto-real--retrato">
         <img src="assets/fotos/boliche-jogando.jpg"
@@ -1434,6 +1483,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
     <div class="wrap">
       <p class="kicker rv">A casa</p>
       <h2 class="rv">Duque de Caxias,<br>terça a domingo.</h2>
+      <p class="lede rv">Exceto no 3º domingo de cada mês, quando a casa fecha.</p>
       <div class="gal rv" id="gal">
         <figure class="gal__i gal__i--tall gal__i--has" data-area="salao">
           <img src="assets/fotos/salao.jpg" alt="Salão do restaurante à noite, mesas postas e lâmpadas douradas" loading="lazy" decoding="async">
@@ -2165,6 +2215,24 @@ function proximoDiaAberto(d){
   while (fechadoNoDia(x)) x = diaSeguinte(x);
   return x;
 }
+/* Feriados de Duque de Caxias: a mesma lista da página de reserva. Feriado e
+   véspera de feriado pagam o preço de fim de semana. Sexta-feira Santa e
+   Carnaval são calculados pela Páscoa. */
+var FERIADOS = ['01-01','04-21','04-23','05-01','06-13','09-07','10-12','11-02','11-15','11-20','12-25'];
+function pascoa(ano){
+  var a = ano % 19, b = Math.floor(ano / 100), c = ano % 100, d = Math.floor(b / 4), e = b % 4,
+      f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30,
+      i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451),
+      n = h + l - 7 * m + 114;
+  return new Date(ano, Math.floor(n / 31) - 1, (n % 31) + 1);
+}
+function feriado(d){
+  var md = ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  if (FERIADOS.indexOf(md) >= 0) return true;
+  var dif = Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - pascoa(d.getFullYear())) / 86400000);
+  return dif === -47 || dif === -2;      /* terça de Carnaval e Sexta-feira Santa */
+}
+function vespera(d){ return feriado(diaSeguinte(d)); }
 /* data e hora de Brasília, para o status não errar em celular com outro fuso */
 function agoraBrasilia(){
   try {
@@ -2322,6 +2390,37 @@ function agoraBrasilia(){
     st.className = 'status is-shut';
     span.textContent = 'Fechado agora · abre ' + quando(proximoDiaAberto(hoje)) + ' às 18h';
   }
+})();
+
+/* ===========================================================
+   PISTA HOJE
+   Acende na tabela do boliche a coluna que vale hoje: terça a quinta,
+   ou sexta a domingo, feriado e véspera. Com a casa fechada hoje
+   (segunda ou 3º domingo), mostra o próximo dia aberto.
+   =========================================================== */
+(function(){
+  var tab = document.getElementById('tabPista');
+  var linha = document.getElementById('pistaHoje');
+  if (!tab || !linha) return;
+  var hoje = agoraBrasilia().dia;
+  var aberto = !fechadoNoDia(hoje), dia = aberto ? hoje : proximoDiaAberto(hoje);
+  var w = dia.getDay(), fer = feriado(dia), vesp = !fer && vespera(dia);
+  var col = (w >= 2 && w <= 4 && !fer && !vesp) ? 'util' : 'fim';
+
+  [].forEach.call(tab.querySelectorAll('[data-col]'), function(c){
+    var on = c.getAttribute('data-col') === col;
+    c.classList.toggle('is-hoje', on);
+    c.classList.toggle('is-outro', !on);
+  });
+
+  var faixa = col === 'util' ? 'de terça a quinta' : 'de sexta a domingo';
+  var nome = DIAS[w].toLowerCase(), motivo = fer ? ', feriado' : vesp ? ', véspera de feriado' : '';
+  linha.querySelector('span').innerHTML = aberto
+    ? '<b>Hoje, ' + nome + motivo + '</b> · valem os preços ' + faixa + '.'
+    : '<b>Hoje a casa não abre.</b> ' + (dia.getTime() === diaSeguinte(hoje).getTime() ? 'Amanhã'
+                                          : (w === 0 || w === 6 ? 'No ' : 'Na ') + nome) +
+      motivo + ', valem os preços ' + faixa + '.';
+  linha.hidden = false;
 })();
 
 /* ===========================================================
