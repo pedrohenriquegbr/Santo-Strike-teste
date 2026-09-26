@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Santo Strike | Boliche e Gastronomia em Duque de Caxias</title>
-<meta name="description" content="Rodízio de pizza e bufê a partir de R$ 49,99, rodízio fusion com churrasco, boliche e PlayKids. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias. Reserve sua mesa.">
+<meta name="description" content="Rodízio de pizza e bufê a partir de R$ 54,99 no Pix da reserva, rodízio fusion com churrasco, boliche e PlayKids. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias. Reserve sua mesa.">
 <meta name="theme-color" content="#1F130C">
 <meta name="robots" content="index, follow">
 <!-- Domínio do site. Ao trocar, rode na pasta do projeto: node trocar-dominio.js https://novo-dominio -->
@@ -14,7 +14,7 @@
 <meta property="og:site_name" content="Santo Strike">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Santo Strike","description":"Boliche e gastronomia em Duque de Caxias: rodízio de pizza e bufê no 1º piso, rodízio Fusion Food com churrasco no 2º piso, boliche e área kids.","url":"https://santo-strike.vercel.app/","image":"https://santo-strike.vercel.app/assets/hero-poster.jpg","telephone":"+55 21 98879-9699","servesCuisine":["Pizza","Churrasco","Rodízio"],"priceRange":"R$ 49,99 a R$ 84,99","acceptsReservations":"https://santo-strike.vercel.app/reserva/","address":{"@type":"PostalAddress","streetAddress":"Rua Beira Linha, 84","addressLocality":"Duque de Caxias","addressRegion":"RJ","postalCode":"25045-366","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-22.714826,"longitude":-43.3209277},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"18:00","closes":"22:30"}],"sameAs":["https://www.instagram.com/santo_strike_oficial/"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Santo Strike","description":"Boliche e gastronomia em Duque de Caxias: rodízio de pizza e bufê no 1º piso, rodízio Fusion Food com churrasco no 2º piso, boliche e área kids.","url":"https://santo-strike.vercel.app/","image":"https://santo-strike.vercel.app/assets/hero-poster.jpg","telephone":"+55 21 98879-9699","servesCuisine":["Pizza","Churrasco","Rodízio"],"priceRange":"R$ 54,99 a R$ 84,99","acceptsReservations":"https://santo-strike.vercel.app/reserva/","address":{"@type":"PostalAddress","streetAddress":"Rua Beira Linha, 84","addressLocality":"Duque de Caxias","addressRegion":"RJ","postalCode":"25045-366","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-22.714826,"longitude":-43.3209277},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"18:00","closes":"22:30"}],"sameAs":["https://www.instagram.com/santo_strike_oficial/"]}</script>
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:title" content="Santo Strike | Boliche e Gastronomia">
@@ -419,14 +419,21 @@ a{color:inherit}
   font-size:.42em;font-weight:400;display:block;margin-top:.6rem;letter-spacing:.04em;
   background:none;-webkit-text-fill-color:var(--text-secondary);color:var(--text-secondary);
 }
-/* dinheiro x cartão é diferencial real da casa: mostra os dois */
-.tab-preco{width:100%;border-collapse:collapse;margin-top:1.3rem;font-size:.84rem}
-.tab-preco td{padding:.55rem 0;border-bottom:1px solid var(--line);vertical-align:top}
-.tab-preco td:first-child{color:var(--text-primary)}
-.tab-preco td:not(:first-child){text-align:right;font-family:var(--mono);
-  color:var(--accent);white-space:nowrap;padding-left:.9rem}
-.tab-preco i{display:block;font-style:normal;font-size:.7em;color:var(--text-secondary);
-  font-family:var(--body);letter-spacing:.03em;margin-top:.15rem}
+/* Os valores como no folder da casa: o dia, o preço do Pix da reserva (igual
+   ao dinheiro) em destaque e, embaixo, o da maquininha. */
+.folder{margin-top:1.3rem}
+.folder__dia{margin:1.1rem 0 .45rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--text-primary)}
+.folder__dia:first-child{margin-top:0}
+.folder__dia small{display:block;margin-top:.2rem;font-family:var(--body);font-size:.78rem;letter-spacing:0;
+  text-transform:none;color:var(--text-secondary)}
+.fv{display:grid;grid-template-columns:4.6rem 1fr;align-items:center;gap:.9rem;margin:0;padding:.5rem 0;
+  border-bottom:1px solid var(--line)}
+.fv b{font-family:var(--mono);font-size:1.12rem;color:var(--accent);white-space:nowrap}
+.fv span{font-size:.86rem;line-height:1.35;color:var(--text-secondary)}
+.fv--maq b{color:var(--text-primary);font-size:1rem;font-weight:500}
+.fv--promo b{color:var(--accent-hover)}
+.fv--promo span{color:var(--text-primary)}
 .floor ul{list-style:none;padding:0;margin:1.5rem 0 0;display:grid;gap:.5rem}
 .floor ul li{display:flex;gap:.6rem;font-size:.94rem;color:var(--text-secondary);align-items:baseline}
 .floor ul li::before{content:"";flex:0 0 5px;height:5px;background:var(--accent);border-radius:50%;transform:translateY(-3px)}
@@ -1216,7 +1223,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         <div class="band band--settle" data-a="0.78" data-b="1" data-entrance="rise">
           <svg class="halo band-mark" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
           <h1 data-split="word">Santo Strike</h1>
-          <p class="sub">Rodízio a partir de R$&nbsp;49,99. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias.</p>
+          <p class="sub">Rodízio a partir de R$&nbsp;54,99. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias.</p>
           <div class="ctas">
             <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
             <a class="btn btn--ghost" href="#andares">Ver os rodízios</a>
@@ -1271,20 +1278,24 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
           <p class="tag">1º piso</p>
           <h3>Rodízio Tradicional</h3>
           <p class="what">O bufê você se serve. A pizza vem até a sua mesa.</p>
-          <span class="price grad">R$&nbsp;49,99<small>Promoção de terça a quinta</small></span>
-          <table class="tab-preco">
-            <tbody>
-              <tr><td>Terça a quinta</td><td>54,99<i>dinheiro</i></td><td>59,99<i>cartão</i></td></tr>
-              <tr><td>Sexta e domingo</td><td>59,99<i>dinheiro</i></td><td>64,99<i>cartão</i></td></tr>
-              <tr><td>Sábado</td><td>64,99<i>dinheiro</i></td><td>69,99<i>cartão</i></td></tr>
-            </tbody>
-          </table>
+          <span class="price grad">R$&nbsp;54,99<small>No Pix da reserva, de terça a quinta</small></span>
+          <!-- valores do folder oficial: Pix no ato da reserva vale o mesmo que dinheiro -->
+          <div class="folder">
+            <p class="folder__dia">Terça a quinta<small>exceto feriado e véspera de feriado</small></p>
+            <p class="fv fv--promo"><b>49,99</b><span>Promoção especial para quem pagar no ato da reserva, com no mínimo 7 dias de antecedência</span></p>
+            <p class="fv"><b>54,99</b><span>Pix no ato da reserva ou dinheiro físico</span></p>
+            <p class="fv fv--maq"><b>59,99</b><span>Pix, débito e crédito na maquininha</span></p>
+            <p class="folder__dia">Sexta e domingo<small>e também feriado e véspera de feriado</small></p>
+            <p class="fv"><b>59,99</b><span>Pix no ato da reserva ou dinheiro físico</span></p>
+            <p class="fv fv--maq"><b>64,99</b><span>Pix, débito e crédito na maquininha</span></p>
+            <p class="folder__dia">Sábado</p>
+            <p class="fv"><b>64,99</b><span>Pix no ato da reserva ou dinheiro físico</span></p>
+            <p class="fv fv--maq"><b>69,99</b><span>Pix, débito e crédito na maquininha</span></p>
+          </div>
           <ul>
             <li>Pizza servida na mesa, sem pedir</li>
             <li>Bufê quente e frio, você se serve</li>
-            <li>R$&nbsp;49,99 na promoção: reserva com 7 dias de antecedência e pagamento no ato, de terça a quinta, fora feriados e vésperas</li>
             <li>Refrigerante e refresco cortesia de terça a sexta, para quem reserva</li>
-            <li>Feriado e véspera de feriado pagam o valor de sexta e domingo</li>
             <li>Até 2 anos grátis &middot; 3 a 5 anos R$&nbsp;19,99 &middot; 6 a 8 anos R$&nbsp;34,99</li>
             <li>Bariátricos têm 30% de desconto</li>
           </ul>
@@ -1296,23 +1307,28 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
           <p class="tag">2º piso</p>
           <h3>Rodízio Fusion Food</h3>
           <p class="what">Outra experiência: churrasco na brasa, comida oriental e massas.</p>
-          <span class="price grad">R$&nbsp;69,99<small>Terça a quinta, em dinheiro</small></span>
-          <table class="tab-preco">
-            <tbody>
-              <tr><td>Terça a quinta</td><td>69,99<i>dinheiro</i></td><td>74,99<i>cartão</i></td></tr>
-              <tr><td>Sexta a domingo</td><td>79,99<i>dinheiro</i></td><td>84,99<i>cartão</i></td></tr>
-            </tbody>
-          </table>
+          <span class="price grad">R$&nbsp;69,99<small>No Pix da reserva, de terça a quinta</small></span>
+          <div class="folder">
+            <p class="folder__dia">Terça a quinta<small>exceto feriado e véspera de feriado</small></p>
+            <p class="fv"><b>69,99</b><span>Pix no ato da reserva ou dinheiro físico</span></p>
+            <p class="fv fv--maq"><b>74,99</b><span>Pix, débito e crédito na maquininha</span></p>
+            <p class="folder__dia">Sexta a domingo<small>e também feriado e véspera de feriado</small></p>
+            <p class="fv"><b>79,99</b><span>Pix no ato da reserva ou dinheiro físico</span></p>
+            <p class="fv fv--maq"><b>84,99</b><span>Pix, débito e crédito na maquininha</span></p>
+          </div>
           <ul>
             <li>Churrasco na brasa, comida oriental e pizza</li>
             <li>Bufê de massas, petiscos e sobremesas especiais</li>
-            <li>Feriado e véspera de feriado pagam o valor de sexta a domingo</li>
             <li>Até 2 anos grátis &middot; 3 a 5 anos R$&nbsp;24,99 &middot; 6 a 8 anos R$&nbsp;34,99</li>
             <li>Bariátricos têm 30% de desconto</li>
             <li>Bebidas à parte, sem refil</li>
+            <li>O 2º piso não tem acessibilidade: quem precisa de acesso sem escada fica no 1º piso</li>
           </ul>
         </article>
       </div>
+      <p class="fineprint rv">Aceitamos Pix, débito, crédito e dinheiro físico. Não aceitamos VR. Para os valores de criança,
+        é obrigatório apresentar RG ou certidão de nascimento. Todos que entram no salão pagam o rodízio. Preços
+        diferenciados conforme a forma de pagamento, nos termos da Lei Federal 13.455/2017.</p>
     </div>
   </section>
 
@@ -1421,7 +1437,8 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
             <li>Promoção das 18h: exclusiva para clientes do rodízio, com reserva antecipada obrigatória,
               pagamento integral no ato da reserva e sujeita à disponibilidade de pistas.</li>
             <li>Reservando 2 horas seguidas de terça a quinta, a 2ª hora tem 50% de desconto e sai por R$&nbsp;40.</li>
-            <li>PlayKids grátis para a criança que paga o rodízio infantil. Fliperama à parte.</li>
+            <li>PlayKids grátis para a criança que paga o rodízio infantil, em espaços separados: Área Baby, de 3 a 5 anos,
+              e Área Kids, de 6 anos até 1,30 m. A pulseirinha é retirada no caixa. Fliperama à parte.</li>
           </ul>
         </div>
         <div class="ctas rv"><a class="btn btn--gold" href="/reserva/?onde=boliche">Reservar pista</a></div>
@@ -1528,7 +1545,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
       <p class="lede rv">Escolha o andar, o dia e quantas pessoas vão. Dá pra somar pista de boliche
         e kit festa, usar o desconto de aniversário e ver o total antes de confirmar.</p>
       <div class="atalhos-res rv">
-        <a class="atalho-res" href="/reserva/?onde=1piso"><b>1º piso</b><span>Rodízio de pizza e bufê</span><em>a partir de R$&nbsp;49,99</em></a>
+        <a class="atalho-res" href="/reserva/?onde=1piso"><b>1º piso</b><span>Rodízio de pizza e bufê</span><em>a partir de R$&nbsp;54,99</em></a>
         <a class="atalho-res" href="/reserva/?onde=2piso"><b>2º piso</b><span>Fusion Food com churrasco</span><em>a partir de R$&nbsp;69,99</em></a>
         <a class="atalho-res" href="/reserva/?onde=boliche"><b>Boliche</b><span>Pista por hora</span><em>a partir de R$&nbsp;40</em></a>
         <a class="atalho-res" href="/reserva/?onde=festa"><b>Festa</b><span>15 anos, casamento</span><em>orçamento</em></a>
@@ -2188,6 +2205,9 @@ var CASA = {
 
   fechaSegunda: true,
   fechaTerceiroDomingo: true,    /* a casa fecha todo 3º domingo do mês (confirmado em 21/09/2026) */
+  /* dias em que a casa abre mesmo sendo segunda ou 3º domingo; a mesma lista
+     fica em reserva/index.html (ABRE_EXTRA) */
+  abreExtra: [ { dia:'2026-10-12', nome:'Dia das Crianças' } ],
   /* Preços: tabela oficial da casa (catálogo do WhatsApp). */
 
   /* A casa abre às 18h. Rodízio das 18h30 às 22h30, entrada até 21h50. */
@@ -2201,7 +2221,13 @@ function terceiroDomingo(d){
 }
 var MESES_NOME = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
 function diaSeguinte(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1); }
+function chaveDia(d){ return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function aberturaExtra(d){
+  var k = chaveDia(d);
+  return CASA.abreExtra.filter(function(a){ return a.dia === k; })[0] || null;
+}
 function fechadoNoDia(d){
+  if (aberturaExtra(d)) return false;
   return (CASA.fechaSegunda && d.getDay() === 1) || (CASA.fechaTerceiroDomingo && terceiroDomingo(d));
 }
 /* o próximo 3º domingo, contando hoje; a conta vale para qualquer mês e ano */
@@ -2371,6 +2397,17 @@ function agoraBrasilia(){
       (ehHoje ? ', que é hoje.' : td3 ? '. O próximo é ' + td3.getDate() + ' de ' + MESES_NOME[td3.getMonth()] + '.' : '.') + '</td>';
     tb.appendChild(nota);
   }
+  /* abertura especial nos próximos 45 dias (ex.: Dia das Crianças numa segunda) */
+  CASA.abreExtra.forEach(function(a){
+    var p = a.dia.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]);
+    var falta = Math.round((d - hoje) / 86400000);
+    if (falta < 0 || falta > 45) return;
+    var extra = document.createElement('tr');
+    extra.innerHTML = '<td colspan="2" class="hours-nota">Aberto ' + (d.getDay() % 6 === 0 ? 'no ' : 'na ') +
+      DIAS[d.getDay()].toLowerCase() + ', ' + d.getDate() +
+      ' de ' + MESES_NOME[d.getMonth()] + ': ' + a.nome + '.</td>';
+    tb.appendChild(extra);
+  });
 
   /* status: acompanha o dia e a hora. A casa abre às 18h e o rodízio vai até 22h30. */
   var span = st.querySelector('span');
