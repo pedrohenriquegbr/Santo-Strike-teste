@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="index, follow">
-<meta name="description" content="Reserve sua mesa ou pista no Santo Strike, em Duque de Caxias: escolha o andar, o dia e quantas pessoas vão. Rodízio a partir de R$ 54,99 no Pix da reserva e só o sinal para garantir a mesa.">
+<meta name="description" content="Reserve mesa ou pista de boliche no Santo Strike, em Duque de Caxias: escolha o andar, o dia e quantas pessoas vão e envie o pedido pelo WhatsApp.">
 <link rel="canonical" href="https://santo-strike.vercel.app/reserva/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
@@ -12,11 +12,14 @@
 <meta property="og:description" content="Escolha o andar, o dia e quantas pessoas vão. Rodízio a partir de R$ 54,99 no Pix da reserva, com horário único às 18h30.">
 <meta property="og:url" content="https://santo-strike.vercel.app/reserva/">
 <meta property="og:image" content="https://santo-strike.vercel.app/assets/og-logo.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo do Santo Strike Boliche e Gastronomia">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0B0705">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<title>Reserva | Santo Strike Boliche e Gastronomia</title>
+<title>Reservar rodízio ou boliche em Duque de Caxias | Santo Strike</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
@@ -159,6 +162,11 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
   border-radius:10px;color:var(--ink);font:400 1rem/1.4 var(--body);padding:.8rem .9rem}
 .fld textarea{resize:vertical;min-height:4.2rem}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--accent);outline:none}
+/* foco visível para quem usa teclado: dias, horários e campos */
+.dia:has(input:focus-visible),.hora:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.fld input:focus-visible,.fld select:focus-visible,.fld textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fld [aria-invalid="true"]{border-color:var(--ember)}
+.tela h1:focus{outline:none}
 .check{display:grid;grid-template-columns:1.2rem 1fr;gap:.7rem;align-items:start;font-size:.9rem;color:var(--ink-2);margin-top:1rem}
 .check input{width:1.2rem;height:1.2rem;accent-color:var(--accent);margin-top:.15rem}
 .check b{color:var(--ink)}
@@ -209,7 +217,12 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 .ok .selo{width:76px;height:76px;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);
   display:grid;place-items:center;margin:0 auto 1.2rem}
 .ok .selo svg{width:32px;height:32px}
+.ok .linhas{text-align:left}
 .codigo-res{font:500 1.5rem/1 var(--mono);letter-spacing:.1em;color:var(--accent);margin:.2rem 0 1.2rem}
+
+/* dados da casa no pé da página, acima da barra fixa */
+.pe{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.74rem;line-height:1.6;color:var(--ink-2)}
+.pe a{color:var(--ink-2)}
 
 /* rodapé fixo */
 .rodape{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(to top,var(--canvas) 72%,transparent);
@@ -236,11 +249,11 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
 <div class="app">
   <header class="top">
-    <a class="marca" href="https://santo-strike.vercel.app/" aria-label="Voltar ao site do Santo Strike">
-      <img src="/assets/logo-menu.png" alt="Santo Strike Boliche e Gastronomia" width="280" height="224">
+    <a class="marca" href="/" aria-label="Voltar ao site do Santo Strike">
+      <img src="/assets/logo-menu.webp" alt="Santo Strike Boliche e Gastronomia" width="280" height="224">
       <span>Reserva</span>
     </a>
-    <a class="volta" href="https://santo-strike.vercel.app/">Ver o site</a>
+    <a class="volta" href="/">Ver o site</a>
   </header>
 
   <div class="barra"><i id="barra" style="transform:scaleX(.125)"></i></div>
@@ -282,6 +295,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <div class="dias-wrap"><div class="dias" id="dias"></div></div>
     <div class="setas"><button type="button" id="diaEsq" aria-label="Ver dias anteriores">&#8592;</button>
       <button type="button" id="diaDir" aria-label="Ver próximos dias">&#8594;</button></div>
+    <p class="sub" style="font-size:.8rem;margin:.3rem 0 0">Aqui aparecem os próximos 14 dias de funcionamento. Para uma data mais distante, fale com a casa no WhatsApp.</p>
     <span class="rot" id="rotHora">Horário da reserva</span>
     <div class="horas" id="horas"></div>
     <label class="check" id="caixaExclusiva"><input type="checkbox" id="exclusiva"><span><b>Quero mesa exclusiva.</b> A mesa fica com o grupo a noite toda, sem limite de chegada. Todos os lugares são pagos antes e lugar vazio não é reembolsado.</span></label>
@@ -375,12 +389,14 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   <section class="tela" data-tela="5">
     <h1>Seus dados</h1>
     <p class="sub">É por aqui que a casa confirma com você.</p>
-    <label class="fld"><span>Nome completo</span><input id="nome" type="text" placeholder="Maria Souza" autocomplete="name"></label>
-    <label class="fld"><span>WhatsApp</span><input id="fone" type="tel" inputmode="tel" placeholder="(21) 99999-9999" autocomplete="tel"></label>
+    <label class="fld"><span>Nome completo</span><input id="nome" type="text" placeholder="Maria Souza" autocomplete="name" aria-describedby="erroGeral"></label>
+    <label class="fld"><span>WhatsApp</span><input id="fone" type="tel" inputmode="tel" placeholder="(21) 99999-9999" autocomplete="tel" aria-describedby="erroGeral"></label>
     <label class="fld"><span>Ocasião</span>
       <select id="ocasiao"><option>Só comer</option><option>Aniversário</option><option>15 anos</option><option>Confraternização</option><option>Encontro de família</option></select></label>
     <label class="fld"><span>Alguma observação</span><textarea id="obs" placeholder="Alergia, cadeirinha de bebê, cadeira de rodas"></textarea></label>
     <div class="aviso">O <b>2º piso não tem acessibilidade</b>. Quem precisa de acesso sem escada fica no 1º piso.</div>
+    <p class="sub" style="font-size:.82rem;margin-top:1rem">Seu nome e WhatsApp servem só para a casa confirmar esta reserva.
+      Veja a <a href="/politica-de-privacidade/" target="_blank" rel="noopener" style="color:var(--accent)">Política de Privacidade</a>.</p>
   </section>
 
   <!-- 7. CONTRATO E RESUMO -->
@@ -432,7 +448,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       </details>
     </div>
 
-    <label class="check"><input type="checkbox" id="aceite"><span>Li e concordo com o contrato de reserva e os <a href="/termos/" target="_blank" rel="noopener">termos de uso</a>.</span></label>
+    <label class="check"><input type="checkbox" id="aceite"><span>Li e concordo com o contrato de reserva, os <a href="/termos/" target="_blank" rel="noopener">termos de uso</a> e a <a href="/politica-de-privacidade/" target="_blank" rel="noopener">política de privacidade</a>.</span></label>
     <p class="erro" id="erro"></p>
   </section>
 
@@ -444,14 +460,18 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <p class="codigo-res" id="codigoRes">SS-0000</p>
       <div class="linhas" id="resumoOk"></div>
       <div class="nodia" id="noDiaOk" style="text-align:left"></div>
-      <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a sua reserva pro WhatsApp do Santo Strike. A casa confirma a data e te envia o Pix para garantir a vaga.</p>
-      <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar reserva no WhatsApp</a>
+      <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a sua reserva para o WhatsApp do Santo Strike. A casa confirma a data e envia a chave Pix para você garantir a vaga.</p>
+      <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar pelo WhatsApp</a>
     </div>
   </section>
+
+  <footer class="pe">Santo Strike Boliche e Gastronomia · Rua Beira Linha, 84, Jardim Glória, Duque de Caxias, RJ,
+    CEP 25045-366 · WhatsApp (21) 98879-9699 · <a href="/politica-de-privacidade/">Política de privacidade</a> ·
+    <a href="/termos/">Termos de uso</a></footer>
 </div>
 
 <div class="rodape">
-  <p class="erro" id="erroGeral" role="alert" aria-live="polite" style="max-width:30rem;margin:0 auto .4rem"></p>
+  <p class="erro" id="erroGeral" role="alert" style="max-width:30rem;margin:0 auto .4rem"></p>
   <div class="rodape__in">
     <button type="button" class="btn btn--fantasma" id="voltar" hidden aria-label="Voltar">&#8592;</button>
     <div class="total"><span id="totalRot">Por pessoa</span><b id="total">R$ 54,99</b></div>
@@ -538,13 +558,15 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     return piso === 1 && !!d && diaUtil(d) && diasDeAntecedencia(d) >= 7;
   }
   var arred = function(v){ return Math.round(v * 100 + 1e-6) / 100; };
+  /* '18:00' vira '18h' e '18:30' vira '18h30', como se escreve no Brasil */
+  function fmtHora(h){ return h ? h.replace(':00', 'h').replace(':', 'h') : ''; }
 
   var EXTRAS = [
     /* antecipado: entra no Pix da reserva. Os outros só ficam anotados e são
        pagos na casa, no dia (pedido da equipe de reservas). */
     { id:'kit',  nome:'Kit Festa + Bolo', preco:119.99, max:1, antecipado:true, foto:'/assets/catalogo/kit-festa.jpg',
-      desc:'Bolo de 10 fatias, 10 cupcakes e mesa decorada, com tema à sua escolha. Pago junto com a reserva. Não vale aos sábados, é uma promoção por noite em cada andar e depende da disponibilidade.' },
-    /* a dona pediu para não citar o preço de balcão aqui: na reserva vale a promoção */
+      desc:'Bolo de 10 fatias, 10 cupcakes e a mesa do bolo montada no tema que você escolher. Pago junto com a reserva. Não vale aos sábados, é uma promoção por noite em cada andar e depende da disponibilidade.' },
+    /* na reserva vale o preço promocional do refrigerante */
     { id:'refri', nome:'Refrigerante 2L', preco:15, ico:'copo',
       desc:'<b>Promoção com reserva: R$ 15.</b> Você marca aqui e paga na casa. No 1º piso, de terça a sexta, refrigerante e refresco são cortesia.' },
     { id:'bolo', nome:'Taxa de bolo próprio', preco:60, ico:'bolo',
@@ -643,9 +665,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var cr = TABELA[st.piso].crianca, out = [];
     if (st.adultos) out.push({ nome:st.adultos + ' adulto' + (st.adultos > 1 ? 's' : '') + ' × ' + moeda(va), valor:va * st.adultos });
     if (st.bari) out.push({ nome:st.bari + ' bariátrico' + (st.bari > 1 ? 's' : '') + ' × ' + moeda(vb), valor:vb * st.bari });
-    if (st.c35) out.push({ nome:st.c35 + ' criança 3 a 5 × ' + moeda(cr.c35), valor:cr.c35 * st.c35 });
-    if (st.c68) out.push({ nome:st.c68 + ' criança 6 a 8 × ' + moeda(cr.c68), valor:cr.c68 * st.c68 });
-    if (st.bebes) out.push({ nome:st.bebes + ' até 2 anos', valor:0 });
+    if (st.c35) out.push({ nome:st.c35 + (st.c35 > 1 ? ' crianças' : ' criança') + ' de 3 a 5 anos × ' + moeda(cr.c35), valor:cr.c35 * st.c35 });
+    if (st.c68) out.push({ nome:st.c68 + (st.c68 > 1 ? ' crianças' : ' criança') + ' de 6 a 8 anos × ' + moeda(cr.c68), valor:cr.c68 * st.c68 });
+    if (st.bebes) out.push({ nome:st.bebes + (st.bebes > 1 ? ' crianças' : ' criança') + ' de até 2 anos', valor:0 });
     var regra = usarPromo ? '' : anivRegra();
     if (regra === 'gratis' || regra === 'meia'){
       var base = st.adultos ? va : vb;
@@ -664,8 +686,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
   /* ---------- sinal ---------- */
   function pagantes(){ return st.adultos + st.bari + st.c35 + st.c68; }
-  /* mesa exclusiva paga todos os lugares antes; fora dela, a pessoa escolhe */
-  function pagaTudo(){ return comRodizio() && ((st.tipo === 'mesa' && st.exclusiva) || st.pagarTudo); }
+  /* mesa exclusiva paga todos os lugares antes; fora dela, a pessoa escolhe.
+     Quando o sinal já cobre o grupo inteiro (2 pessoas), é o mesmo que pagar tudo. */
+  function sinalCobreTodos(){ var n = rodiziosDoSinal(); return n !== null && n >= pagantes(); }
+  function pagaTudo(){ return comRodizio() && ((st.tipo === 'mesa' && st.exclusiva) || st.pagarTudo || sinalCobreTodos()); }
   /* quantos rodízios entram no sinal; null = grupo de 30 ou mais, a casa combina */
   function rodiziosDoSinal(){
     var n = pagantes();
@@ -727,7 +751,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       if (st.bari) s += ', bariátrico com 30% de desconto';
       out.push(s + '.');
       var regra = anivRegra();
-      if (regra === 'gratis' || regra === 'meia') out.push('Aniversariante ' + (regra === 'gratis' ? 'não paga' : 'com 50% de desconto') + ', com o RG apresentado até 20h30.');
+      if (regra === 'gratis' || regra === 'meia') out.push('Aniversariante ' + (regra === 'gratis' ? 'não paga' : 'com 50% de desconto') + ', com o RG apresentado no caixa até 20h30.');
     }
     if (!avulso()){
       EXTRAS.forEach(function(e){
@@ -793,7 +817,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var lista = horarios();
     if (lista.length === 1){
       st.hora = lista[0];
-      box.innerHTML = '<div class="hora-fixa"><b>' + lista[0].replace(':', 'h') + '</b><span>' + textoChegada() + '</span></div>';
+      box.innerHTML = '<div class="hora-fixa"><b>' + fmtHora(lista[0]) + '</b><span>' + textoChegada() + '</span></div>';
       return;
     }
     if (lista.indexOf(st.hora) < 0) st.hora = null;
@@ -823,9 +847,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
                               : '<span class="semfoto" aria-hidden="true">' + (ICONES[e.ico] || '') + '</span>') +
         '<b>' + e.nome + '</b><span class="val" id="p_' + e.id + '">' + (fora ? 'fora aos sábados' : p ? moeda(p) : 'cortesia') + '</span>' +
         '<em>' + e.desc + '</em>' +
-        '<div class="pm"><button type="button" data-ex="' + e.id + '" data-d="-1" aria-label="Menos">&minus;</button>' +
+        '<div class="pm"><button type="button" data-ex="' + e.id + '" data-d="-1" aria-label="Menos: ' + e.nome + '">&minus;</button>' +
         '<output id="q_' + e.id + '">' + (st.extras[e.id] || 0) + '</output>' +
-        '<button type="button" data-ex="' + e.id + '" data-d="1" aria-label="Mais"' + (fora ? ' disabled' : '') + '>+</button></div>';
+        '<button type="button" data-ex="' + e.id + '" data-d="1" aria-label="Mais: ' + e.nome + '"' + (fora ? ' disabled' : '') + '>+</button></div>';
       box.appendChild(div);
     });
   }
@@ -881,7 +905,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     $('qPistas').textContent = st.pistas; $('qHoras').textContent = st.horas;
     var mh = maxHoras();
     $('vPistas').textContent = 'Até 6 pessoas em cada';
-    $('vHoras').textContent = st.hora ? 'Por pista, das ' + st.hora + ' · até ' + mh + (mh > 1 ? ' horas' : ' hora') : 'Por pista';
+    $('vHoras').textContent = st.hora ? 'Por pista, a partir das ' + fmtHora(st.hora) + ' · até ' + mh + (mh > 1 ? ' horas' : ' hora') : 'Por pista';
     EXTRAS.forEach(function(e){
       var el = $('p_' + e.id);
       if (el){ var p = precoExtra(e); el.textContent = indisponivel(e) ? 'fora aos sábados' : p ? moeda(p) : 'cortesia'; }
@@ -893,6 +917,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       ? 'Na <b>mesa exclusiva</b>, todos os rodízios são pagos na reserva.'
       : n === null
       ? 'Para garantir a mesa, a casa pede <b>só um sinal</b>. Para grupos de 30 pessoas ou mais, o sinal é combinado com você pelo WhatsApp.'
+      : sinalCobreTodos()
+      ? 'Para ' + pagantes() + ' pessoas, o sinal já cobre todos os rodízios: <b>' + moeda(somar(linhasRodizio(promo))) + '</b> no Pix' +
+        (promo ? ', com a promoção de R$ 49,99 por adulto' : '') + '. No dia, não há rodízio a pagar.'
       : 'Para segurar a mesa, você paga <b>só o sinal: ' + textoSinal(n) + ', ' + moeda(valorSinal()) + '</b> no Pix. ' +
         'O restante é pago no dia, no caixa, só por quem comparecer.';
 
@@ -909,7 +936,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       }
     } else {
       var t = total(), combinar = sinalACombinar();
-      $('totalRot').textContent = combinar ? 'Sinal da reserva' : 'Pago na reserva';
+      $('totalRot').textContent = combinar ? 'Sinal da reserva' : 'A pagar agora';
       $('total').textContent = combinar ? (t ? moeda(t) + ' + sinal' : 'a combinar') : moeda(t);
     }
     var passos = ativas(), atual = passos.indexOf(st.tela) + 1;
@@ -924,7 +951,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         'Na hora, sem reserva, a pista sai por R$ 100 de terça a quinta e R$ 150 de sexta a domingo. Sem rodízio, R$ 200 ou R$ 300.'
       : st.tipo === 'festa'
       ? 'Festa e evento têm <b>orçamento próprio</b>. A casa te chama no WhatsApp com os valores e os pacotes para a data.'
-      : 'A reserva é a partir de <b>2 pessoas</b> e, para segurar a mesa, você paga <b>só o sinal de 2 rodízios</b> no Pix. ' +
+      : (st.piso === 2 ? 'O <b>2º piso tem acesso só por escada</b>. Se alguém do grupo precisa de acesso sem escada, escolha o 1º piso. ' : '') +
+        'A reserva é a partir de <b>2 pessoas</b> e, para segurar a mesa, você paga <b>só o sinal de 2 rodízios</b> no Pix. ' +
         'A casa trabalha <b>só no sistema de rodízio</b>: todo mundo que entra participa e paga o valor do dia, inclusive acompanhantes. ' +
         'Quer jogar boliche também? Escolha <b>Boliche</b> e marque o andar: quem vai no rodízio paga bem menos na pista.';
 
@@ -935,21 +963,27 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       : st.tipo === 'festa' ? 'A casa abre às 18h. Fechado às segundas e no 3º domingo do mês.'
       : 'A reserva do rodízio é sempre para as 18h30. Fechado às segundas e no 3º domingo do mês.';
     $('caixaExclusiva').hidden = st.tipo !== 'mesa';
-    var nota = !d ? '' : feriado(d) ? 'Este dia é <b>feriado</b>, então vale o preço de fim de semana. '
-             : vespera(d) ? 'Este dia é <b>véspera de feriado</b>, então vale o preço de fim de semana. ' : '';
+    var nota = !d ? '' : feriado(d) ? 'Este dia é <b>feriado</b>, então vale o preço de sexta e domingo. '
+             : vespera(d) ? 'Este dia é <b>véspera de feriado</b>, então vale o preço de sexta e domingo. ' : '';
     var av = $('avisoDia');
     if (st.tipo === 'pista' && st.piso){
       av.innerHTML = nota + 'Para quem vai no rodízio, a pista das <b>18h sai por R$ 40</b>. Nos outros horários, R$ 80 a hora de terça a quinta, ' +
         'com a 2ª hora seguida por R$ 40, e R$ 120 de sexta a domingo, feriados e vésperas. ' +
         'O rodízio fica reservado para as <b>18h30</b>, com chegada ' +
         (!d ? 'até 19h30 de terça a sexta e até 19h nos fins de semana e feriados.' : 'até ' + (curta ? '19h' : '19h30') + ' neste dia.');
+      /* jogar antes de comer pode estourar a tolerância da mesa */
+      var H = st.hora ? parseInt(st.hora, 10) : 0, limite = curta ? 19 : 19.5;
+      if (H && H < limite && H + st.horas > limite){
+        av.innerHTML += ' <b>Vai jogar antes de comer?</b> Com a pista até as ' + (H + st.horas) + 'h, você chega à mesa depois da tolerância. ' +
+          'Escolha menos horas ou combine com a casa.';
+      }
     } else if (st.tipo === 'pista'){
       av.innerHTML = nota + 'Uso avulso, sem rodízio: <b>R$ 200</b> a hora de terça a quinta e <b>R$ 300</b> de sexta a domingo, feriados e vésperas. ' +
         'Indo no rodízio, a mesma pista sai a partir de R$ 40.';
     } else if (st.tipo === 'festa'){
       av.innerHTML = 'Escolha a data e o horário que você imagina para a festa. A casa confirma a disponibilidade no orçamento.';
     } else {
-      /* o valor do Pix da reserva fica exposto, como a dona pediu */
+      /* o valor do Pix da reserva fica sempre à vista */
       var txt;
       if (d){
         var f = TABELA[st.piso][faixa(d, st.piso)];
@@ -973,12 +1007,12 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     } else if (regra === 'gratis'){
       aa.innerHTML = 'O aniversariante <b>não paga</b>: são 10 pagantes mais ele' +
         (distAniv(d) === 0 ? ', no dia do aniversário.' : ', dentro dos 5 dias que valem às quartas e quintas.') +
-        ' Leve o RG dele até 20h30.';
+        ' Apresente o RG do aniversariante no caixa até 20h30.';
     } else if (regra === 'meia'){
       aa.innerHTML = 'O aniversariante tem <b>50% de desconto</b>. Com 10 pagantes, ele não paga no dia do aniversário ' +
-        '(às quartas e quintas, até 5 dias antes ou depois). Leve o RG dele até 20h30.';
+        '(às quartas e quintas, até 5 dias antes ou depois). Apresente o RG do aniversariante no caixa até 20h30.';
     } else {
-      aa.innerHTML = 'Aos sábados o desconto de 50% não vale. Com 10 pagantes e a reserva no dia do aniversário, o aniversariante não paga. Leve o RG dele até 20h30.';
+      aa.innerHTML = 'Aos sábados o desconto de 50% não vale. Com 10 pagantes e a reserva no dia do aniversário, o aniversariante não paga. Apresente o RG do aniversariante no caixa até 20h30.';
     }
 
     /* contrato */
@@ -1000,7 +1034,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
   function pintarConfira(){
     var rod = comRodizio(), n = rodiziosDoSinal();
-    $('formaPag').hidden = !rod || (st.tipo === 'mesa' && st.exclusiva);
+    $('formaPag').hidden = !rod || (st.tipo === 'mesa' && st.exclusiva) || sinalCobreTodos();
     if (rod){
       var promoOk = promoSePagarTudo();
       $('pagSinalTxt').textContent = n === null
@@ -1035,13 +1069,13 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   function pintarResumo(el){
     var d = st.data, festa = st.tipo === 'festa', lin = '';
     lin += '<div class="l l--cab"><span>' + ondeTexto() + '</span><i></i><span>' +
-      (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + MESES[d.getMonth()] : '') + ' · ' + (st.hora || '').replace(':', 'h') + '</span></div>';
-    if (!festa) lin += '<div class="l l--sec"><span>Pago na reserva, no Pix</span></div>';
+      (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + MESES[d.getMonth()] : '') + ' · ' + fmtHora(st.hora) + '</span></div>';
+    if (!festa) lin += '<div class="l l--sec"><span>A pagar agora, no Pix</span></div>';
     agora().forEach(function(i){
       lin += '<div class="l' + (i.extra ? ' l--extra' : '') + (i.desconto ? ' l--desc' : '') + '"><span>' + i.nome +
         '</span><i></i><span>' + moeda(i.valor) + '</span></div>';
     });
-    lin += '<div class="l l--total"><span>' + (festa ? 'Orçamento' : 'Total da reserva') + '</span><i></i><span>' +
+    lin += '<div class="l l--total"><span>' + (festa ? 'Orçamento' : 'Total a pagar no Pix') + '</span><i></i><span>' +
       (festa ? 'a combinar' : totalTexto()) + '</span></div>';
     el.innerHTML = lin;
   }
@@ -1057,16 +1091,20 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       '• Pedido: ' + $('codigoRes').textContent,
       '• Onde: ' + ondeTexto(),
       '• Dia: ' + (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) : '-') +
-        (st.tipo === 'pista' ? ', pista às ' + st.hora : festa ? ' às ' + st.hora : '')
+        (st.tipo === 'pista' ? ', pista às ' + fmtHora(st.hora) : festa ? ' às ' + fmtHora(st.hora) : '')
     ];
     if (rod){
-      linhas.push('• Rodízio: reserva às ' + HORA_RODIZIO.replace(':', 'h') +
+      linhas.push('• Rodízio: reserva às ' + fmtHora(HORA_RODIZIO) +
         (st.exclusiva && st.tipo === 'mesa' ? ', mesa exclusiva' : ''));
-      linhas.push('• Pessoas: ' + st.adultos + ' adulto(s)' +
-        (st.bari ? ', ' + st.bari + ' bariátrico(s)' : '') +
-        (st.c35 ? ', ' + st.c35 + ' de 3 a 5 anos' : '') +
-        (st.c68 ? ', ' + st.c68 + ' de 6 a 8 anos' : '') +
-        (st.bebes ? ', ' + st.bebes + ' até 2 anos' : '') + ' (' + pagantes() + ' pagantes)');
+      var pl = function(n, um, varios){ return n + ' ' + (n > 1 ? varios : um); };
+      var grupo = [];
+      if (st.adultos) grupo.push(pl(st.adultos, 'adulto', 'adultos'));
+      if (st.bari) grupo.push(pl(st.bari, 'bariátrico', 'bariátricos'));
+      if (st.c35) grupo.push(pl(st.c35, 'criança de 3 a 5 anos', 'crianças de 3 a 5 anos'));
+      if (st.c68) grupo.push(pl(st.c68, 'criança de 6 a 8 anos', 'crianças de 6 a 8 anos'));
+      if (st.bebes) grupo.push(pl(st.bebes, 'criança de até 2 anos', 'crianças de até 2 anos'));
+      linhas.push('• Pessoas: ' + (grupo.length > 1 ? grupo.slice(0, -1).join(', ') + ' e ' + grupo[grupo.length - 1] : grupo[0]) +
+        ' (' + pagantes() + ' pagantes)');
     } else if (st.tipo === 'pista'){
       linhas.push('• Jogadores: ' + st.adultos);
     } else {
@@ -1086,11 +1124,11 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       if (ex.length) linhas.push('• Extras: ' + ex.join(', '));
       if (st.decor) linhas.push('• Decoração: vou levar a minha. Tem espaço disponível nessa data?');
     } else {
-      linhas.push('', '*Pago na reserva (Pix)*');
+      linhas.push('', '*A pagar na reserva (Pix)*');
       agora().forEach(function(i){ linhas.push('• ' + i.nome + ': ' + moeda(i.valor)); });
       if (sinalACombinar()) linhas.push('• Sinal do grupo: a combinar com a casa');
       if (usaPromo()) linhas.push('• Com a promoção de R$ 49,99 (7 dias de antecedência, tudo pago no ato)');
-      linhas.push('• Total para confirmar: ' + totalTexto());
+      linhas.push('• Total a pagar no Pix: ' + totalTexto());
       var nd = noDia();
       if (nd.length){
         linhas.push('', '*No dia, no caixa*');
@@ -1099,7 +1137,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     }
     linhas.push('');
     lembretesFinais().forEach(function(s){ linhas.push('• ' + s); });
-    linhas.push('• Nome: ' + $('nome').value.trim(), '• Ocasião: ' + $('ocasiao').value);
+    linhas.push('• Nome: ' + $('nome').value.trim(), '• WhatsApp: ' + $('fone').value.trim(), '• Ocasião: ' + $('ocasiao').value);
     if ($('obs').value.trim()) linhas.push('• Observação: ' + $('obs').value.trim());
     linhas.push('• Li e concordo com o contrato de reserva.');
     return 'https://wa.me/' + WHATSAPP_CASA + '?text=' + encodeURIComponent(linhas.join('\n'));
@@ -1111,12 +1149,12 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     telas.forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-tela') === n); });
     $('voltar').hidden = n === 0 || n === 7;
     $('avancar').hidden = n === 7;
-    $('avancar').textContent = n === 6 ? 'Enviar reserva' : 'Continuar';
+    $('avancar').textContent = n === 6 ? 'Ir para o envio' : 'Continuar';
     if (n === 7){
       if (st.tipo !== 'festa'){
         $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
-        $('textoOk').textContent = 'Toque abaixo para mandar a sua reserva pro WhatsApp do Santo Strike. A casa confirma a data e te envia o Pix de ' +
-          totalTexto() + ' para garantir a vaga.';
+        $('textoOk').textContent = 'Toque abaixo para mandar a sua reserva para o WhatsApp do Santo Strike. A casa confirma a data e envia a chave Pix para você pagar ' +
+          totalTexto() + ' e garantir a vaga.';
       }
       pintarResumo($('resumoOk'));
       pintarNoDia($('noDiaOk'), st.tipo === 'festa' ? [] : lembretesFinais());
@@ -1124,6 +1162,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     }
     window.scrollTo(0,0);
     atualizar();
+    /* o leitor de tela anuncia o novo passo */
+    var h = document.querySelector('.tela.on h1');
+    if (h && n > 0){ h.tabIndex = -1; h.focus({ preventScroll:true }); }
   }
   /* anda pelas telas que valem para esta reserva */
   function vizinha(passo){
@@ -1135,7 +1176,13 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
                                               : st.tipo === 'festa' ? 'Escolha o dia e o horário.' : 'Escolha o dia.';
     if (n === 2 && comRodizio() && pagantes() < MIN_PESSOAS) return 'A reserva é para no mínimo ' + MIN_PESSOAS + ' pessoas.';
     if (n === 2 && comRodizio() && st.aniv.on && !st.aniv.dia) return 'Escolha o dia e o mês do aniversário.';
-    if (n === 5 && (!$('nome').value.trim() || $('fone').value.replace(/\D/g,'').length < 10)) return 'Preencha o nome e o WhatsApp.';
+    if (n === 5){
+      /* marca o campo com problema e leva o foco até ele */
+      var nomeOk = !!$('nome').value.trim(), foneOk = $('fone').value.replace(/\D/g,'').length >= 10;
+      $('nome').setAttribute('aria-invalid', String(!nomeOk));
+      $('fone').setAttribute('aria-invalid', String(!foneOk));
+      if (!nomeOk || !foneOk){ (nomeOk ? $('fone') : $('nome')).focus(); return 'Preencha o nome e o WhatsApp com DDD.'; }
+    }
     if (n === 6 && precisaDocs() && !$('cienteDocs').checked) return 'Confirme que vai levar os documentos para o valor com desconto.';
     if (n === 6 && !$('aceite').checked) return 'Marque que você concorda com o contrato para continuar.';
     return '';
@@ -1149,9 +1196,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if (msg){ avisa(msg); return; }
     avisa('');
     if (st.tela === 6 && st.tipo === 'festa'){
-      $('tituloOk').textContent = 'Pedido enviado';
+      $('tituloOk').textContent = 'Falta só enviar';
       $('codigoRes').textContent = 'ORÇAMENTO';
-      $('textoOk').textContent = 'A casa vai te chamar no WhatsApp com o orçamento da festa.';
+      $('textoOk').textContent = 'Toque abaixo para mandar o pedido de orçamento pelo WhatsApp do Santo Strike. A casa responde com os valores e os pacotes para a data.';
       ir(7); return;
     }
     ir(vizinha(1));
@@ -1284,7 +1331,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   (function(){
     var mapa = { '1piso':0, '2piso':1, 'boliche':2, 'festa':3 };
     var q = (new URLSearchParams(location.search).get('onde') || '').toLowerCase();
-    if (!(q in mapa)) return;
+    if (!Object.prototype.hasOwnProperty.call(mapa, q)) return;
     var input = document.querySelectorAll('#onde input')[mapa[q]];
     input.checked = true;
     input.dispatchEvent(new Event('change', { bubbles:true }));

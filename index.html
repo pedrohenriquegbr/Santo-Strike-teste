@@ -3,18 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Santo Strike | Boliche e Gastronomia em Duque de Caxias</title>
-<meta name="description" content="Rodízio de pizza e bufê a partir de R$ 54,99 no Pix da reserva, rodízio fusion com churrasco, boliche e PlayKids. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias. Reserve sua mesa.">
+<title>Rodízio e Boliche em Duque de Caxias | Santo Strike</title>
+<meta name="description" content="Rodízio de pizza e bufê, rodízio Fusion com churrasco, boliche e PlayKids em Duque de Caxias. Terça a domingo, exceto o 3º domingo do mês. Reserve sua mesa.">
 <meta name="theme-color" content="#1F130C">
 <meta name="robots" content="index, follow">
 <!-- Domínio do site. Ao trocar, rode na pasta do projeto: node trocar-dominio.js https://novo-dominio -->
 <link rel="canonical" href="https://santo-strike.vercel.app/">
 <meta property="og:url" content="https://santo-strike.vercel.app/">
-<meta property="og:image" content="https://santo-strike.vercel.app/assets/hero-poster.jpg">
+<meta property="og:image" content="https://santo-strike.vercel.app/assets/og-home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pizza saindo do forno a lenha do Santo Strike">
 <meta property="og:site_name" content="Santo Strike">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Restaurant","name":"Santo Strike","description":"Boliche e gastronomia em Duque de Caxias: rodízio de pizza e bufê no 1º piso, rodízio Fusion Food com churrasco no 2º piso, boliche e área kids.","url":"https://santo-strike.vercel.app/","image":"https://santo-strike.vercel.app/assets/hero-poster.jpg","telephone":"+55 21 98879-9699","servesCuisine":["Pizza","Churrasco","Rodízio"],"priceRange":"R$ 54,99 a R$ 84,99","acceptsReservations":"https://santo-strike.vercel.app/reserva/","address":{"@type":"PostalAddress","streetAddress":"Rua Beira Linha, 84","addressLocality":"Duque de Caxias","addressRegion":"RJ","postalCode":"25045-366","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-22.714826,"longitude":-43.3209277},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"18:00","closes":"22:30"}],"sameAs":["https://www.instagram.com/santo_strike_oficial/"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":["Restaurant","BowlingAlley"],"name":"Santo Strike","paymentAccepted":"Pix, dinheiro, cartão de débito, cartão de crédito","description":"Boliche e gastronomia em Duque de Caxias: rodízio de pizza e bufê no 1º piso, rodízio Fusion Food com churrasco no 2º piso, boliche e área kids.","url":"https://santo-strike.vercel.app/","image":"https://santo-strike.vercel.app/assets/hero-poster.jpg","telephone":"+55 21 98879-9699","servesCuisine":["Pizza","Churrasco","Rodízio"],"priceRange":"R$ 54,99 a R$ 84,99","acceptsReservations":"https://santo-strike.vercel.app/reserva/","address":{"@type":"PostalAddress","streetAddress":"Rua Beira Linha, 84","addressLocality":"Duque de Caxias","addressRegion":"RJ","postalCode":"25045-366","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-22.714826,"longitude":-43.3209277},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"18:00","closes":"22:30"}],"sameAs":["https://www.instagram.com/santo_strike_oficial/"]}</script>
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:title" content="Santo Strike | Boliche e Gastronomia">
@@ -164,6 +167,8 @@ a{color:inherit}
 }
 .nav-links a:hover{color:var(--text-primary)}
 .nav-links a:hover::after{right:0}
+/* no computador o botão dourado já faz esse papel; o link só aparece no menu do celular */
+.nav-links .nav-reserva{display:none}
 
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
@@ -1112,6 +1117,7 @@ b[data-count]{font-variant-numeric:tabular-nums}
     opacity:0;visibility:hidden;transition:opacity .35s var(--ease),visibility .35s;
   }
   .nav-links a{font-size:1.35rem;font-family:var(--display)}
+  .nav-links .nav-reserva{display:inline-block;color:var(--accent)}
   .menu-open .nav-links{opacity:1;visibility:visible}
   /* com o menu aberto a página de trás não rola por baixo dele */
   body.menu-open{overflow:hidden;touch-action:none}
@@ -1168,6 +1174,8 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
 .kicker{background:linear-gradient(90deg,var(--accent) 0%,#FFB347 55%,var(--brasa) 100%);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 @media (prefers-reduced-motion:reduce){.embers,.torch{display:none}body::after{animation:none}}
+/* no celular o grão fica parado: a animação custa CPU e bateria sem diferença visível */
+@media (pointer:coarse){body::after{animation:none}}
 </style>
 </head>
 <body>
@@ -1180,13 +1188,14 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
 
 <nav class="nav" id="nav">
   <a class="brand" href="#main" aria-label="Santo Strike, início da página">
-    <img src="assets/logo-menu.png" alt="Santo Strike Boliche e Gastronomia" width="280" height="224" decoding="async">
+    <img src="assets/logo-menu.webp" alt="Santo Strike Boliche e Gastronomia" width="280" height="224" decoding="async">
   </a>
   <div class="nav-links" id="navLinks">
     <a href="#andares">Os dois andares</a>
     <a href="#boliche">Boliche</a>
     <a href="#festa">Sua festa</a>
     <a href="#onde">Onde ficamos</a>
+    <a class="nav-reserva" href="/reserva/">Reservar mesa</a>
   </div>
   <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
   <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false">
@@ -1259,7 +1268,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
       <li><b data-count="267" data-suffix=" mil">0 mil</b> seguidores no Instagram</li>
       <li><b data-count="2">0</b> andares, dois rodízios</li>
       <li><b>Boliche</b> e PlayKids para a família</li>
-      <li><b>Ter&ndash;Dom</b> das 18h30 às 22h30</li>
+      <li><b>Ter. a dom.</b> rodízio das 18h30 às 22h30</li>
     </ul>
   </div>
 
@@ -1273,7 +1282,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
 
       <div class="floors">
         <article class="floor rv">
-          <figure class="floor__foto"><img src="assets/fotos/rodizio.jpg" alt="Pizza margherita do rodízio do 1º piso" loading="lazy" decoding="async"></figure>
+          <figure class="floor__foto"><img src="assets/fotos/rodizio.webp" width="900" height="900" alt="Pizza margherita do rodízio do 1º piso" loading="lazy" decoding="async"></figure>
           <svg class="halo" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
           <p class="tag">1º piso</p>
           <h3>Rodízio Tradicional</h3>
@@ -1282,7 +1291,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
           <!-- valores do folder oficial: Pix no ato da reserva vale o mesmo que dinheiro -->
           <div class="folder">
             <p class="folder__dia">Terça a quinta<small>exceto feriado e véspera de feriado</small></p>
-            <p class="fv fv--promo"><b>49,99</b><span>Promoção especial para quem pagar no ato da reserva, com no mínimo 7 dias de antecedência</span></p>
+            <p class="fv fv--promo"><b>49,99</b><span>Promoção especial pagando todos os rodízios no ato da reserva, com no mínimo 7 dias de antecedência</span></p>
             <p class="fv"><b>54,99</b><span>Pix no ato da reserva ou dinheiro físico</span></p>
             <p class="fv fv--maq"><b>59,99</b><span>Pix, débito e crédito na maquininha</span></p>
             <p class="folder__dia">Sexta e domingo<small>e também feriado e véspera de feriado</small></p>
@@ -1297,12 +1306,12 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
             <li>Bufê quente e frio, você se serve</li>
             <li>Refrigerante e refresco cortesia de terça a sexta, para quem reserva</li>
             <li>Até 2 anos grátis &middot; 3 a 5 anos R$&nbsp;19,99 &middot; 6 a 8 anos R$&nbsp;34,99</li>
-            <li>Bariátricos têm 30% de desconto</li>
+            <li>Bariátricos têm 30% de desconto, com carteirinha</li>
           </ul>
         </article>
 
         <article class="floor rv">
-          <figure class="floor__foto"><img src="assets/fotos/churrasco.jpg" alt="Churrasco na brasa do rodízio Fusion Food" loading="lazy" decoding="async"></figure>
+          <figure class="floor__foto"><img src="assets/fotos/churrasco.webp" width="1400" height="432" alt="Churrasco na brasa do rodízio Fusion Food" loading="lazy" decoding="async"></figure>
           <svg class="halo" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
           <p class="tag">2º piso</p>
           <h3>Rodízio Fusion Food</h3>
@@ -1320,15 +1329,16 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
             <li>Churrasco na brasa, comida oriental e pizza</li>
             <li>Bufê de massas, petiscos e sobremesas especiais</li>
             <li>Até 2 anos grátis &middot; 3 a 5 anos R$&nbsp;24,99 &middot; 6 a 8 anos R$&nbsp;34,99</li>
-            <li>Bariátricos têm 30% de desconto</li>
+            <li>Bariátricos têm 30% de desconto, com carteirinha</li>
             <li>Bebidas à parte, sem refil</li>
             <li>O 2º piso não tem acessibilidade: quem precisa de acesso sem escada fica no 1º piso</li>
           </ul>
         </article>
       </div>
-      <p class="fineprint rv">Aceitamos Pix, débito, crédito e dinheiro físico. Não aceitamos VR. Para os valores de criança,
-        é obrigatório apresentar RG ou certidão de nascimento. Todos que entram no salão pagam o rodízio. Preços
-        diferenciados conforme a forma de pagamento, nos termos da Lei Federal 13.455/2017.</p>
+      <p class="fineprint rv">Aceitamos Pix, débito, crédito e dinheiro físico. Não aceitamos vale-refeição (VR). Para o valor
+        de criança, apresente RG ou certidão de nascimento; para o desconto de bariátrico, a carteirinha. Sem o documento,
+        vale o valor de adulto. Quem entra no salão paga o rodízio. Preços diferenciados conforme a forma de pagamento, nos
+        termos da Lei nº 13.455/2017.</p>
     </div>
   </section>
 
@@ -1386,10 +1396,10 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         </ul>
       </div>
       <div class="cat" id="cat-bebida" role="tabpanel" aria-labelledby="tb-bebida" hidden>
-        <p class="cat__where">Cortesia só para quem reserva</p>
+        <p class="cat__where">Com reserva sai mais barato</p>
         <ul class="dishes">
           <li><span>Refrigerante e refresco no 1º piso, de terça a sexta</span><em>cortesia</em></li>
-          <li><span>Promoção com reserva: refrigerante 2 litros, nos outros dias e no 2º piso</span><em>R$ 15</em></li>
+          <li><span>Promoção com reserva: refrigerante 2 litros, quando não é cortesia</span><em>R$ 15</em></li>
           <li><span>Refrigerante 2 litros sem reserva</span><em>R$ 20</em></li>
           <li><span>Drinks e demais bebidas</span><em>à parte</em></li>
         </ul>
@@ -1409,7 +1419,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         <p class="kicker rv">Não é só comer</p>
         <h2 class="rv">Rodízio e boliche<br>no mesmo salão.</h2>
         <p class="lede rv">A pista não fica junto da sua mesa: ela tem um espaço próprio no salão. Quem vai
-          no rodízio paga bem menos para jogar, e a pista das 18h sai por R$&nbsp;40 a hora.</p>
+          no rodízio paga bem menos para jogar, e a pista das 18h às 19h sai por R$&nbsp;40.</p>
 
         <div class="pista rv">
           <p class="pista__hoje" id="pistaHoje" hidden><i></i><span></span></p>
@@ -1445,7 +1455,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         <div class="ctas rv"><a class="btn btn--gold" href="/reserva/?onde=boliche">Reservar pista</a></div>
       </div>
       <figure class="split__viz rv foto-real foto-real--retrato">
-        <img src="assets/fotos/boliche-jogando.jpg"
+        <img src="assets/fotos/boliche-jogando.webp"
              alt="Cliente jogando boliche na pista do Santo Strike, com os pinos e o letreiro em neon ao fundo"
              width="900" height="1258" loading="lazy" decoding="async">
       </figure>
@@ -1487,12 +1497,13 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         <article class="pack"><span class="pack__n">02</span><h3>Casamento</h3>
           <p>Recepção com bufê próprio, sem fornecedor de fora para a comida.</p></article>
         <article class="pack"><span class="pack__n">03</span><h3>Aniversário</h3>
-          <p>Aniversariante com 50% no rodízio, ou grátis com 10 pagantes no dia.</p></article>
+          <p>Aniversariante paga metade do rodízio com reserva (exceto aos sábados) ou não paga com 10 pagantes no dia do aniversário.</p></article>
         <article class="pack"><span class="pack__n">04</span><h3>Confraternização</h3>
           <p>Empresa ou turma grande, com andar reservado.</p></article>
       </div>
       <p class="fineprint rv">Cada festa tem orçamento próprio. O pedido pela reserva já chega
         com data, número de pessoas e ocasião.</p>
+      <div class="ctas rv" style="display:flex;margin-top:1.6rem"><a class="btn btn--ghost" href="/reserva/?onde=festa">Pedir orçamento</a></div>
     </div>
   </section>
 
@@ -1504,31 +1515,31 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
       <p class="lede rv">Exceto no 3º domingo de cada mês, quando a casa fecha.</p>
       <div class="gal rv" id="gal">
         <figure class="gal__i gal__i--tall gal__i--has" data-area="salao">
-          <img src="assets/fotos/salao.jpg" alt="Salão do restaurante à noite, mesas postas e lâmpadas douradas" loading="lazy" decoding="async">
+          <img src="assets/fotos/salao.webp" width="1200" height="670" alt="Salão do restaurante à noite, mesas postas e lâmpadas douradas" loading="lazy" decoding="async">
           <figcaption>O salão</figcaption>
         </figure>
         <figure class="gal__i gal__i--has" data-area="buffet">
-          <img src="assets/fotos/buffet.jpg" alt="Bufê da casa com travessas quentes, saladas e frituras" loading="lazy" decoding="async">
+          <img src="assets/fotos/buffet.webp" width="760" height="1082" alt="Bufê da casa com travessas quentes, saladas e frituras" loading="lazy" decoding="async">
           <figcaption>O bufê</figcaption>
         </figure>
         <figure class="gal__i gal__i--has" data-area="pizza">
-          <img src="assets/fotos/pizza-casa.jpg" alt="Pizza do rodízio Tradicional do Santo Strike, no tabuleiro de madeira" loading="lazy" decoding="async">
+          <img src="assets/fotos/pizza-casa.webp" width="720" height="1114" alt="Pizza do rodízio Tradicional do Santo Strike, no tabuleiro de madeira" loading="lazy" decoding="async">
           <figcaption>A pizza da casa</figcaption>
         </figure>
         <figure class="gal__i gal__i--wide gal__i--has" data-area="churr">
-          <img src="assets/fotos/churrasco.jpg" alt="Peça de churrasco na brasa do rodízio Fusion Food" loading="lazy" decoding="async">
+          <img src="assets/fotos/churrasco.webp" width="1400" height="432" alt="Peça de churrasco na brasa do rodízio Fusion Food" loading="lazy" decoding="async">
           <figcaption>Churrasco na brasa, 2º piso</figcaption>
         </figure>
         <figure class="gal__i gal__i--has" data-area="mesa">
-          <img src="assets/fotos/mesa.jpg" alt="Mesa posta com pratos, taças e guardanapos" loading="lazy" decoding="async">
+          <img src="assets/fotos/mesa.webp" width="900" height="900" alt="Mesa posta com pratos, taças e guardanapos" loading="lazy" decoding="async">
           <figcaption>A mesa</figcaption>
         </figure>
         <figure class="gal__i gal__i--tall gal__i--jogo gal__i--has" data-area="boliche">
-          <img src="assets/fotos/boliche-jogando.jpg" alt="Cliente jogando boliche na pista do Santo Strike, com os pinos e o letreiro em neon ao fundo" width="900" height="1258" loading="lazy" decoding="async">
+          <img src="assets/fotos/boliche-jogando.webp" alt="Cliente jogando boliche na pista do Santo Strike, com os pinos e o letreiro em neon ao fundo" width="900" height="1258" loading="lazy" decoding="async">
           <figcaption>O boliche</figcaption>
         </figure>
         <figure class="gal__i gal__i--has" data-area="play">
-          <img src="assets/fotos/playkids.jpg" alt="Criança brincando na piscina de bolinhas do PlayKids" width="900" height="1288" loading="lazy" decoding="async">
+          <img src="assets/fotos/playkids.webp" alt="Criança brincando na piscina de bolinhas do PlayKids" width="900" height="1288" loading="lazy" decoding="async">
           <figcaption>PlayKids</figcaption>
         </figure>
       </div>
@@ -1577,17 +1588,17 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
 
       <div class="vz" aria-roledescription="carrossel" aria-label="Avaliações de clientes" aria-live="off">
         <article class="av"><div class="av__brilho"></div>
-          <div class="av__topo"><div class="av__foto"><img alt="" referrerpolicy="no-referrer" width="58" height="58"><span class="av__ini" aria-hidden="true"></span></div>
+          <div class="av__topo"><div class="av__foto"><img alt="" referrerpolicy="no-referrer" width="58" height="58" loading="lazy" decoding="async"><span class="av__ini" aria-hidden="true"></span></div>
             <div class="av__quem"><div class="av__nome"></div><div class="av__fonte">Avaliação no Google</div></div></div>
           <div class="est" data-est role="img" aria-label="5 estrelas"></div>
           <p class="av__txt"></p><div class="av__barra"><i></i></div></article>
         <article class="av"><div class="av__brilho"></div>
-          <div class="av__topo"><div class="av__foto"><img alt="" referrerpolicy="no-referrer" width="58" height="58"><span class="av__ini" aria-hidden="true"></span></div>
+          <div class="av__topo"><div class="av__foto"><img alt="" referrerpolicy="no-referrer" width="58" height="58" loading="lazy" decoding="async"><span class="av__ini" aria-hidden="true"></span></div>
             <div class="av__quem"><div class="av__nome"></div><div class="av__fonte">Avaliação no Google</div></div></div>
           <div class="est" data-est role="img" aria-label="5 estrelas"></div>
           <p class="av__txt"></p><div class="av__barra"><i></i></div></article>
         <article class="av"><div class="av__brilho"></div>
-          <div class="av__topo"><div class="av__foto"><img alt="" referrerpolicy="no-referrer" width="58" height="58"><span class="av__ini" aria-hidden="true"></span></div>
+          <div class="av__topo"><div class="av__foto"><img alt="" referrerpolicy="no-referrer" width="58" height="58" loading="lazy" decoding="async"><span class="av__ini" aria-hidden="true"></span></div>
             <div class="av__quem"><div class="av__nome"></div><div class="av__fonte">Avaliação no Google</div></div></div>
           <div class="est" data-est role="img" aria-label="5 estrelas"></div>
           <p class="av__txt"></p><div class="av__barra"><i></i></div></article>
@@ -1610,14 +1621,14 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
     <div class="wrap onde">
       <div>
         <p class="kicker rv">Onde ficamos</p>
-        <h2 class="rv">São Bento,<br>Duque de Caxias.</h2>
+        <h2 class="rv">Jardim Glória,<br>Duque de Caxias.</h2>
         <address class="endereco rv" id="endereco"></address>
         <p class="status rv" id="status"><i></i><span>verificando…</span></p>
         <table class="hours rv">
           <caption class="sr-only">Horário de funcionamento</caption>
           <tbody id="hoursBody"></tbody>
         </table>
-        <p class="fineprint rv">O rodízio é servido das 18h30 às 22h30. A entrada para o rodízio vai até 21h50.</p>
+        <p class="fineprint rv">A casa abre às 18h. O rodízio é servido das 18h30 às 22h30, com entrada até 21h50.</p>
         <div class="ctas rv">
           <a class="btn btn--gold" id="rota" href="#" target="_blank" rel="noopener">Traçar rota</a>
           <a class="btn btn--ghost" href="/reserva/">Reservar mesa</a>
@@ -1632,12 +1643,12 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
 <footer class="foot">
   <div class="wrap">
     <a class="brand" href="#main" aria-label="Santo Strike, início da página">
-      <img src="assets/logo.png" alt="Santo Strike Boliche e Gastronomia" width="420" height="375" loading="lazy" decoding="async">
+      <img src="assets/logo.webp" alt="Santo Strike Boliche e Gastronomia" width="300" height="268" loading="lazy" decoding="async">
     </a>
     <div>
       <p><a href="https://www.instagram.com/santo_strike_oficial/" target="_blank" rel="noopener">Instagram</a></p>
       <p>Duque de Caxias &ndash; RJ</p>
-      <p>Terça a domingo, das 18h30 às 22h30 · exceto o 3º domingo do mês</p>
+      <p>Terça a domingo, a partir das 18h (rodízio das 18h30 às 22h30) · exceto o 3º domingo do mês</p>
     </div>
   </div>
   <p class="disclosure">
@@ -1658,8 +1669,8 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
    =========================================================== */
 var VIDEO_URL   = 'assets/hero-scrub.mp4';
 var VIDEO_BYTES = 6306877;               /* tamanho real do hero-scrub.mp4 atual */
-var POSTER_URL  = 'assets/hero-poster.jpg';
-var ENDING_URL  = 'assets/hero-ending.jpg';
+var POSTER_URL  = 'assets/hero-poster.webp';
+var ENDING_URL  = 'assets/hero-ending.webp';
 
 var video   = document.getElementById('heroVideo');
 var stage   = document.getElementById('stage');
@@ -2379,8 +2390,7 @@ function agoraBrasilia(){
   var rota = document.getElementById('rota');
   if (rota){
     rota.href = 'https://www.google.com/maps/dir/?api=1&destination='
-      + CASA.lat + ',' + CASA.lng
-      + '&destination_place_id=' + encodeURIComponent('Santo Strike, ' + CASA.rua + ', ' + CASA.cidade);
+      + CASA.lat + ',' + CASA.lng;
   }
 
   for (var d = 0; d < 7; d++){
@@ -2475,9 +2485,11 @@ function agoraBrasilia(){
     var css = document.createElement('link');
     css.rel = 'stylesheet';
     css.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+    css.integrity = 'sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb'; css.crossOrigin = 'anonymous';
     document.head.appendChild(css);
     var js = document.createElement('script');
     js.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+    js.integrity = 'sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO'; js.crossOrigin = 'anonymous';
     js.onload = function(){
       try {
         /* zoom 16: o ponto é exato, então dá para mostrar a rua */
@@ -2562,11 +2574,14 @@ function agoraBrasilia(){
   var mqMob = matchMedia('(max-width:760px)');
   var mqRM = matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* pré-carrega as fotos para a troca nunca mostrar círculo vazio */
-  DADOS.forEach(function(d){
-    if (!d.foto) return;
-    var im = new Image(); im.referrerPolicy = 'no-referrer'; im.src = d.foto;
-  });
+  /* pré-carrega as fotos para a troca nunca mostrar círculo vazio; só quando
+     a seção aparece, para o Google não receber o IP de quem nem rolou até aqui */
+  function preCarregar(){
+    DADOS.forEach(function(d){
+      if (!d.foto) return;
+      var im = new Image(); im.referrerPolicy = 'no-referrer'; im.src = d.foto;
+    });
+  }
 
   var slots = [], fila = [], P = 7500, pausadoUser = mqRM.matches, visivel = false,
       hover = false, rodando = false, entrou = false, last = 0, raf = 0;
@@ -2640,6 +2655,7 @@ function agoraBrasilia(){
 
   function entrada(){
     entrou = true;
+    preCarregar();
     slots.forEach(function(s, k){ setTimeout(function(){ s.el.classList.add('on'); }, mqRM.matches ? 0 : k * 170); });
   }
 
