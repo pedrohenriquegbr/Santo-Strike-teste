@@ -205,6 +205,12 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 .nodia li{display:grid;grid-template-columns:.9rem 1fr;gap:.4rem}
 .nodia li::before{content:"•";color:var(--accent);font-weight:700}
 .nodia:empty{display:none}
+.nodia ol{margin:0;padding:0 0 0 1.25rem;display:grid;gap:.45rem;font-size:.86rem;color:var(--ink-2)}
+.nodia ol li{display:list-item}
+.nodia ol li::before{content:none}
+.nodia ol li::marker{color:var(--accent);font-weight:700}
+.nodia ol b{color:var(--ink)}
+.nodia p{margin:.7rem 0 0;font-size:.82rem;color:var(--ink-2)}
 
 /* documentos: quem já pagou tende a esquecer que precisa comprovar */
 .docs{border:1.5px solid var(--accent);background:rgba(227,178,60,.09);border-radius:12px;padding:.9rem 1rem;margin-top:1rem}
@@ -405,7 +411,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   <!-- 7. CONTRATO E RESUMO -->
   <section class="tela" data-tela="6">
     <h1>Confira e concorde</h1>
-    <p class="sub">A reserva só entra na agenda depois do Pix. No dia, cada um paga o restante no caixa.</p>
+    <p class="sub" id="subContrato">A reserva só entra na agenda depois do Pix e do comprovante enviado no WhatsApp. No dia, cada um paga o restante no caixa.</p>
     <div id="formaPag">
       <span class="rot" style="margin-top:0">Quanto pagar agora, no Pix</span>
       <div class="ops" id="pagamento">
@@ -463,7 +469,18 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <p class="codigo-res" id="codigoRes">SS-0000</p>
       <div class="linhas" id="resumoOk"></div>
       <div class="nodia" id="noDiaOk" style="text-align:left"></div>
-      <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a sua reserva para o WhatsApp do Santo Strike. A casa confirma a data e envia a chave Pix para você garantir a vaga.</p>
+      <!-- o caminho até a vaga garantida, enquanto o Pix não é pago dentro do site -->
+      <div class="nodia" id="passosPix" style="text-align:left;margin-bottom:1.1rem">
+        <h3>Como garantir a vaga</h3>
+        <ol>
+          <li>Toque no botão abaixo e envie a reserva pelo WhatsApp.</li>
+          <li>A casa confirma a data e manda a chave Pix.</li>
+          <li id="passoPagar">Pague o Pix.</li>
+          <li><b>Envie a foto do comprovante</b> na mesma conversa.</li>
+        </ol>
+        <p>Sem o comprovante, a reserva não entra na agenda.</p>
+      </div>
+      <p class="sub" id="textoOk" style="margin-top:1.2rem" hidden>Toque abaixo para mandar o pedido de orçamento pelo WhatsApp do Santo Strike. A casa responde com os valores e os pacotes para a data.</p>
       <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar pelo WhatsApp</a>
       <!-- só aparece no computador: lá o botão abre o WhatsApp Web -->
       <p class="pc-ajuda" id="pcAjuda" hidden>No computador, a reserva abre no WhatsApp Web. Prefere o aplicativo? <button type="button" id="copiarMsg">Copie a mensagem</button> e cole na conversa com o Santo Strike, (21) 98879-9699.</p>
@@ -1046,6 +1063,11 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   function pintarConfira(){
     var rod = comRodizio(), n = rodiziosDoSinal();
     $('formaPag').hidden = !rod || (st.tipo === 'mesa' && st.exclusiva) || sinalCobreTodos();
+    /* festa é orçamento, sem Pix; e só existe "restante no caixa" quando o grupo paga o sinal */
+    $('subContrato').textContent = st.tipo === 'festa'
+      ? 'Festa é orçamento: a casa responde pelo WhatsApp com os valores e os pacotes para a data.'
+      : 'A reserva só entra na agenda depois do Pix e do comprovante enviado no WhatsApp.' +
+        (rod && !pagaTudo() ? ' No dia, cada um paga o restante no caixa.' : '');
     if (rod){
       var promoOk = promoSePagarTudo();
       $('pagSinalTxt').textContent = n === null
@@ -1178,6 +1200,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       if (usaPromo()) pg.push('Com a promoção de R$ 49,99 (7 dias de antecedência, tudo pago no ato)');
       bloco('Pagar agora, no Pix', pg);
       L.push('', 'Total no Pix: ' + totalTexto());
+      /* a casa só põe na agenda com o comprovante na conversa */
+      bloco('Comprovante do Pix', ['Envio a foto do comprovante aqui, assim que pagar']);
 
       /* o que fica para o dia, no caixa */
       if (rod && !pagaTudo()){
@@ -1248,11 +1272,16 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     $('avancar').hidden = n === 7;
     $('avancar').textContent = n === 6 ? 'Ir para o envio' : 'Continuar';
     if (n === 7){
-      if (st.tipo !== 'festa'){
+      var soOrcamento = st.tipo === 'festa';
+      if (!soOrcamento){
         $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
-        $('textoOk').textContent = 'Toque abaixo para mandar a sua reserva para o WhatsApp do Santo Strike. A casa confirma a data e envia a chave Pix para você pagar ' +
-          totalTexto() + ' e garantir a vaga.';
+        $('passoPagar').innerHTML = sinalACombinar() && !total()
+          ? 'Combine o sinal com a casa e pague no Pix.'
+          : 'Pague <b>' + totalTexto() + '</b> no Pix.';
       }
+      /* festa é só orçamento: não tem Pix nem comprovante nesta etapa */
+      $('passosPix').hidden = soOrcamento;
+      $('textoOk').hidden = !soOrcamento;
       pintarResumo($('resumoOk'));
       pintarNoDia($('noDiaOk'), st.tipo === 'festa' ? [] : lembretesFinais());
       $('enviarWpp').href = linkWhatsApp();
