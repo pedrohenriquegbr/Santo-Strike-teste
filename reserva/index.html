@@ -739,17 +739,23 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   }
   function total(){ return somar(agora()); }
   function sinalACombinar(){ return comRodizio() && !pagaTudo() && rodiziosDoSinal() === null; }
-  /* o que fica para o dia, em frases, para a tela e para o WhatsApp */
+  /* o rodízio que fica para o dia, um valor por tipo de pessoa.
+     A tela junta numa frase e o WhatsApp põe um por linha. */
+  function restantePorPessoa(){
+    var d = st.data, cr = TABELA[st.piso].crianca;
+    var l = [{ quem:'Adulto', valor:moeda(valorDia(d)) + ' em dinheiro ou ' + moeda(valorDia(d, 'maquina')) + ' na maquininha' }];
+    if (st.c35) l.push({ quem:'Criança de 3 a 5 anos', valor:moeda(cr.c35) });
+    if (st.c68) l.push({ quem:'Criança de 6 a 8 anos', valor:moeda(cr.c68) });
+    if (st.bari) l.push({ quem:'Bariátrico', valor:'com 30% de desconto' });
+    return l;
+  }
+  /* o que fica para o dia, em frases, para a tela */
   function noDia(){
-    var out = [], d = st.data;
+    var out = [];
     if (comRodizio() && !pagaTudo()){
-      var cr = TABELA[st.piso].crianca;
-      var s = 'Restante dos rodízios, pago por quem comparecer: adulto ' + moeda(valorDia(d)) + ' em dinheiro ou ' +
-              moeda(valorDia(d, 'maquina')) + ' na maquininha';
-      if (st.c35) s += ', criança de 3 a 5 anos ' + moeda(cr.c35);
-      if (st.c68) s += ', criança de 6 a 8 anos ' + moeda(cr.c68);
-      if (st.bari) s += ', bariátrico com 30% de desconto';
-      out.push(s + '.');
+      out.push('Restante dos rodízios, pago por quem comparecer: ' + restantePorPessoa().map(function(x){
+        return x.quem.charAt(0).toLowerCase() + x.quem.slice(1) + ' ' + x.valor;
+      }).join(', ') + '.');
       var regra = anivRegra();
       if (regra === 'gratis' || regra === 'meia') out.push('Aniversariante ' + (regra === 'gratis' ? 'não paga' : 'com 50% de desconto') + ', com o RG apresentado no caixa até 20h30.');
     }
@@ -1080,67 +1086,122 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     el.innerHTML = lin;
   }
 
-  /* A mensagem que chega no WhatsApp da casa. Primeiro o que a pessoa paga
-     para confirmar; o resto do grupo aparece como valor por pessoa no dia. */
-  function linkWhatsApp(){
-    var d = st.data, festa = st.tipo === 'festa', rod = comRodizio();
-    var linhas = [
-      festa ? 'Olá! Quero um orçamento de festa no Santo Strike.' : 'Olá! Quero reservar no Santo Strike.',
-      '(enviado pelo site de reservas)',
-      '',
-      '• Pedido: ' + $('codigoRes').textContent,
-      '• Onde: ' + ondeTexto(),
-      '• Dia: ' + (d ? DIAS_CURTO[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth() + 1) : '-') +
-        (st.tipo === 'pista' ? ', pista às ' + fmtHora(st.hora) : festa ? ' às ' + fmtHora(st.hora) : '')
-    ];
+  /* ---------- mensagem do WhatsApp ----------
+     Chega para a casa em blocos: cada bloco tem um título em negrito e um
+     item por linha, para a equipe bater o olho e achar o que precisa (pedido
+     da casa em 27/09/2026). Primeiro o que a pessoa paga para confirmar; o
+     resto do grupo aparece como valor por pessoa no dia. */
+  var DIAS_LONGO = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  function foneBonito(v){
+    var n = v.replace(/\D/g, '');
+    if (n.length > 11 && n.indexOf('55') === 0) n = n.slice(2);
+    if (n.length === 11) return '(' + n.slice(0, 2) + ') ' + n.slice(2, 7) + '-' + n.slice(7);
+    if (n.length === 10) return '(' + n.slice(0, 2) + ') ' + n.slice(2, 6) + '-' + n.slice(6);
+    return v.trim();
+  }
+  /* só arruma nome digitado todo em minúsculas ou todo em maiúsculas */
+  function nomeBonito(v){
+    v = v.trim().replace(/\s+/g, ' ');
+    if (v !== v.toLowerCase() && v !== v.toUpperCase()) return v;
+    return v.toLowerCase().split(' ').map(function(p, i){
+      return (i && /^(de|da|do|das|dos|e)$/.test(p)) ? p : p.charAt(0).toUpperCase() + p.slice(1);
+    }).join(' ');
+  }
+  function mensagemWhatsApp(){
+    var d = st.data, festa = st.tipo === 'festa', pista = st.tipo === 'pista', rod = comRodizio(), L = [];
+    var pl = function(n, um, varios){ return n + ' ' + (n > 1 ? varios : um); };
+    var bloco = function(titulo, itens){
+      if (!itens.length) return;
+      L.push('', '*' + titulo + '*');
+      itens.forEach(function(s){ L.push('- ' + s); });
+    };
+
+    L.push(festa ? 'Olá! Quero um orçamento de festa no Santo Strike.' : 'Olá! Quero reservar no Santo Strike.');
+    L.push(festa ? '*Pedido de orçamento*' : '*Pedido ' + $('codigoRes').textContent + '*');
+    L.push('(enviado pelo site de reservas)');
+
+    /* a reserva: onde, quando e para quê */
+    var res = [];
+    if (!festa) res.push('Onde: ' + ondeTexto());
+    res.push('Dia: ' + (d ? DIAS_LONGO[d.getDay()] + ', ' + doisDig(d.getDate()) + '/' + doisDig(d.getMonth() + 1) : '-'));
+    if (pista){
+      res.push('Pista: ' + pl(st.pistas, 'pista', 'pistas') + ' às ' + fmtHora(st.hora) + ', por ' + pl(st.horas, 'hora', 'horas') +
+        (st.piso && st.hora === '18:00' ? ' (promoção das 18h)' : ''));
+      if (rod) res.push('Rodízio: às ' + fmtHora(HORA_RODIZIO));
+      else res.push('Jogadores: ' + st.adultos);
+    } else {
+      res.push('Horário: ' + fmtHora(festa ? st.hora : HORA_RODIZIO));
+    }
+    if (st.exclusiva && st.tipo === 'mesa') res.push('Mesa exclusiva');
+    if (festa) res.push('Pessoas: cerca de ' + st.adultos);
+    /* "Só comer" não faz sentido para quem reservou só a pista */
+    if (!(avulso() && $('ocasiao').selectedIndex === 0)) res.push('Ocasião: ' + $('ocasiao').value);
+    if (st.decor && !avulso()) res.push('Decoração: vou levar a minha. Tem espaço nessa data?');
+    bloco(festa ? 'Festa' : 'Reserva', res);
+
+    /* quem vai no rodízio */
     if (rod){
-      linhas.push('• Rodízio: reserva às ' + fmtHora(HORA_RODIZIO) +
-        (st.exclusiva && st.tipo === 'mesa' ? ', mesa exclusiva' : ''));
-      var pl = function(n, um, varios){ return n + ' ' + (n > 1 ? varios : um); };
       var grupo = [];
       if (st.adultos) grupo.push(pl(st.adultos, 'adulto', 'adultos'));
       if (st.bari) grupo.push(pl(st.bari, 'bariátrico', 'bariátricos'));
       if (st.c35) grupo.push(pl(st.c35, 'criança de 3 a 5 anos', 'crianças de 3 a 5 anos'));
       if (st.c68) grupo.push(pl(st.c68, 'criança de 6 a 8 anos', 'crianças de 6 a 8 anos'));
       if (st.bebes) grupo.push(pl(st.bebes, 'criança de até 2 anos', 'crianças de até 2 anos'));
-      linhas.push('• Pessoas: ' + (grupo.length > 1 ? grupo.slice(0, -1).join(', ') + ' e ' + grupo[grupo.length - 1] : grupo[0]) +
-        ' (' + pagantes() + ' pagantes)');
-    } else if (st.tipo === 'pista'){
-      linhas.push('• Jogadores: ' + st.adultos);
-    } else {
-      linhas.push('• Pessoas: cerca de ' + st.adultos);
-    }
-    if (st.tipo === 'pista'){
-      linhas.push('• Pista: ' + st.pistas + (st.pistas > 1 ? ' pistas' : ' pista') + ' por ' + st.horas + (st.horas > 1 ? ' horas' : ' hora') +
-        (st.piso && st.hora === '18:00' ? ', com a promoção das 18h' : ''));
-    }
-    if (rod && st.aniv.on){
-      var regra = usaPromo() ? '' : anivRegra();
-      linhas.push('• Aniversariante: dia ' + doisDig(st.aniv.dia) + '/' + doisDig(st.aniv.mes) +
-        (regra === 'gratis' ? ' (não paga, 10 pagantes)' : regra === 'meia' ? ' (50% de desconto)' : ' (sem desconto neste dia)'));
-    }
-    if (festa){
-      var ex = EXTRAS.filter(function(e){ return st.extras[e.id]; }).map(function(e){ return st.extras[e.id] + 'x ' + e.nome; });
-      if (ex.length) linhas.push('• Extras: ' + ex.join(', '));
-      if (st.decor) linhas.push('• Decoração: vou levar a minha. Tem espaço disponível nessa data?');
-    } else {
-      linhas.push('', '*A pagar na reserva (Pix)*');
-      agora().forEach(function(i){ linhas.push('• ' + i.nome + ': ' + moeda(i.valor)); });
-      if (sinalACombinar()) linhas.push('• Sinal do grupo: a combinar com a casa');
-      if (usaPromo()) linhas.push('• Com a promoção de R$ 49,99 (7 dias de antecedência, tudo pago no ato)');
-      linhas.push('• Total a pagar no Pix: ' + totalTexto());
-      var nd = noDia();
-      if (nd.length){
-        linhas.push('', '*No dia, no caixa*');
-        nd.forEach(function(s){ linhas.push('• ' + s); });
+      var regra = '';
+      if (st.aniv.on){
+        regra = usaPromo() ? '' : anivRegra();
+        grupo.push('Aniversariante: dia ' + doisDig(st.aniv.dia) + '/' + doisDig(st.aniv.mes) +
+          (regra === 'gratis' ? ' (não paga, 10 pagantes)' : regra === 'meia' ? ' (50% de desconto)' : ' (sem desconto neste dia)'));
       }
+      bloco('Pessoas (' + pl(pagantes(), 'pagante', 'pagantes') + ')', grupo);
     }
-    linhas.push('');
-    lembretesFinais().forEach(function(s){ linhas.push('• ' + s); });
-    linhas.push('• Nome: ' + $('nome').value.trim(), '• WhatsApp: ' + $('fone').value.trim(), '• Ocasião: ' + $('ocasiao').value);
-    if ($('obs').value.trim()) linhas.push('• Observação: ' + $('obs').value.trim());
-    linhas.push('• Li e concordo com o contrato de reserva.');
-    return 'https://wa.me/' + WHATSAPP_CASA + '?text=' + encodeURIComponent(linhas.join('\n'));
+
+    if (festa){
+      bloco('Extras', EXTRAS.filter(function(e){ return st.extras[e.id]; }).map(function(e){ return st.extras[e.id] + '× ' + e.nome; }));
+    } else {
+      /* o que entra no Pix da reserva, e o total numa linha só dele */
+      var pg = agora().map(function(i){ return i.nome + ': ' + (i.valor ? moeda(i.valor) : 'não paga'); });
+      if (sinalACombinar()) pg.push('Sinal do grupo: a combinar com a casa');
+      if (usaPromo()) pg.push('Com a promoção de R$ 49,99 (7 dias de antecedência, tudo pago no ato)');
+      bloco('Pagar agora, no Pix', pg);
+      L.push('', '*Total no Pix: ' + totalTexto() + '*');
+
+      /* o que fica para o dia, no caixa */
+      if (rod && !pagaTudo()){
+        var resto = restantePorPessoa().map(function(x){ return x.quem + ': ' + x.valor.replace(/^com /, ''); });
+        var ra = anivRegra();
+        if (ra === 'gratis' || ra === 'meia') resto.push('Aniversariante: ' + (ra === 'gratis' ? 'não paga' : '50% de desconto') + ', com o RG no caixa até 20h30');
+        bloco('Rodízio no dia, pago por quem comparecer', resto);
+      }
+      var ext = [];
+      if (!avulso()){
+        EXTRAS.forEach(function(e){
+          var q = st.extras[e.id] || 0, p = precoExtra(e);
+          if (q && !e.antecipado) ext.push((q > 1 ? q + '× ' : '') + e.nome + ': ' + (p ? moeda(p * q) : 'cortesia'));
+        });
+      }
+      bloco('Extras pagos na casa', ext);
+    }
+
+    /* os mesmos lembretes da tela, quebrados em linhas curtas */
+    var av = [];
+    if (rod) av.push('Tolerância: ' + textoTolerancia());
+    if (precisaDocs()){
+      if (st.c35 || st.c68) av.push('Levar o RG ou a certidão de nascimento de cada criança');
+      if (st.bari) av.push('Levar a carteirinha de cada bariátrico');
+      av.push('Sem o documento, vale o valor de adulto');
+    }
+    bloco('Avisos', av);
+
+    var cli = ['Nome: ' + nomeBonito($('nome').value), 'WhatsApp: ' + foneBonito($('fone').value)];
+    if ($('obs').value.trim()) cli.push('Observação: ' + $('obs').value.trim());
+    bloco('Cliente', cli);
+
+    L.push('', '_Li e concordo com o contrato de reserva._');
+    return L.join('\n');
+  }
+  function linkWhatsApp(){
+    return 'https://wa.me/' + WHATSAPP_CASA + '?text=' + encodeURIComponent(mensagemWhatsApp());
   }
 
   /* ---------- navegação ---------- */
