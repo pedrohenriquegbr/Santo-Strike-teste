@@ -219,6 +219,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 .ok .selo svg{width:32px;height:32px}
 .ok .linhas{text-align:left}
 .codigo-res{font:500 1.5rem/1 var(--mono);letter-spacing:.1em;color:var(--accent);margin:.2rem 0 1.2rem}
+.pc-ajuda{font-size:.84rem;line-height:1.5;color:var(--ink-2);margin:.9rem 0 0}
+.pc-ajuda button{background:none;border:0;padding:0;font:inherit;color:var(--accent);cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px}
 
 /* dados da casa no pé da página, acima da barra fixa */
 .pe{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.74rem;line-height:1.6;color:var(--ink-2)}
@@ -462,6 +465,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <div class="nodia" id="noDiaOk" style="text-align:left"></div>
       <p class="sub" id="textoOk" style="margin-top:1.2rem">Toque abaixo para mandar a sua reserva para o WhatsApp do Santo Strike. A casa confirma a data e envia a chave Pix para você garantir a vaga.</p>
       <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar pelo WhatsApp</a>
+      <!-- só aparece no computador: lá o botão abre o WhatsApp Web -->
+      <p class="pc-ajuda" id="pcAjuda" hidden>No computador, a reserva abre no WhatsApp Web. Prefere o aplicativo? <button type="button" id="copiarMsg">Copie a mensagem</button> e cole na conversa com o Santo Strike, (21) 98879-9699.</p>
     </div>
   </section>
 
@@ -1087,10 +1092,16 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   }
 
   /* ---------- mensagem do WhatsApp ----------
-     Chega para a casa em blocos: cada bloco tem um título em negrito e um
-     item por linha, para a equipe bater o olho e achar o que precisa (pedido
-     da casa em 27/09/2026). Primeiro o que a pessoa paga para confirmar; o
-     resto do grupo aparece como valor por pessoa no dia. */
+     Segue o modelo que a casa mandou em 27/09/2026:
+         Pedido:
+         - 1 Pizza de queijo
+         - 1 Refrigerante
+
+         Total: R$ 48,99
+     Ou seja: título com dois-pontos, um item por linha com hífen e o total
+     numa linha só dele. Sem asterisco nem sublinhado, para a mensagem ficar
+     limpa também na caixa de digitação, antes de enviar. Primeiro o que a
+     pessoa paga para confirmar; o resto do grupo vai como valor por pessoa. */
   var DIAS_LONGO = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
   function foneBonito(v){
     var n = v.replace(/\D/g, '');
@@ -1112,32 +1123,34 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var pl = function(n, um, varios){ return n + ' ' + (n > 1 ? varios : um); };
     var bloco = function(titulo, itens){
       if (!itens.length) return;
-      L.push('', '*' + titulo + '*');
+      L.push('', titulo + ':');
       itens.forEach(function(s){ L.push('- ' + s); });
     };
 
     L.push(festa ? 'Olá! Quero um orçamento de festa no Santo Strike.' : 'Olá! Quero reservar no Santo Strike.');
-    L.push(festa ? '*Pedido de orçamento*' : '*Pedido ' + $('codigoRes').textContent + '*');
     L.push('(enviado pelo site de reservas)');
+    L.push('', festa ? 'Pedido: orçamento de festa' : 'Pedido: ' + $('codigoRes').textContent);
 
     /* a reserva: onde, quando e para quê */
     var res = [];
     if (!festa) res.push('Onde: ' + ondeTexto());
     res.push('Dia: ' + (d ? DIAS_LONGO[d.getDay()] + ', ' + doisDig(d.getDate()) + '/' + doisDig(d.getMonth() + 1) : '-'));
-    if (pista){
-      res.push('Pista: ' + pl(st.pistas, 'pista', 'pistas') + ' às ' + fmtHora(st.hora) + ', por ' + pl(st.horas, 'hora', 'horas') +
-        (st.piso && st.hora === '18:00' ? ' (promoção das 18h)' : ''));
-      if (rod) res.push('Rodízio: às ' + fmtHora(HORA_RODIZIO));
-      else res.push('Jogadores: ' + st.adultos);
-    } else {
-      res.push('Horário: ' + fmtHora(festa ? st.hora : HORA_RODIZIO));
-    }
+    if (!pista) res.push('Horário: ' + fmtHora(festa ? st.hora : HORA_RODIZIO));
+    else if (rod) res.push('Horário do rodízio: ' + fmtHora(HORA_RODIZIO));
     if (st.exclusiva && st.tipo === 'mesa') res.push('Mesa exclusiva');
     if (festa) res.push('Pessoas: cerca de ' + st.adultos);
     /* "Só comer" não faz sentido para quem reservou só a pista */
     if (!(avulso() && $('ocasiao').selectedIndex === 0)) res.push('Ocasião: ' + $('ocasiao').value);
     if (st.decor && !avulso()) res.push('Decoração: vou levar a minha. Tem espaço nessa data?');
     bloco(festa ? 'Festa' : 'Reserva', res);
+
+    /* a pista, num bloco só dela */
+    if (pista){
+      var bol = [pl(st.pistas, 'pista', 'pistas') + ' às ' + fmtHora(st.hora) + ', por ' + pl(st.horas, 'hora', 'horas') +
+        (st.piso && st.hora === '18:00' ? ' (promoção das 18h)' : '')];
+      if (!rod) bol.push(pl(st.adultos, 'jogador', 'jogadores'));
+      bloco('Boliche', bol);
+    }
 
     /* quem vai no rodízio */
     if (rod){
@@ -1164,14 +1177,14 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       if (sinalACombinar()) pg.push('Sinal do grupo: a combinar com a casa');
       if (usaPromo()) pg.push('Com a promoção de R$ 49,99 (7 dias de antecedência, tudo pago no ato)');
       bloco('Pagar agora, no Pix', pg);
-      L.push('', '*Total no Pix: ' + totalTexto() + '*');
+      L.push('', 'Total no Pix: ' + totalTexto());
 
       /* o que fica para o dia, no caixa */
       if (rod && !pagaTudo()){
         var resto = restantePorPessoa().map(function(x){ return x.quem + ': ' + x.valor.replace(/^com /, ''); });
         var ra = anivRegra();
         if (ra === 'gratis' || ra === 'meia') resto.push('Aniversariante: ' + (ra === 'gratis' ? 'não paga' : '50% de desconto') + ', com o RG no caixa até 20h30');
-        bloco('Rodízio no dia, pago por quem comparecer', resto);
+        bloco('No dia, no caixa (paga quem comparecer)', resto);
       }
       var ext = [];
       if (!avulso()){
@@ -1197,12 +1210,35 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if ($('obs').value.trim()) cli.push('Observação: ' + $('obs').value.trim());
     bloco('Cliente', cli);
 
-    L.push('', '_Li e concordo com o contrato de reserva._');
+    L.push('', 'Li e concordo com o contrato de reserva.');
     return L.join('\n');
   }
+  /* No celular o botão abre o aplicativo. No computador ele abre o WhatsApp
+     Web: o aplicativo do WhatsApp para Windows junta a mensagem numa linha só
+     quando ela chega por link (o Pedro viu isso em 02/10/2026, versão 2.2638),
+     e o Web mantém uma informação por linha. */
+  var NO_CELULAR = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+                   (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform || ''));
   function linkWhatsApp(){
-    return 'https://wa.me/' + WHATSAPP_CASA + '?text=' + encodeURIComponent(mensagemWhatsApp());
+    var txt = encodeURIComponent(mensagemWhatsApp());
+    return NO_CELULAR ? 'https://wa.me/' + WHATSAPP_CASA + '?text=' + txt
+                      : 'https://web.whatsapp.com/send?phone=' + WHATSAPP_CASA + '&text=' + txt;
   }
+  /* copia a mensagem com as quebras de linha, para colar em qualquer WhatsApp */
+  function copiarMensagem(botao){
+    var txt = mensagemWhatsApp();
+    var feito = function(){ botao.textContent = 'Mensagem copiada'; setTimeout(function(){ botao.textContent = 'Copie a mensagem'; }, 2500); };
+    var antigo = function(){
+      var t = document.createElement('textarea');
+      t.value = txt; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0';
+      document.body.appendChild(t); t.select();
+      try { document.execCommand('copy'); feito(); } catch (e) {}
+      document.body.removeChild(t);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(feito, antigo);
+    else antigo();
+  }
+  $('copiarMsg').addEventListener('click', function(){ copiarMensagem(this); });
 
   /* ---------- navegação ---------- */
   function ir(n){
@@ -1220,6 +1256,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       pintarResumo($('resumoOk'));
       pintarNoDia($('noDiaOk'), st.tipo === 'festa' ? [] : lembretesFinais());
       $('enviarWpp').href = linkWhatsApp();
+      $('pcAjuda').hidden = NO_CELULAR;
     }
     window.scrollTo(0,0);
     atualizar();
