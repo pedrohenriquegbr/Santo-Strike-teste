@@ -119,6 +119,8 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .aviso{border:1px dashed var(--line-strong);border-radius:12px;padding:.85rem 1rem;margin-top:1.2rem;
   font-size:.88rem;color:var(--ink-2)}
 .aviso b{color:var(--accent);font-weight:700}
+/* a tabela do sinal, em letra menor, logo abaixo do valor */
+.aviso .regra-sinal{display:block;margin-top:.45rem;font-size:.8rem;opacity:.85}
 
 /* contadores */
 .conta{display:flex;align-items:center;justify-content:space-between;gap:1rem;
@@ -316,7 +318,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <h1>Quem vai?</h1>
     <p class="sub" id="subPessoas">Criança tem valor próprio, por idade.</p>
     <div class="aviso caixa-rodizio" style="margin:0 0 1rem"><b>Importante:</b> a reserva deve ser feita para a
-      quantidade total de pessoas que irão comparecer, com o mínimo de 2 pessoas. Os lugares são garantidos somente para
+      quantidade total de pessoas que irão comparecer. Os lugares são garantidos somente para
       o número reservado; pessoas além dessa quantidade seguem a fila de espera e as regras de tolerância, sem prioridade.</div>
     <div class="conta">
       <div><b id="rotAdultos">Adultos</b><span id="vAdulto">R$ 54,99 cada</span></div>
@@ -433,7 +435,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <h2>Contrato de reserva</h2>
       <ul>
         <li><span><b>Chegada:</b> <span id="tolerancia">a reserva do rodízio é para as 18h30 e a tolerância vai até 19h30 de terça a sexta. Passou disso e tendo fila, a mesa pode ser liberada.</span></span></li>
-        <li id="regraSinal"><span><b>Pagamento:</b> a reserva é para no mínimo 2 pessoas. Para segurar a mesa, o sinal é de <b>2 rodízios antecipados</b> (grupos de até 29 pessoas), no Pix, pelo valor em dinheiro. O restante é pago no dia, no caixa, só por quem comparecer. Kit Festa e pista de boliche são pagos inteiros na reserva.</span></li>
+        <li id="regraSinal"><span><b>Pagamento:</b> para confirmar a reserva, é necessária a antecipação de <b>1 rodízio a cada grupo de 10 pessoas</b>: de 1 a 19 pessoas, 1 rodízio; de 20 a 29, 2 rodízios; de 30 a 39, 3 rodízios; e assim sucessivamente. O valor antecipado, pago no Pix pelo valor em dinheiro, é utilizado para a confirmação da reserva. O restante é pago no dia, no caixa, só por quem comparecer. Kit Festa e pista de boliche são pagos inteiros na reserva.</span></li>
         <li id="regraExclusiva" hidden><span><b>Mesa exclusiva:</b> a mesa fica bloqueada para o grupo a noite toda. Todos os lugares reservados são pagos antes e os que não forem usados não são reembolsados.</span></li>
         <li id="regraPista" hidden><span><b>Boliche:</b> o valor é por pista, que leva até 6 pessoas, com pagamento integral no ato da reserva e conforme a disponibilidade de pistas.</span></li>
         <li id="regraAniv" hidden><span><b>Aniversário:</b> um aniversariante por reserva, promoções não cumulativas e RG do aniversariante apresentado até 20h30.</span></li>
@@ -518,14 +520,12 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
          sexDom:{ pix:79.99, maquina:84.99 },
          crianca:{ c35:24.99, c68:34.99 } }
   };
-  /* Sinal da reserva (26/09/2026): a reserva é para no mínimo 2 pessoas e as
-     duas pagam o rodízio para segurar a mesa, então o sinal é de 2 rodízios
-     até 29 pessoas. A partir de 30, a casa combina o sinal no WhatsApp. O resto
-     é pago no dia, por quem comparecer. Mesa exclusiva e "pagar tudo"
-     antecipam todos. (A equipe tinha proposto 1 rodízio até 10 pessoas; para
-     voltar a isso, basta pôr { ate:10, rodizios:1 } antes da linha abaixo.) */
-  var MIN_PESSOAS = 2;
-  var SINAL = [ { ate:29, rodizios:2 } ];
+  /* Sinal da reserva (regra enviada pela equipe da casa em 07/10/2026):
+     antecipação de 1 rodízio a cada grupo de 10 pessoas. De 1 a 19 pessoas,
+     1 rodízio; de 20 a 29, 2; de 30 a 39, 3; e assim sucessivamente. O resto é
+     pago no dia, por quem comparecer. Mesa exclusiva e "pagar tudo" antecipam
+     todos. A conta fica em rodiziosDoSinal(). */
+  var MIN_PESSOAS = 1;
   /* Boliche, por pista e por hora (arte "Valores da pista de boliche"):
      - cliente do rodízio, com reserva: R$ 80 de terça a quinta (2ª hora seguida
        pela metade) e R$ 120 de sexta a domingo, feriados e vésperas;
@@ -708,20 +708,21 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
   /* ---------- sinal ---------- */
   function pagantes(){ return st.adultos + st.bari + st.c35 + st.c68; }
+  /* todo mundo da reserva, inclusive criança de até 2 anos, que não paga */
+  function pessoas(){ return pagantes() + st.bebes; }
   /* mesa exclusiva paga todos os lugares antes; fora dela, a pessoa escolhe.
-     Quando o sinal já cobre o grupo inteiro (2 pessoas), é o mesmo que pagar tudo. */
-  function sinalCobreTodos(){ var n = rodiziosDoSinal(); return n !== null && n >= pagantes(); }
+     Quando o sinal já cobre todos os pagantes (1 pessoa), é o mesmo que pagar tudo. */
+  function sinalCobreTodos(){ return rodiziosDoSinal() >= pagantes(); }
   function pagaTudo(){ return comRodizio() && ((st.tipo === 'mesa' && st.exclusiva) || st.pagarTudo || sinalCobreTodos()); }
-  /* quantos rodízios entram no sinal; null = grupo de 30 ou mais, a casa combina */
+  /* quantos rodízios entram no sinal: 1 até 19 pessoas e, de 20 em diante,
+     1 a cada 10 (20 a 29 = 2, 30 a 39 = 3...). Nunca mais que os pagantes. */
   function rodiziosDoSinal(){
-    var n = pagantes();
-    for (var i = 0; i < SINAL.length; i++) if (n <= SINAL[i].ate) return Math.min(n, SINAL[i].rodizios);
-    return null;
+    var p = pessoas(), n = p < 20 ? 1 : Math.floor(p / 10);
+    return Math.min(n, pagantes());
   }
   /* o sinal cobre os rodízios de maior valor do grupo (normalmente adultos) */
   function valorSinal(){
     var n = rodiziosDoSinal(), cheio = valorDia(st.data), cr = TABELA[st.piso].crianca, u = [], i;
-    if (n === null) return null;
     for (i = 0; i < st.adultos; i++) u.push(cheio);
     for (i = 0; i < st.bari; i++) u.push(arred(cheio * 0.7));
     for (i = 0; i < st.c68; i++) u.push(cr.c68);
@@ -748,7 +749,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var out = [];
     if (comRodizio()){
       if (pagaTudo()) out = out.concat(linhasRodizio(usaPromo()));
-      else if (rodiziosDoSinal() !== null) out.push({ nome:'Sinal (' + textoSinal(rodiziosDoSinal()) + ')', valor:valorSinal() });
+      else out.push({ nome:'Sinal (' + textoSinal(rodiziosDoSinal()) + ')', valor:valorSinal() });
     }
     if (st.tipo === 'pista') out = out.concat(linhasPista());
     if (!avulso()){
@@ -760,7 +761,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     return out;
   }
   function total(){ return somar(agora()); }
-  function sinalACombinar(){ return comRodizio() && !pagaTudo() && rodiziosDoSinal() === null; }
   /* o rodízio que fica para o dia, um valor por tipo de pessoa.
      A tela junta numa frase e o WhatsApp põe um por linha. */
   function restantePorPessoa(){
@@ -943,13 +943,12 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     $('avisoSinal').innerHTML = !rod ? ''
       : st.tipo === 'mesa' && st.exclusiva
       ? 'Na <b>mesa exclusiva</b>, todos os rodízios são pagos na reserva.'
-      : n === null
-      ? 'Para garantir a mesa, a casa pede <b>só um sinal</b>. Para grupos de 30 pessoas ou mais, o sinal é combinado com você pelo WhatsApp.'
       : sinalCobreTodos()
-      ? 'Para ' + pagantes() + ' pessoas, o sinal já cobre todos os rodízios: <b>' + moeda(somar(linhasRodizio(promo))) + '</b> no Pix' +
+      ? 'Para confirmar a reserva, é necessário antecipar o rodízio: <b>' + moeda(somar(linhasRodizio(promo))) + '</b> no Pix' +
         (promo ? ', com a promoção de R$ 49,99 por adulto' : '') + '. No dia, não há rodízio a pagar.'
-      : 'Para segurar a mesa, você paga <b>só o sinal: ' + textoSinal(n) + ', ' + moeda(valorSinal()) + '</b> no Pix. ' +
-        'O restante é pago no dia, no caixa, só por quem comparecer.';
+      : 'Para confirmar a reserva de ' + pessoas() + ' pessoas, é necessária a antecipação de <b>' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') +
+        ', ' + moeda(valorSinal()) + '</b> no Pix. O restante é pago no dia, no caixa, só por quem comparecer. ' +
+        '<span class="regra-sinal">De 1 a 19 pessoas, 1 rodízio; de 20 a 29, 2; de 30 a 39, 3; e assim sucessivamente.</span>';
 
     /* rodapé: antes do dia, o valor por pessoa; depois, só o que se paga agora */
     if (st.tipo === 'festa'){
@@ -963,9 +962,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         $('total').textContent = moeda(promo ? TABELA[1].terQui.promo : valorDia(d));
       }
     } else {
-      var t = total(), combinar = sinalACombinar();
-      $('totalRot').textContent = combinar ? 'Sinal da reserva' : 'A pagar agora';
-      $('total').textContent = combinar ? (t ? moeda(t) + ' + sinal' : 'a combinar') : moeda(t);
+      $('totalRot').textContent = 'A pagar agora';
+      $('total').textContent = moeda(total());
     }
     var passos = ativas(), atual = passos.indexOf(st.tela) + 1;
     $('barra').style.transform = 'scaleX(' + Math.min(1, atual / passos.length) + ')';
@@ -980,7 +978,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       : st.tipo === 'festa'
       ? 'Festa e evento têm <b>orçamento próprio</b>. A casa te chama no WhatsApp com os valores e os pacotes para a data.'
       : (st.piso === 2 ? 'O <b>2º piso tem acesso só por escada</b>. Se alguém do grupo precisa de acesso sem escada, escolha o 1º piso. ' : '') +
-        'A reserva é a partir de <b>2 pessoas</b> e, para segurar a mesa, você paga <b>só o sinal de 2 rodízios</b> no Pix. ' +
+        'Para confirmar a reserva, você antecipa <b>1 rodízio a cada grupo de 10 pessoas</b> no Pix (de 1 a 19 pessoas, 1 rodízio). ' +
         'A casa trabalha <b>só no sistema de rodízio</b>: todo mundo que entra participa e paga o valor do dia, inclusive acompanhantes. ' +
         'Quer jogar boliche também? Escolha <b>Boliche</b> e marque o andar: quem vai no rodízio paga bem menos na pista.';
 
@@ -1070,10 +1068,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         (rod && !pagaTudo() ? ' No dia, cada um paga o restante no caixa.' : '');
     if (rod){
       var promoOk = promoSePagarTudo();
-      $('pagSinalTxt').textContent = n === null
-        ? 'Grupo de 30 pessoas ou mais: a casa combina o sinal com você.'
-        : textoSinal(n) + '. O restante é pago no dia, só por quem comparecer.';
-      $('pagSinalVal').textContent = n === null ? 'a combinar' : moeda(valorSinal());
+      $('pagSinalTxt').textContent = textoSinal(n) + '. O restante é pago no dia, só por quem comparecer.';
+      $('pagSinalVal').textContent = moeda(valorSinal());
       $('pagTudoTxt').textContent = 'Todos os rodízios no Pix, pelo valor em dinheiro.' +
         (promoOk ? ' Este dia entra na promoção de R$ 49,99 por adulto (7 dias de antecedência).' : '');
       $('pagTudoVal').textContent = moeda(somar(linhasRodizio(promoOk)));
@@ -1094,10 +1090,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if (precisaDocs()) l.push('Documentos: ' + textoDocs().replace('Apresente', 'apresente') + ' Sem o documento, vale o valor de adulto.');
     return l;
   }
-  function totalTexto(){
-    var t = total(), combinar = sinalACombinar();
-    return combinar ? (t ? moeda(t) + ' + sinal a combinar' : 'sinal a combinar') : moeda(t);
-  }
+  function totalTexto(){ return moeda(total()); }
 
   function pintarResumo(el){
     var d = st.data, festa = st.tipo === 'festa', lin = '';
@@ -1196,7 +1189,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     } else {
       /* o que entra no Pix da reserva, e o total numa linha só dele */
       var pg = agora().map(function(i){ return i.nome + ': ' + (i.valor ? moeda(i.valor) : 'não paga'); });
-      if (sinalACombinar()) pg.push('Sinal do grupo: a combinar com a casa');
       if (usaPromo()) pg.push('Com a promoção de R$ 49,99 (7 dias de antecedência, tudo pago no ato)');
       bloco('Pagar agora, no Pix', pg);
       L.push('', 'Total no Pix: ' + totalTexto());
@@ -1275,9 +1267,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       var soOrcamento = st.tipo === 'festa';
       if (!soOrcamento){
         $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
-        $('passoPagar').innerHTML = sinalACombinar() && !total()
-          ? 'Combine o sinal com a casa e pague no Pix.'
-          : 'Pague <b>' + totalTexto() + '</b> no Pix.';
+        $('passoPagar').innerHTML = 'Pague <b>' + totalTexto() + '</b> no Pix.';
       }
       /* festa é só orçamento: não tem Pix nem comprovante nesta etapa */
       $('passosPix').hidden = soOrcamento;
@@ -1301,7 +1291,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   function valida(n){
     if (n === 1 && (!st.data || !st.hora)) return st.tipo === 'pista' ? 'Escolha o dia e o horário da pista.'
                                               : st.tipo === 'festa' ? 'Escolha o dia e o horário.' : 'Escolha o dia.';
-    if (n === 2 && comRodizio() && pagantes() < MIN_PESSOAS) return 'A reserva é para no mínimo ' + MIN_PESSOAS + ' pessoas.';
+    if (n === 2 && comRodizio() && pagantes() < MIN_PESSOAS) return 'A reserva é para no mínimo ' + MIN_PESSOAS + (MIN_PESSOAS > 1 ? ' pessoas.' : ' pessoa.');
     if (n === 2 && comRodizio() && st.aniv.on && !st.aniv.dia) return 'Escolha o dia e o mês do aniversário.';
     if (n === 5){
       /* marca o campo com problema e leva o foco até ele */
@@ -1378,9 +1368,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       avisa('Cada pista leva até 6 pessoas.');
       v = st.pistas;
     }
-    /* a reserva do rodízio é para no mínimo 2 pagantes */
+    /* a reserva do rodízio precisa de pelo menos MIN_PESSOAS pagantes */
     if (comRodizio() && v < st[k] && ['adultos','bari','c35','c68'].indexOf(k) >= 0 && pagantes() - (st[k] - v) < MIN_PESSOAS){
-      avisa('A reserva é para no mínimo ' + MIN_PESSOAS + ' pessoas.');
+      avisa('A reserva é para no mínimo ' + MIN_PESSOAS + (MIN_PESSOAS > 1 ? ' pessoas.' : ' pessoa.'));
       return;
     }
     st[k] = v;
