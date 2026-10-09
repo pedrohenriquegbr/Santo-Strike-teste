@@ -3,13 +3,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="index, follow">
-<meta name="description" content="Reserve mesa ou pista de boliche no Santo Strike, em Duque de Caxias: escolha o andar, o dia e quantas pessoas vão e envie o pedido pelo WhatsApp.">
+<meta name="description" content="Reserve mesa ou pista de boliche no Santo Strike, em Duque de Caxias: escolha o rodízio, o dia e quantas pessoas vão e envie a solicitação pelo WhatsApp.">
 <link rel="canonical" href="https://santo-strike.vercel.app/reserva/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Santo Strike">
 <meta property="og:title" content="Reserva | Santo Strike">
-<meta property="og:description" content="Escolha o andar, o dia e quantas pessoas vão. Rodízio a partir de R$ 54,99 no Pix da reserva, com horário único às 18h30.">
+<meta property="og:description" content="Escolha o rodízio, o dia e quantas pessoas vão. Rodízio a partir de R$ 54,99 no Pix da reserva, com horário único às 18h30.">
 <meta property="og:url" content="https://santo-strike.vercel.app/reserva/">
 <meta property="og:image" content="https://santo-strike.vercel.app/assets/og-logo.jpg">
 <meta property="og:image:width" content="1200">
@@ -119,8 +119,8 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .aviso{border:1px dashed var(--line-strong);border-radius:12px;padding:.85rem 1rem;margin-top:1.2rem;
   font-size:.88rem;color:var(--ink-2)}
 .aviso b{color:var(--accent);font-weight:700}
-/* a tabela do sinal, em letra menor, logo abaixo do valor */
-.aviso .regra-sinal{display:block;margin-top:.45rem;font-size:.8rem;opacity:.85}
+.aviso a{color:var(--accent)}
+.linkbtn{background:none;border:0;padding:0;margin-left:.3rem;color:var(--accent);font:inherit;text-decoration:underline;cursor:pointer}
 
 /* contadores */
 .conta{display:flex;align-items:center;justify-content:space-between;gap:1rem;
@@ -220,6 +220,35 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 .docs p{margin:0;font-size:.9rem;color:var(--ink)}
 .docs .check{margin-top:.8rem}
 
+/* aviso que a pessoa não pode deixar passar: tolerância e confirmação */
+.destaque{border:1.5px solid var(--accent);background:rgba(227,178,60,.09);border-radius:12px;padding:.9rem 1rem;margin-top:1rem;
+  font-size:.9rem;color:var(--ink)}
+.destaque b{color:var(--accent)}
+.destaque h3{font:700 .64rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 .55rem}
+.destaque ul{list-style:none;margin:0;padding:0;display:grid;gap:.3rem}
+.destaque li.hoje{font-weight:700}
+.destaque p{margin:.6rem 0 0;color:var(--ink-2);font-size:.86rem}
+.destaque a{color:var(--accent)}
+
+/* tabela da antecipação: a mesma em todo lugar, com a faixa do grupo acesa */
+.tab-sinal{list-style:none;margin:.6rem 0 0;padding:0;display:grid;gap:.25rem;font-size:.86rem;color:var(--ink-2)}
+.tab-sinal li{display:flex;justify-content:space-between;gap:1rem;padding:.3rem .6rem;border-radius:8px}
+.tab-sinal li span:first-child{white-space:nowrap}
+.tab-sinal li span:last-child{font-family:var(--mono);font-size:.74rem;white-space:nowrap;align-self:center}
+.tab-sinal li.on{background:rgba(227,178,60,.14);color:var(--ink);font-weight:700}
+.tab-sinal li.on span:last-child{color:var(--accent)}
+.tab-sinal li.etc{font-style:italic;padding-top:.15rem}
+
+/* calendário de 60 dias: atalho por mês e o dia escolhido por extenso */
+.meses{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem}
+.meses button{border:1px solid var(--line);background:var(--panel);color:var(--ink-2);border-radius:999px;cursor:pointer;
+  font:500 .68rem/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;padding:.5rem .8rem}
+.meses button.on{border-color:var(--accent);color:var(--accent);background:var(--panel-2)}
+.mes-sep{flex:none;align-self:stretch;display:grid;place-items:center;padding:0 .15rem;scroll-snap-align:start;
+  font:700 .6rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);writing-mode:vertical-rl;transform:rotate(180deg)}
+.dia-escolhido{margin:.5rem 0 0;font-size:.9rem;color:var(--ink-2)}
+.dia-escolhido b{color:var(--accent)}
+
 /* confirmado */
 .ok{text-align:center;padding:1rem 0}
 .ok .selo{width:76px;height:76px;border-radius:50%;border:1.5px solid var(--accent);color:var(--accent);
@@ -272,13 +301,16 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
   <!-- 1. ONDE -->
   <section class="tela on" data-tela="0">
-    <h1>Onde vai ser?</h1>
+    <h1>O que você quer reservar?</h1>
+    <div class="destaque" style="margin:0 0 1rem"><b>Preencher este formulário ainda não confirma a reserva.</b> No fim, você envia a
+      solicitação pelo WhatsApp e a equipe confirma conforme a disponibilidade e as regras da casa.</div>
     <p class="sub">Valor por adulto no Pix da reserva. Ele muda por dia da semana e o do dia aparece no passo seguinte.</p>
+    <!-- data-piso é só o número interno do rodízio (1 = Tradicional, 2 = Fusion); o site não cita localização -->
     <div class="ops" id="onde">
-      <label class="op"><input type="radio" name="onde" value="1º piso" data-tipo="mesa" data-piso="1" checked>
-        <b>1º piso</b><em>Rodízio de pizza e bufê</em><span class="val">a partir de<br>R$ 54,99</span></label>
-      <label class="op"><input type="radio" name="onde" value="2º piso" data-tipo="mesa" data-piso="2">
-        <b>2º piso</b><em>Fusion Food com churrasco</em><span class="val">a partir de<br>R$ 69,99</span></label>
+      <label class="op"><input type="radio" name="onde" value="Rodízio Tradicional" data-tipo="mesa" data-piso="1" checked>
+        <b>Rodízio Tradicional</b><em>Pizza e bufê à vontade</em><span class="val">a partir de<br>R$ 54,99</span></label>
+      <label class="op"><input type="radio" name="onde" value="Rodízio Fusion" data-tipo="mesa" data-piso="2">
+        <b>Rodízio Fusion</b><em>Churrasco, comida oriental e massas</em><span class="val">a partir de<br>R$ 69,99</span></label>
       <label class="op"><input type="radio" name="onde" value="Boliche" data-tipo="pista">
         <b>Boliche</b><em>Pista por hora, até 6 pessoas</em><span class="val">de R$ 40<br>a R$ 300</span></label>
       <label class="op"><input type="radio" name="onde" value="Festa" data-tipo="festa">
@@ -288,9 +320,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <span class="rot">Vão comer no rodízio também?</span>
       <div class="ops" id="comRodizio">
         <label class="op"><input type="radio" name="comRodizio" value="1" checked>
-          <b>Sim, no 1º piso</b><em>Pista com preço de cliente do rodízio</em><span class="val">de R$ 40<br>a R$ 120</span></label>
+          <b>Sim, no Rodízio Tradicional</b><em>Pista com preço de cliente do rodízio</em><span class="val">de R$ 40<br>a R$ 120</span></label>
         <label class="op"><input type="radio" name="comRodizio" value="2">
-          <b>Sim, no 2º piso</b><em>Pista com preço de cliente do rodízio</em><span class="val">de R$ 40<br>a R$ 120</span></label>
+          <b>Sim, no Rodízio Fusion</b><em>Pista com preço de cliente do rodízio</em><span class="val">de R$ 40<br>a R$ 120</span></label>
         <label class="op"><input type="radio" name="comRodizio" value="0">
           <b>Não, só jogar</b><em>Uso avulso da pista, sem rodízio</em><span class="val">R$ 200 ou<br>R$ 300</span></label>
       </div>
@@ -303,14 +335,24 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <h1>Que dia?</h1>
     <p class="sub" id="subDia">A reserva do rodízio é sempre para as 18h30. Fechado às segundas e no 3º domingo do mês.</p>
     <span class="rot">Escolha o dia</span>
+    <div class="meses" id="meses" aria-label="Ir para o mês"></div>
     <div class="dias-wrap"><div class="dias" id="dias"></div></div>
     <div class="setas"><button type="button" id="diaEsq" aria-label="Ver dias anteriores">&#8592;</button>
       <button type="button" id="diaDir" aria-label="Ver próximos dias">&#8594;</button></div>
-    <p class="sub" style="font-size:.8rem;margin:.3rem 0 0">Aqui aparecem os próximos 14 dias de funcionamento. Para uma data mais distante, fale com a casa no WhatsApp.</p>
+    <p class="dia-escolhido" id="diaEscolhido" aria-live="polite">Você pode reservar com até 60 dias de antecedência.</p>
     <span class="rot" id="rotHora">Horário da reserva</span>
     <div class="horas" id="horas"></div>
-    <label class="check" id="caixaExclusiva"><input type="checkbox" id="exclusiva"><span><b>Quero mesa exclusiva.</b> A mesa fica com o grupo a noite toda, sem limite de chegada. Todos os lugares são pagos antes e lugar vazio não é reembolsado.</span></label>
-    <div class="aviso" id="avisoDia">No Pix da reserva ou em dinheiro, o rodízio do 1º piso sai por <b>R$ 54,99</b> por adulto de terça a quinta.</div>
+    <!-- tolerância de chegada, do jeito que a casa escreveu (09/10/2026) -->
+    <div class="destaque" id="caixaTolerancia">
+      <h3>Tolerância de chegada</h3>
+      <ul>
+        <li id="tolSemana">Terça a sexta: chegada de todos até <b>19h30</b>.</li>
+        <li id="tolFim">Sábados, domingos e feriados: chegada de todos até <b>19h</b>.</li>
+      </ul>
+      <p>Após a tolerância, a reserva perde a garantia e o grupo fica sujeito à disponibilidade.</p>
+      <p id="dicaExclusiva">Prefere chegar sem horário máximo? No próximo passo, escolha o <b>pagamento integral antecipado</b>, que garante uma mesa exclusiva para o grupo.</p>
+    </div>
+    <div class="aviso" id="avisoDia">No Pix da reserva ou em dinheiro, o Rodízio Tradicional sai por <b>R$ 54,99</b> por adulto de terça a quinta.</div>
   </section>
 
   <!-- 3. QUEM VAI -->
@@ -371,7 +413,17 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     </div>
     <div class="aviso" id="avisoAniv" hidden></div>
 
-    <div class="aviso caixa-rodizio" id="avisoSinal"></div>
+    <!-- as duas formas de garantir a reserva, pedidas pela casa em 09/10/2026 -->
+    <div class="caixa-rodizio" id="modalidade">
+      <span class="rot">Como garantir a reserva</span>
+      <div class="ops" id="pagamento">
+        <label class="op"><input type="radio" name="pag" value="sinal" checked>
+          <b>Antecipação de rodízios</b><em id="pagSinalTxt"></em><span class="val" id="pagSinalVal"></span></label>
+        <label class="op"><input type="radio" name="pag" value="tudo">
+          <b>Pagamento integral antecipado</b><em id="pagTudoTxt"></em><span class="val" id="pagTudoVal"></span></label>
+      </div>
+      <div class="aviso" id="avisoSinal"></div>
+    </div>
     <div class="aviso caixa-rodizio">Para o valor infantil é <b>obrigatório apresentar RG ou certidão</b> da criança no caixa, e o bariátrico apresenta a <b>carteirinha</b>. Sem o documento, vale o valor de adulto. O <b>PlayKids é grátis</b> para quem paga o rodízio infantil: é só retirar a pulseirinha no caixa (fliperama à parte).</div>
   </section>
 
@@ -405,7 +457,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <label class="fld"><span>Ocasião</span>
       <select id="ocasiao"><option>Só comer</option><option>Aniversário</option><option>15 anos</option><option>Confraternização</option><option>Encontro de família</option></select></label>
     <label class="fld"><span>Alguma observação</span><textarea id="obs" placeholder="Alergia, cadeirinha de bebê, cadeira de rodas"></textarea></label>
-    <div class="aviso">O <b>2º piso não tem acessibilidade</b>. Quem precisa de acesso sem escada fica no 1º piso.</div>
+    <div class="aviso"><b>Acessibilidade:</b> se alguém do grupo precisa de acessibilidade, <a class="zap-acesso" href="#" target="_blank" rel="noopener">fale com um atendente pelo WhatsApp</a> antes de enviar a reserva.</div>
     <p class="sub" style="font-size:.82rem;margin-top:1rem">Seu nome e WhatsApp servem só para a casa confirmar esta reserva.
       Veja a <a href="/politica-de-privacidade/" target="_blank" rel="noopener" style="color:var(--accent)">Política de Privacidade</a>.</p>
   </section>
@@ -414,16 +466,11 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   <section class="tela" data-tela="6">
     <h1>Confira e concorde</h1>
     <p class="sub" id="subContrato">A reserva só entra na agenda depois do Pix e do comprovante enviado no WhatsApp. No dia, cada um paga o restante no caixa.</p>
-    <div id="formaPag">
-      <span class="rot" style="margin-top:0">Quanto pagar agora, no Pix</span>
-      <div class="ops" id="pagamento">
-        <label class="op"><input type="radio" name="pag" value="sinal" checked>
-          <b>Só o sinal</b><em id="pagSinalTxt"></em><span class="val" id="pagSinalVal"></span></label>
-        <label class="op"><input type="radio" name="pag" value="tudo">
-          <b>Todos os rodízios agora</b><em id="pagTudoTxt"></em><span class="val" id="pagTudoVal"></span></label>
-      </div>
-      <span class="rot">Resumo</span>
-    </div>
+    <div class="destaque" style="margin:0 0 1rem"><b>Esta é uma solicitação de reserva.</b> Ela só fica confirmada quando a equipe
+      responder no WhatsApp, conforme a disponibilidade e as regras da casa.</div>
+    <!-- a modalidade é escolhida no passo "Quem vai"; aqui fica o lembrete, com atalho para trocar -->
+    <div class="aviso" id="formaPag" style="margin:0 0 1rem"><span id="modalidadeTxt"></span>
+      <button type="button" class="linkbtn" id="trocarModalidade">Alterar</button></div>
     <div class="linhas" id="resumo"></div>
     <div class="nodia" id="noDia"></div>
     <div class="docs" id="docs" hidden>
@@ -434,24 +481,24 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     <div class="contrato" style="margin-top:1rem">
       <h2>Contrato de reserva</h2>
       <ul>
-        <li><span><b>Chegada:</b> <span id="tolerancia">a reserva do rodízio é para as 18h30 e a tolerância vai até 19h30 de terça a sexta. Passou disso e tendo fila, a mesa pode ser liberada.</span></span></li>
-        <li id="regraSinal"><span><b>Pagamento:</b> para confirmar a reserva, é necessária a antecipação de <b>1 rodízio a cada grupo de 10 pessoas</b>: de 1 a 19 pessoas, 1 rodízio; de 20 a 29, 2 rodízios; de 30 a 39, 3 rodízios; e assim sucessivamente. O valor antecipado, pago no Pix pelo valor em dinheiro, é utilizado para a confirmação da reserva. O restante é pago no dia, no caixa, só por quem comparecer. Kit Festa e pista de boliche são pagos inteiros na reserva.</span></li>
-        <li id="regraExclusiva" hidden><span><b>Mesa exclusiva:</b> a mesa fica bloqueada para o grupo a noite toda. Todos os lugares reservados são pagos antes e os que não forem usados não são reembolsados.</span></li>
+        <li><span><b>Confirmação:</b> preencher o formulário não confirma a reserva. A solicitação segue para o WhatsApp, onde a equipe confirma conforme a disponibilidade e as regras da casa.</span></li>
+        <li id="regraChegada"><span><b>Tolerância de chegada:</b> <span id="tolerancia">a reserva do rodízio é para as 18h30. Terça a sexta: chegada de todos até 19h30. Sábados, domingos e feriados: chegada de todos até 19h. Após a tolerância, a reserva perde a garantia e o grupo fica sujeito à disponibilidade.</span></span></li>
+        <li id="regraSinal"><span><b>Antecipação:</b> para confirmar a reserva, é necessário antecipar rodízios conforme o tamanho do grupo: <span class="regra-sinal-txt"></span> O valor antecipado, pago no Pix pelo valor em dinheiro, é utilizado para a confirmação da reserva. O restante é pago no dia, no caixa, só por quem comparecer. Kit Festa e pista de boliche são pagos inteiros na reserva.</span></li>
+        <li id="regraExclusiva" hidden><span><b>Pagamento integral antecipado (mesa exclusiva):</b> com o pagamento antecipado de todos os rodízios, o grupo garante uma mesa exclusiva, sem horário máximo de tolerância para chegada. O pagamento não é reembolsável.</span></li>
         <li id="regraPista" hidden><span><b>Boliche:</b> o valor é por pista, que leva até 6 pessoas, com pagamento integral no ato da reserva e conforme a disponibilidade de pistas.</span></li>
         <li id="regraAniv" hidden><span><b>Aniversário:</b> um aniversariante por reserva, promoções não cumulativas e RG do aniversariante apresentado até 20h30.</span></li>
-        <li><span><b>Cancelamento:</b> reembolso total se você pedir pelo WhatsApp oficial em até 7 dias da contratação. Depois desse prazo não há reembolso.</span></li>
+        <li class="so-antecipacao"><span><b>Cancelamento:</b> reembolso total se você pedir pelo WhatsApp oficial em até 7 dias da contratação. Depois desse prazo não há reembolso.</span></li>
         <li><span><b>Remarcação:</b> avisando com 24 horas de antecedência, a data pode ser remarcada e usada em até 30 dias, conforme a agenda.</span></li>
-        <li><span><b>Não comparecer</b> ou chegar fora da tolerância sem avisar é no-show, sem reembolso e sem remarcação.</span></li>
-        <li><span><b>A reserva garante entrada com prioridade</b> dentro da tolerância, não escolha de mesa nem espaço bloqueado.</span></li>
+        <li class="so-antecipacao"><span><b>Não comparecer</b> ou chegar fora da tolerância sem avisar é no-show, sem reembolso e sem remarcação.</span></li>
+        <li class="so-antecipacao"><span><b>A reserva garante entrada com prioridade</b> dentro da tolerância, não escolha de mesa nem espaço bloqueado.</span></li>
         <li><span><b>Quantidade de pessoas:</b> a reserva deve ser feita para o total de pessoas que irão comparecer. Os lugares são garantidos somente para o número reservado; pessoas além dessa quantidade seguem a fila e as regras de tolerância, sem prioridade.</span></li>
         <li><span><b>Bolo trazido por você:</b> pode. Usando pratos, talheres e estrutura da casa, a taxa é de R$ 60,00.</span></li>
       </ul>
       <details class="artes">
-        <summary>Ver o contrato e a tabela da casa</summary>
+        <summary>Ver o contrato e as artes da casa</summary>
         <div class="fotos">
+          <!-- as artes "regras de funcionamento" e "tabela de preços" saíram daqui: citam a localização dos rodízios -->
           <img data-src="/assets/catalogo/contrato-1.jpg" width="700" height="1242" alt="Contrato de reserva do Santo Strike" decoding="async">
-          <img data-src="/assets/catalogo/regras-funcionamento.jpg" width="700" height="1202" alt="Regras de funcionamento da casa" decoding="async">
-          <img data-src="/assets/catalogo/tabela-precos.jpg" width="700" height="1244" alt="Tabela de valores dos rodízios" decoding="async">
           <img data-src="/assets/catalogo/boliche.jpg" width="700" height="876" alt="Valores da pista de boliche" decoding="async">
           <img data-src="/assets/catalogo/aniversario.jpg" width="700" height="1244" alt="Promoção de aniversário" decoding="async">
           <img data-src="/assets/catalogo/bebidas.jpg" width="700" height="1244" alt="Regras do refrigerante" decoding="async">
@@ -469,21 +516,23 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></div>
       <h1 id="tituloOk">Falta só enviar</h1>
       <p class="codigo-res" id="codigoRes">SS-0000</p>
+      <div class="destaque" id="avisoConfirma" style="text-align:left;margin:0 0 1rem"><b>Sua reserva ainda não está confirmada.</b> Envie a
+        solicitação pelo WhatsApp: a equipe confirma conforme a disponibilidade e as regras da casa.</div>
       <div class="linhas" id="resumoOk"></div>
       <div class="nodia" id="noDiaOk" style="text-align:left"></div>
       <!-- o caminho até a vaga garantida, enquanto o Pix não é pago dentro do site -->
       <div class="nodia" id="passosPix" style="text-align:left;margin-bottom:1.1rem">
         <h3>Como garantir a vaga</h3>
         <ol>
-          <li>Toque no botão abaixo e envie a reserva pelo WhatsApp.</li>
-          <li>A casa confirma a data e manda a chave Pix.</li>
+          <li>Toque no botão abaixo e envie a solicitação pelo WhatsApp.</li>
+          <li>A equipe confirma a disponibilidade da data e manda a chave Pix.</li>
           <li id="passoPagar">Pague o Pix.</li>
           <li><b>Envie a foto do comprovante</b> na mesma conversa.</li>
         </ol>
-        <p>Sem o comprovante, a reserva não entra na agenda.</p>
+        <p>Sem a confirmação da equipe e o comprovante, a reserva não entra na agenda.</p>
       </div>
       <p class="sub" id="textoOk" style="margin-top:1.2rem" hidden>Toque abaixo para mandar o pedido de orçamento pelo WhatsApp do Santo Strike. A casa responde com os valores e os pacotes para a data.</p>
-      <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar pelo WhatsApp</a>
+      <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar solicitação pelo WhatsApp</a>
       <!-- só aparece no computador: lá o botão abre o WhatsApp Web -->
       <p class="pc-ajuda" id="pcAjuda" hidden>No computador, a reserva abre no WhatsApp Web. Prefere o aplicativo? <button type="button" id="copiarMsg">Copie a mensagem</button> e cole na conversa com o Santo Strike, (21) 98879-9699.</p>
     </div>
@@ -574,7 +623,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var hoje = soDia(new Date());
     return Math.round((d - hoje) / 86400000);
   }
-  /* dia que entra na promoção dos R$ 49,99: 1º piso, terça a quinta (sem
+  /* dia que entra na promoção dos R$ 49,99: Rodízio Tradicional, terça a quinta (sem
      feriado nem véspera) e 7 dias de antecedência. Só vale pagando tudo. */
   function temPromo(d, piso){
     return piso === 1 && !!d && diaUtil(d) && diasDeAntecedencia(d) >= 7;
@@ -587,10 +636,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     /* antecipado: entra no Pix da reserva. Os outros só ficam anotados e são
        pagos na casa, no dia (pedido da equipe de reservas). */
     { id:'kit',  nome:'Kit Festa + Bolo', preco:119.99, max:1, antecipado:true, foto:'/assets/catalogo/kit-festa.jpg',
-      desc:'Bolo de 10 fatias, 10 cupcakes e a mesa do bolo montada no tema que você escolher. Pago junto com a reserva. Não vale aos sábados, é uma promoção por noite em cada andar e depende da disponibilidade.' },
+      desc:'Bolo de 10 fatias, 10 cupcakes e a mesa do bolo montada no tema que você escolher. Pago junto com a reserva. Não vale aos sábados, é uma promoção por noite em cada rodízio e depende da disponibilidade.' },
     /* na reserva vale o preço promocional do refrigerante */
     { id:'refri', nome:'Refrigerante 2L', preco:15, ico:'copo',
-      desc:'<b>Promoção com reserva: R$ 15.</b> Você marca aqui e paga na casa. No 1º piso, de terça a sexta, refrigerante e refresco são cortesia.' },
+      desc:'<b>Promoção com reserva: R$ 15.</b> Você marca aqui e paga na casa. No Rodízio Tradicional, de terça a sexta, refrigerante e refresco são cortesia.' },
     { id:'bolo', nome:'Taxa de bolo próprio', preco:60, ico:'bolo',
       desc:'Só se você trouxer o bolo e usar pratos, talheres e estrutura da casa. Paga na casa. Com descartáveis seus, não paga.' }
   ];
@@ -600,16 +649,20 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     bolo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 20.5h16V14H4v6.5Z"/><path d="M4 14.5c1.8-2 3.6-2 5.4 0s3.6 2 5.4 0 3.4-2 5.2 0"/><path d="M12 4v3.5"/><circle cx="12" cy="3" r="1"/></svg>'
   };
 
-  var NOMES = ['Onde','Quando','Quem vai','Extras','Decoração','Seus dados','Contrato','Enviar'];
+  var NOMES = ['Escolha','Quando','Quem vai','Extras','Decoração','Seus dados','Contrato','Enviar'];
   var DIAS_CURTO = ['dom','seg','ter','qua','qui','sex','sáb'];
   var MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   var MESES_LONGOS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-  /* piso: 1 ou 2 é o andar do rodízio; 0 é boliche sem rodízio (uso avulso) */
-  var st = { tela:0, tipo:'mesa', piso:1, onde:'1º piso', data:null, hora:null,
+  /* piso: número interno do rodízio (1 = Tradicional, 2 = Fusion); 0 é boliche
+     sem rodízio (uso avulso). O site não cita localização: o cliente escolhe pelo
+     nome do rodízio (pedido da casa em 09/10/2026).
+     exclusiva: pagamento integral antecipado de todos os rodízios, que garante
+     mesa exclusiva sem horário máximo de chegada e não é reembolsável. */
+  var RODIZIO = { 1:'Rodízio Tradicional', 2:'Rodízio Fusion' };
+  var st = { tela:0, tipo:'mesa', piso:1, onde:'Rodízio Tradicional', data:null, hora:null,
              adultos:2, bari:0, c35:0, c68:0, bebes:0, pistas:1, horas:1, exclusiva:false,
-             aniv:{ on:false, dia:0, mes:0 }, extras:{}, decor:null,     /* decor: true = traz a própria; null = não escolheu */
-             pagarTudo:false };                                          /* false = só o sinal */
+             aniv:{ on:false, dia:0, mes:0 }, extras:{}, decor:null };   /* decor: true = traz a própria; null = não escolheu */
   /* o rodízio reservado tem horário único, a pedido da casa */
   var HORA_RODIZIO = '18:30';
 
@@ -623,9 +676,14 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   /* quem só joga boliche não tem mesa, então pula a tela de decoração */
   function ativas(){ return [0,1,2,3,4,5,6,7].filter(function(n){ return n !== 4 || !avulso(); }); }
   function ondeTexto(){
-    if (st.tipo === 'pista') return st.piso ? 'Boliche + rodízio do ' + st.piso + 'º piso' : 'Boliche avulso, sem rodízio';
+    if (st.tipo === 'pista') return st.piso ? 'Boliche + ' + RODIZIO[st.piso] : 'Boliche avulso, sem rodízio';
     return st.onde;
   }
+  /* quem precisa de acessibilidade fala com um atendente, a pedido da casa */
+  var ZAP_ACESSO = 'https://wa.me/' + WHATSAPP_CASA + '?text=' +
+    encodeURIComponent('Olá! Quero tirar uma dúvida sobre acessibilidade no Santo Strike antes de reservar.');
+  var LINK_ACESSO = '<a href="' + ZAP_ACESSO + '" target="_blank" rel="noopener">fale com um atendente pelo WhatsApp</a>';
+  [].forEach.call(document.querySelectorAll('a.zap-acesso'), function(a){ a.href = ZAP_ACESSO; });
 
   /* a casa fecha às segundas e no 3º domingo de cada mês (dias 15 a 21),
      menos nas aberturas especiais que ela anuncia (mesma lista do site) */
@@ -710,10 +768,12 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   function pagantes(){ return st.adultos + st.bari + st.c35 + st.c68; }
   /* todo mundo da reserva, inclusive criança de até 2 anos, que não paga */
   function pessoas(){ return pagantes() + st.bebes; }
-  /* mesa exclusiva paga todos os lugares antes; fora dela, a pessoa escolhe.
-     Quando o sinal já cobre todos os pagantes (1 pessoa), é o mesmo que pagar tudo. */
+  /* pagamento integral antecipado = mesa exclusiva, sem horário máximo de chegada */
+  function exclusivaOn(){ return comRodizio() && st.exclusiva; }
+  /* Quando a antecipação já cobre todos os pagantes (1 pessoa), o valor é o
+     mesmo de pagar tudo, mas sem virar mesa exclusiva: a tolerância continua. */
   function sinalCobreTodos(){ return rodiziosDoSinal() >= pagantes(); }
-  function pagaTudo(){ return comRodizio() && ((st.tipo === 'mesa' && st.exclusiva) || st.pagarTudo || sinalCobreTodos()); }
+  function pagaTudo(){ return comRodizio() && (st.exclusiva || sinalCobreTodos()); }
   /* quantos rodízios entram no sinal: 1 até 19 pessoas e, de 20 em diante,
      1 a cada 10 (20 a 29 = 2, 30 a 39 = 3...). Nunca mais que os pagantes. */
   function rodiziosDoSinal(){
@@ -731,6 +791,23 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     return arred(u.slice(0, n).reduce(function(s, v){ return s + v; }, 0));
   }
   function textoSinal(n){ return n + (n > 1 ? ' rodízios antecipados' : ' rodízio antecipado'); }
+  /* A tabela da antecipação, igual em todas as telas. Mostra as quatro
+     primeiras faixas e "assim sucessivamente"; se o grupo passar de 49, entra
+     também a faixa dele. Com `acender`, a faixa do grupo fica destacada. */
+  function faixasSinal(){
+    var f = [[1, 19, 1], [20, 29, 2], [30, 39, 3], [40, 49, 4]], p = comRodizio() ? pessoas() : 0;
+    if (p >= 50){ var n = Math.floor(p / 10); f.push([n * 10, n * 10 + 9, n]); }
+    return f;
+  }
+  function tabelaSinal(acender){
+    var p = pessoas();
+    return '<ul class="tab-sinal">' + faixasSinal().map(function(f){
+      return '<li' + (acender && p >= f[0] && p <= f[1] ? ' class="on"' : '') + '><span>' + f[0] + ' a ' + f[1] + ' pessoas</span><span>' + textoSinal(f[2]) + '</span></li>';
+    }).join('') + '<li class="etc"><span>E assim sucessivamente.</span><span></span></li></ul>';
+  }
+  var REGRA_SINAL_TXT = '1 a 19 pessoas, 1 rodízio antecipado; 20 a 29 pessoas, 2 rodízios antecipados; ' +
+    '30 a 39 pessoas, 3 rodízios antecipados; 40 a 49 pessoas, 4 rodízios antecipados; e assim sucessivamente.';
+  [].forEach.call(document.querySelectorAll('.regra-sinal-txt'), function(el){ el.textContent = REGRA_SINAL_TXT; });
 
   /* ---------- extras ---------- */
   function precoExtra(e){
@@ -749,7 +826,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var out = [];
     if (comRodizio()){
       if (pagaTudo()) out = out.concat(linhasRodizio(usaPromo()));
-      else out.push({ nome:'Sinal (' + textoSinal(rodiziosDoSinal()) + ')', valor:valorSinal() });
+      else out.push({ nome:'Antecipação de ' + textoSinal(rodiziosDoSinal()).replace(' antecipados', '').replace(' antecipado', ''), valor:valorSinal() });
     }
     if (st.tipo === 'pista') out = out.concat(linhasPista());
     if (!avulso()){
@@ -798,20 +875,33 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if (st.bari) p.push('a carteirinha de cada bariátrico');
     return 'Apresente no caixa ' + p.join(' e ') + '.';
   }
+  /* a frase da casa para depois da tolerância (09/10/2026) */
+  var APOS_TOLERANCIA = 'Após a tolerância, a reserva perde a garantia e o grupo fica sujeito à disponibilidade.';
   function textoTolerancia(){
-    if (st.tipo === 'mesa' && st.exclusiva) return 'mesa exclusiva, sem limite de chegada.';
-    return 'chegada até ' + (toleranciaCurta(st.data) ? '19h' : '19h30') + '. Depois disso, havendo fila, a mesa pode ser liberada.';
+    if (exclusivaOn()) return 'mesa exclusiva, sem horário máximo de tolerância para chegada.';
+    return 'chegada de todos até ' + (toleranciaCurta(st.data) ? '19h' : '19h30') + '. ' + APOS_TOLERANCIA;
   }
 
   /* ---------- dias ---------- */
+  /* A reserva abre com até 60 dias de antecedência (pedido da casa em
+     09/10/2026; antes eram 14 dias). A faixa de dias continua a mesma, com um
+     marcador onde o mês vira e um atalho por mês em cima. */
+  var DIAS_A_FRENTE = 60;
   function montarDias(){
-    var box = $('dias'); box.innerHTML = '';
-    var d = soDia(new Date());
-    var achados = 0;
-    while (achados < 14){
-      d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+    var box = $('dias'), meses = $('meses'); box.innerHTML = ''; meses.innerHTML = '';
+    var hoje = soDia(new Date()), mes = -1;
+    for (var k = 1; k <= DIAS_A_FRENTE; k++){
+      var d = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + k);
       if (fechado(d)) continue;
-      achados++;
+      if (d.getMonth() !== mes){
+        mes = d.getMonth();
+        var sep = document.createElement('span');
+        sep.className = 'mes-sep'; sep.setAttribute('data-mes', mes); sep.textContent = MESES[mes];
+        box.appendChild(sep);
+        var bt = document.createElement('button');
+        bt.type = 'button'; bt.setAttribute('data-mes', mes); bt.textContent = MESES_LONGOS[mes];
+        meses.appendChild(bt);
+      }
       var v = st.tipo === 'pista' ? precoPista(d, 2)
             : st.tipo === 'festa' ? 0
             : valorDia(d);
@@ -825,7 +915,23 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       })(new Date(d), lab.querySelector('input'));
       box.appendChild(lab);
     }
+    box.scrollLeft = 0;
+    marcarMes();
   }
+  /* acende o botão do mês que está à vista na faixa */
+  function marcarMes(){
+    var box = $('dias'), seps = box.querySelectorAll('.mes-sep'), atual = seps.length ? seps[0].getAttribute('data-mes') : '';
+    /* com a tela escondida não há medida: fica no primeiro mês */
+    if (box.offsetWidth) [].forEach.call(seps, function(s){ if (s.offsetLeft - box.offsetLeft <= box.scrollLeft + 24) atual = s.getAttribute('data-mes'); });
+    [].forEach.call($('meses').children, function(b){ b.classList.toggle('on', b.getAttribute('data-mes') === atual); });
+  }
+  $('meses').addEventListener('click', function(ev){
+    var b = ev.target.closest('button[data-mes]');
+    if (!b) return;
+    var box = $('dias'), sep = box.querySelector('.mes-sep[data-mes="' + b.getAttribute('data-mes') + '"]');
+    if (sep) box.scrollLeft = sep.offsetLeft - box.offsetLeft;
+  });
+  $('dias').addEventListener('scroll', function(){ requestAnimationFrame(marcarMes); });
   /* O rodízio reservado é sempre às 18h30: a pessoa não escolhe horário, só
      chega dentro da tolerância do contrato (19h30 de terça a sexta, 19h nos
      fins de semana e feriados; sem limite na mesa exclusiva). A pista é por
@@ -836,9 +942,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     return [HORA_RODIZIO];
   }
   function textoChegada(){
-    if (st.exclusiva) return 'Mesa exclusiva: <strong>sem limite de chegada</strong>, a mesa fica com o grupo a noite toda.';
-    if (!st.data) return 'Chegada até <strong>19h30</strong> de terça a sexta e até <strong>19h</strong> aos sábados, domingos e feriados.';
-    return 'Chegada até <strong>' + (toleranciaCurta(st.data) ? '19h' : '19h30') + '</strong> neste dia. Depois disso, havendo fila, a mesa pode ser liberada.';
+    if (exclusivaOn()) return 'Mesa exclusiva: <strong>sem horário máximo de tolerância</strong> para chegada.';
+    if (!st.data) return 'Horário único da reserva do rodízio. A tolerância de chegada está logo abaixo.';
+    return 'Neste dia, chegada de todos até <strong>' + (toleranciaCurta(st.data) ? '19h' : '19h30') + '</strong>.';
   }
   function montarHoras(){
     var box = $('horas'); box.innerHTML = '';
@@ -883,7 +989,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   }
   /* ---------- decoração: a casa não decora, a pessoa pode trazer a dela ---------- */
   $('decors').addEventListener('change', function(ev){ st.decor = ev.target.value === '1'; atualizar(); });
-  $('pagamento').addEventListener('change', function(ev){ st.pagarTudo = ev.target.value === 'tudo'; atualizar(); });
+  /* antecipação de rodízios ou pagamento integral antecipado (mesa exclusiva) */
+  $('pagamento').addEventListener('change', function(ev){ st.exclusiva = ev.target.value === 'tudo'; montarHoras(); atualizar(); });
+  $('trocarModalidade').addEventListener('click', function(){ ir(2); $('modalidade').scrollIntoView({ block:'center' }); });
 
   document.addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-ex]');
@@ -938,17 +1046,27 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       var el = $('p_' + e.id);
       if (el){ var p = precoExtra(e); el.textContent = indisponivel(e) ? 'fora aos sábados' : p ? moeda(p) : 'cortesia'; }
     });
-    /* sinal: dito logo aqui, antes de a pessoa ver qualquer valor alto */
-    var n = rod ? rodiziosDoSinal() : 0;
-    $('avisoSinal').innerHTML = !rod ? ''
-      : st.tipo === 'mesa' && st.exclusiva
-      ? 'Na <b>mesa exclusiva</b>, todos os rodízios são pagos na reserva.'
-      : sinalCobreTodos()
-      ? 'Para confirmar a reserva, é necessário antecipar o rodízio: <b>' + moeda(somar(linhasRodizio(promo))) + '</b> no Pix' +
-        (promo ? ', com a promoção de R$ 49,99 por adulto' : '') + '. No dia, não há rodízio a pagar.'
-      : 'Para confirmar a reserva de ' + pessoas() + ' pessoas, é necessária a antecipação de <b>' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') +
-        ', ' + moeda(valorSinal()) + '</b> no Pix. O restante é pago no dia, no caixa, só por quem comparecer. ' +
-        '<span class="regra-sinal">De 1 a 19 pessoas, 1 rodízio; de 20 a 29, 2; de 30 a 39, 3; e assim sucessivamente.</span>';
+    /* as duas formas de garantir a reserva, com o valor de cada uma, e a
+       tabela da antecipação com a faixa do grupo acesa */
+    if (rod){
+      var n = rodiziosDoSinal(), promoOk = promoSePagarTudo();
+      var chegada = 'Chegada de todos até ' + (d ? (toleranciaCurta(d) ? '19h' : '19h30') : '19h30 (19h aos sábados, domingos e feriados)') + '.';
+      $('pagSinalTxt').textContent = (sinalCobreTodos()
+        ? 'Você antecipa ' + textoSinal(n).replace(' antecipado', '') + ' no Pix, que já cobre o grupo. '
+        : 'Você antecipa ' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') + ' no Pix e o restante é pago no dia, por quem comparecer. ') + chegada;
+      $('pagSinalVal').textContent = moeda(sinalCobreTodos() ? somar(linhasRodizio(promoOk)) : valorSinal());
+      $('pagTudoTxt').textContent = 'Você paga todos os rodízios agora e garante uma mesa exclusiva para o grupo, sem horário máximo de tolerância para chegada. O pagamento não é reembolsável.' +
+        (promoOk ? ' Este dia entra na promoção de R$ 49,99 por adulto (7 dias de antecedência).' : '');
+      $('pagTudoVal').textContent = moeda(somar(linhasRodizio(promoOk)));
+      [].forEach.call(document.querySelectorAll('#pagamento input'), function(i){ i.checked = (i.value === 'tudo') === !!st.exclusiva; });
+      $('avisoSinal').innerHTML = exclusivaOn()
+        ? '<b>Pagamento integral antecipado:</b> todos os rodízios são pagos na reserva, a mesa fica exclusiva para o grupo e não há horário máximo de chegada. O pagamento não é reembolsável.'
+        : '<b>Antecipação de rodízios:</b> para confirmar a reserva de ' + pessoas() + (pessoas() > 1 ? ' pessoas' : ' pessoa') +
+          ', você antecipa <b>' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') + ', ' +
+          moeda(sinalCobreTodos() ? somar(linhasRodizio(promoOk)) : valorSinal()) + '</b> no Pix.' + tabelaSinal(true);
+    } else {
+      $('avisoSinal').innerHTML = '';
+    }
 
     /* rodapé: antes do dia, o valor por pessoa; depois, só o que se paga agora */
     if (st.tipo === 'festa'){
@@ -977,10 +1095,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         'Na hora, sem reserva, a pista sai por R$ 100 de terça a quinta e R$ 150 de sexta a domingo. Sem rodízio, R$ 200 ou R$ 300.'
       : st.tipo === 'festa'
       ? 'Festa e evento têm <b>orçamento próprio</b>. A casa te chama no WhatsApp com os valores e os pacotes para a data.'
-      : (st.piso === 2 ? 'O <b>2º piso tem acesso só por escada</b>. Se alguém do grupo precisa de acesso sem escada, escolha o 1º piso. ' : '') +
-        'Para confirmar a reserva, você antecipa <b>1 rodízio a cada grupo de 10 pessoas</b> no Pix (de 1 a 19 pessoas, 1 rodízio). ' +
-        'A casa trabalha <b>só no sistema de rodízio</b>: todo mundo que entra participa e paga o valor do dia, inclusive acompanhantes. ' +
-        'Quer jogar boliche também? Escolha <b>Boliche</b> e marque o andar: quem vai no rodízio paga bem menos na pista.';
+      : 'Para confirmar a reserva, você antecipa rodízios no Pix conforme o tamanho do grupo:' + tabelaSinal(false) +
+        '<p style="margin:.7rem 0 0">A casa trabalha <b>só no sistema de rodízio</b>: todo mundo que entra participa e paga o valor do dia, inclusive acompanhantes. ' +
+        'Quer jogar boliche também? Escolha <b>Boliche</b> e marque o rodízio: quem vai no rodízio paga bem menos na pista.</p>' +
+        '<p style="margin:.7rem 0 0"><b>Acessibilidade:</b> se alguém do grupo precisa de acessibilidade, ' + LINK_ACESSO + ' antes de reservar.</p>';
 
     /* passo 2 */
     var curta = toleranciaCurta(d);
@@ -988,18 +1106,29 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     $('subDia').textContent = st.tipo === 'pista' ? 'A pista é por hora: escolha o dia e o horário de jogo. Fechado às segundas e no 3º domingo do mês.'
       : st.tipo === 'festa' ? 'A casa abre às 18h. Fechado às segundas e no 3º domingo do mês.'
       : 'A reserva do rodízio é sempre para as 18h30. Fechado às segundas e no 3º domingo do mês.';
-    $('caixaExclusiva').hidden = st.tipo !== 'mesa';
-    var nota = !d ? '' : feriado(d) ? 'Este dia é <b>feriado</b>, então vale o preço de sexta e domingo. '
+    /* tolerância em destaque: a linha do dia escolhido fica em negrito */
+    $('caixaTolerancia').hidden = !rod;
+    $('tolSemana').classList.toggle('hoje', !!d && !curta && !exclusivaOn());
+    $('tolFim').classList.toggle('hoje', !!d && curta && !exclusivaOn());
+    $('dicaExclusiva').innerHTML = exclusivaOn()
+      ? 'Você escolheu o <b>pagamento integral antecipado</b>: a mesa é exclusiva e não há horário máximo de chegada.'
+      : 'Prefere chegar sem horário máximo? No próximo passo, escolha o <b>pagamento integral antecipado</b>, que garante uma mesa exclusiva para o grupo.';
+    $('diaEscolhido').innerHTML = d
+      ? 'Dia escolhido: <b>' + DIAS_LONGO[d.getDay()] + ', ' + d.getDate() + ' de ' + MESES_LONGOS[d.getMonth()].toLowerCase() + '</b>.'
+      : 'Você pode reservar com até 60 dias de antecedência.';
+    /* o feriado só muda o preço de segunda a quinta; de sexta a domingo o preço já é o do dia */
+    var mudaPreco = !!d && d.getDay() >= 1 && d.getDay() <= 4;
+    var nota = !mudaPreco ? '' : feriado(d) ? 'Este dia é <b>feriado</b>, então vale o preço de sexta e domingo. '
              : vespera(d) ? 'Este dia é <b>véspera de feriado</b>, então vale o preço de sexta e domingo. ' : '';
     var av = $('avisoDia');
     if (st.tipo === 'pista' && st.piso){
       av.innerHTML = nota + 'Para quem vai no rodízio, a pista das <b>18h sai por R$ 40</b>. Nos outros horários, R$ 80 a hora de terça a quinta, ' +
         'com a 2ª hora seguida por R$ 40, e R$ 120 de sexta a domingo, feriados e vésperas. ' +
-        'O rodízio fica reservado para as <b>18h30</b>, com chegada ' +
-        (!d ? 'até 19h30 de terça a sexta e até 19h nos fins de semana e feriados.' : 'até ' + (curta ? '19h' : '19h30') + ' neste dia.');
+        'O rodízio fica reservado para as <b>18h30</b>, com chegada de todos ' +
+        (!d ? 'até 19h30 de terça a sexta e até 19h aos sábados, domingos e feriados.' : 'até ' + (curta ? '19h' : '19h30') + ' neste dia.');
       /* jogar antes de comer pode estourar a tolerância da mesa */
       var H = st.hora ? parseInt(st.hora, 10) : 0, limite = curta ? 19 : 19.5;
-      if (H && H < limite && H + st.horas > limite){
+      if (H && H < limite && H + st.horas > limite && !exclusivaOn()){
         av.innerHTML += ' <b>Vai jogar antes de comer?</b> Com a pista até as ' + (H + st.horas) + 'h, você chega à mesa depois da tolerância. ' +
           'Escolha menos horas ou combine com a casa.';
       }
@@ -1016,10 +1145,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         txt = nota + 'Neste dia, o rodízio sai por <b>' + moeda(f.pix) + '</b> por adulto no Pix da reserva ou em dinheiro no caixa, e ' +
           moeda(f.maquina) + ' na maquininha (Pix, débito ou crédito). Não aceitamos VR.';
       } else {
-        txt = 'No Pix da reserva ou em dinheiro, o rodízio do ' + st.piso + 'º piso sai por <b>' + moeda(TABELA[st.piso].terQui.pix) +
+        txt = 'No Pix da reserva ou em dinheiro, o ' + RODIZIO[st.piso] + ' sai por <b>' + moeda(TABELA[st.piso].terQui.pix) +
           '</b> por adulto de terça a quinta, fora feriados e vésperas.';
       }
-      if (!st.exclusiva) txt += ' Para chegar depois da tolerância, marque a mesa exclusiva.';
       av.innerHTML = txt;
     }
 
@@ -1042,17 +1170,20 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     }
 
     /* contrato */
-    var exclusiva = st.exclusiva && st.tipo === 'mesa';
-    $('tolerancia').textContent = avulso()
+    var exclusiva = exclusivaOn();
+    $('tolerancia').innerHTML = avulso()
       ? 'a casa abre às 18h e a pista fica reservada no horário escolhido.'
       : exclusiva
-      ? 'a reserva do rodízio é para as 18h30. Na mesa exclusiva não há limite de chegada: a mesa fica com o grupo a noite toda.'
-      : 'a reserva do rodízio é para as 18h30 e a tolerância vai ' + (curta ? 'até 19h aos sábados, domingos e feriados' : 'até 19h30 de terça a sexta') +
-        '. Passou disso e tendo fila, a mesa pode ser liberada.';
+      ? 'a reserva do rodízio é para as 18h30. Com o pagamento integral antecipado, a mesa é exclusiva e não há horário máximo de tolerância para chegada.'
+      : 'a reserva do rodízio é para as 18h30. ' +
+        (curta ? 'Terça a sexta: chegada de todos até 19h30. <b>Sábados, domingos e feriados: chegada de todos até 19h.</b> '
+               : '<b>Terça a sexta: chegada de todos até 19h30.</b> Sábados, domingos e feriados: chegada de todos até 19h. ') + APOS_TOLERANCIA;
     $('regraExclusiva').hidden = !exclusiva;
     $('regraPista').hidden = st.tipo !== 'pista';
     $('regraAniv').hidden = !(rod && st.aniv.on);
     $('regraSinal').hidden = !rod || exclusiva;
+    /* cláusulas que só valem na reserva com tolerância */
+    mostra('.so-antecipacao', !exclusiva);
 
     /* passo 7: quanto pagar agora, resumo e documentos */
     if (st.tela === 6) pintarConfira();
@@ -1060,20 +1191,18 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
   function pintarConfira(){
     var rod = comRodizio(), n = rodiziosDoSinal();
-    $('formaPag').hidden = !rod || (st.tipo === 'mesa' && st.exclusiva) || sinalCobreTodos();
-    /* festa é orçamento, sem Pix; e só existe "restante no caixa" quando o grupo paga o sinal */
+    /* a modalidade foi escolhida no passo "Quem vai"; aqui é só o lembrete */
+    $('formaPag').hidden = !rod;
+    if (rod){
+      $('modalidadeTxt').innerHTML = exclusivaOn()
+        ? '<b>Pagamento integral antecipado:</b> mesa exclusiva para o grupo, sem horário máximo de tolerância para chegada. O pagamento não é reembolsável.'
+        : '<b>Antecipação de ' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') + ':</b> ' + textoTolerancia().replace('chegada', 'Chegada');
+    }
+    /* festa é orçamento, sem Pix; e só existe "restante no caixa" quando o grupo paga a antecipação */
     $('subContrato').textContent = st.tipo === 'festa'
       ? 'Festa é orçamento: a casa responde pelo WhatsApp com os valores e os pacotes para a data.'
-      : 'A reserva só entra na agenda depois do Pix e do comprovante enviado no WhatsApp.' +
+      : 'Depois da confirmação da equipe, a reserva entra na agenda com o Pix pago e o comprovante enviado no WhatsApp.' +
         (rod && !pagaTudo() ? ' No dia, cada um paga o restante no caixa.' : '');
-    if (rod){
-      var promoOk = promoSePagarTudo();
-      $('pagSinalTxt').textContent = textoSinal(n) + '. O restante é pago no dia, só por quem comparecer.';
-      $('pagSinalVal').textContent = moeda(valorSinal());
-      $('pagTudoTxt').textContent = 'Todos os rodízios no Pix, pelo valor em dinheiro.' +
-        (promoOk ? ' Este dia entra na promoção de R$ 49,99 por adulto (7 dias de antecedência).' : '');
-      $('pagTudoVal').textContent = moeda(somar(linhasRodizio(promoOk)));
-    }
     pintarResumo($('resumo'));
     pintarNoDia($('noDia'));
     $('docs').hidden = !precisaDocs();
@@ -1142,17 +1271,19 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       itens.forEach(function(s){ L.push('- ' + s); });
     };
 
-    L.push(festa ? 'Olá! Quero um orçamento de festa no Santo Strike.' : 'Olá! Quero reservar no Santo Strike.');
+    L.push(festa ? 'Olá! Quero um orçamento de festa no Santo Strike.' : 'Olá! Quero solicitar uma reserva no Santo Strike.');
     L.push('(enviado pelo site de reservas)');
     L.push('', festa ? 'Pedido: orçamento de festa' : 'Pedido: ' + $('codigoRes').textContent);
 
     /* a reserva: onde, quando e para quê */
     var res = [];
-    if (!festa) res.push('Onde: ' + ondeTexto());
+    /* pelo nome do rodízio: "Rodízio: Tradicional" ou "Rodízio: Fusion" */
+    if (rod) res.push('Rodízio: ' + RODIZIO[st.piso].replace('Rodízio ', ''));
+    else if (!festa) res.push(ondeTexto());
     res.push('Dia: ' + (d ? DIAS_LONGO[d.getDay()] + ', ' + doisDig(d.getDate()) + '/' + doisDig(d.getMonth() + 1) : '-'));
     if (!pista) res.push('Horário: ' + fmtHora(festa ? st.hora : HORA_RODIZIO));
     else if (rod) res.push('Horário do rodízio: ' + fmtHora(HORA_RODIZIO));
-    if (st.exclusiva && st.tipo === 'mesa') res.push('Mesa exclusiva');
+    if (exclusivaOn()) res.push('Mesa exclusiva: pagamento integral antecipado');
     if (festa) res.push('Pessoas: cerca de ' + st.adultos);
     /* "Só comer" não faz sentido para quem reservou só a pista */
     if (!(avulso() && $('ocasiao').selectedIndex === 0)) res.push('Ocasião: ' + $('ocasiao').value);
@@ -1215,6 +1346,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     /* os mesmos lembretes da tela, quebrados em linhas curtas */
     var av = [];
     if (rod) av.push('Tolerância: ' + textoTolerancia());
+    if (exclusivaOn()) av.push('Pagamento integral não reembolsável');
     if (precisaDocs()){
       if (st.c35 || st.c68) av.push('Levar o RG ou a certidão de nascimento de cada criança');
       if (st.bari) av.push('Levar a carteirinha de cada bariátrico');
@@ -1270,6 +1402,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         $('passoPagar').innerHTML = 'Pague <b>' + totalTexto() + '</b> no Pix.';
       }
       /* festa é só orçamento: não tem Pix nem comprovante nesta etapa */
+      $('avisoConfirma').innerHTML = soOrcamento
+        ? '<b>Este é um pedido de orçamento, não uma reserva.</b> Envie pelo WhatsApp: a equipe responde com os valores e a disponibilidade da data.'
+        : '<b>Sua reserva ainda não está confirmada.</b> Envie a solicitação pelo WhatsApp: a equipe confirma conforme a disponibilidade e as regras da casa.';
       $('passosPix').hidden = soOrcamento;
       $('textoOk').hidden = !soOrcamento;
       pintarResumo($('resumoOk'));
@@ -1279,6 +1414,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     }
     window.scrollTo(0,0);
     atualizar();
+    if (n === 1) marcarMes();
     /* o leitor de tela anuncia o novo passo */
     var h = document.querySelector('.tela.on h1');
     if (h && n > 0){ h.tabIndex = -1; h.focus({ preventScroll:true }); }
@@ -1349,12 +1485,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if (st.tipo === 'pista') $('subBoliche').scrollIntoView({ block:'center', behavior:'smooth' });
   });
   $('comRodizio').addEventListener('change', escolherOnde);
-
-  $('exclusiva').addEventListener('change', function(){
-    st.exclusiva = this.checked;
-    montarHoras();
-    atualizar();
-  });
 
   document.addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-qtd]');
@@ -1444,9 +1574,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
 
   montarDias(); montarHoras(); montarExtras(); atualizar();
 
-  /* atalho do site: /reserva/?onde=2piso já chega com o andar escolhido */
+  /* atalho do site: /reserva/?onde=fusion já chega com o rodízio escolhido.
+     "1piso" e "2piso" continuam valendo, para link antigo não quebrar. */
   (function(){
-    var mapa = { '1piso':0, '2piso':1, 'boliche':2, 'festa':3 };
+    var mapa = { 'tradicional':0, 'fusion':1, 'boliche':2, 'festa':3, '1piso':0, '2piso':1 };
     var q = (new URLSearchParams(location.search).get('onde') || '').toLowerCase();
     if (!Object.prototype.hasOwnProperty.call(mapa, q)) return;
     var input = document.querySelectorAll('#onde input')[mapa[q]];

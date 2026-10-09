@@ -17,11 +17,11 @@
 <meta property="og:site_name" content="Santo Strike">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":["Restaurant","BowlingAlley"],"name":"Santo Strike","paymentAccepted":"Pix, dinheiro, cartão de débito, cartão de crédito","description":"Boliche e gastronomia em Duque de Caxias: rodízio de pizza e bufê no 1º piso, rodízio Fusion Food com churrasco no 2º piso, boliche e área kids.","url":"https://santo-strike.vercel.app/","image":"https://santo-strike.vercel.app/assets/hero-poster.jpg","telephone":"+55 21 98879-9699","servesCuisine":["Pizza","Churrasco","Rodízio"],"priceRange":"R$ 54,99 a R$ 84,99","acceptsReservations":"https://santo-strike.vercel.app/reserva/","address":{"@type":"PostalAddress","streetAddress":"Rua Beira Linha, 84","addressLocality":"Duque de Caxias","addressRegion":"RJ","postalCode":"25045-366","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-22.714826,"longitude":-43.3209277},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"18:00","closes":"22:30"}],"sameAs":["https://www.instagram.com/santo_strike_oficial/"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":["Restaurant","BowlingAlley"],"name":"Santo Strike","paymentAccepted":"Pix, dinheiro, cartão de débito, cartão de crédito","description":"Boliche e gastronomia em Duque de Caxias: Rodízio Tradicional de pizza e bufê, Rodízio Fusion com churrasco, boliche e área kids.","url":"https://santo-strike.vercel.app/","image":"https://santo-strike.vercel.app/assets/hero-poster.jpg","telephone":"+55 21 98879-9699","servesCuisine":["Pizza","Churrasco","Rodízio"],"priceRange":"R$ 54,99 a R$ 84,99","acceptsReservations":"https://santo-strike.vercel.app/reserva/","address":{"@type":"PostalAddress","streetAddress":"Rua Beira Linha, 84","addressLocality":"Duque de Caxias","addressRegion":"RJ","postalCode":"25045-366","addressCountry":"BR"},"geo":{"@type":"GeoCoordinates","latitude":-22.714826,"longitude":-43.3209277},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],"opens":"18:00","closes":"22:30"}],"sameAs":["https://www.instagram.com/santo_strike_oficial/"]}</script>
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:title" content="Santo Strike | Boliche e Gastronomia">
-<meta property="og:description" content="Dois andares, dois rodízios, boliche e PlayKids em Duque de Caxias.">
+<meta property="og:description" content="Dois rodízios, boliche e PlayKids em Duque de Caxias.">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -191,7 +191,7 @@ a{color:inherit}
 .btn--ghost{border-color:var(--line-strong);color:var(--text-primary);background:transparent}
 .btn--ghost:hover{border-color:var(--accent);background:rgba(240,185,75,.07)}
 /* sombra de texto em rótulo de botão lê como sujeira: mata em todo botão */
-.btn{text-shadow:none}
+.btn{text-shadow:none;text-align:center}
 
 .burger{display:none;background:none;border:0;padding:.5rem;cursor:pointer;color:var(--text-primary)}
 .burger span{display:block;width:24px;height:2px;background:currentColor;margin:5px 0;transition:transform .3s var(--ease),opacity .3s var(--ease)}
@@ -312,7 +312,7 @@ a{color:inherit}
   --kc:clamp(0,(var(--k,0) - var(--th,0)) * 2.8,1);opacity:var(--kc);
   transform:translateY(calc((1 - var(--kc)) * -26px));
 }
-/* (h) halves parting — dois andares, duas metades */
+/* (h) halves parting — dois rodízios, duas metades */
 [data-entrance="halves"] .half{display:block;--kc:clamp(0,var(--k,0) * 2.2,1);opacity:var(--kc)}
 [data-entrance="halves"] .half--a{transform:translateX(calc((1 - var(--kc)) * 34px))}
 [data-entrance="halves"] .half--b{transform:translateX(calc((1 - var(--kc)) * -34px))}
@@ -386,7 +386,7 @@ a{color:inherit}
 .trust li{display:flex;align-items:baseline;gap:.55rem;font-size:.95rem;color:var(--text-secondary)}
 .trust b{font-family:var(--mono);font-weight:700;color:var(--accent);font-size:1.05rem}
 
-/* seção assinatura: os dois andares */
+/* seção assinatura: os dois rodízios */
 .floors{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,2.4vw,2rem);margin-top:3.2rem}
 .floor{
   position:relative;background:var(--panel);border:1px solid var(--line);
@@ -1050,7 +1050,7 @@ img.img-falhou{opacity:0 !important}
 /* contador */
 b[data-count]{font-variant-numeric:tabular-nums}
 
-/* inclinação 3D dos cards de andar */
+/* inclinação 3D dos cards dos rodízios */
 .floors{perspective:1200px}
 .floor{transform-style:preserve-3d;will-change:transform}
 .floor.tilt{transition:transform .12s linear,border-color .28s var(--ease),box-shadow .28s var(--ease)}
@@ -1191,7 +1191,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
     <img src="assets/logo-menu.webp" alt="Santo Strike Boliche e Gastronomia" width="280" height="224" decoding="async">
   </a>
   <div class="nav-links" id="navLinks">
-    <a href="#andares">Os dois andares</a>
+    <a href="#rodizios">Os rodízios</a>
     <a href="#boliche">Boliche</a>
     <a href="#festa">Sua festa</a>
     <a href="#onde">Onde ficamos</a>
@@ -1222,7 +1222,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         </div>
 
         <div class="band" data-a="0.26" data-b="0.48" data-entrance="punch">
-          <p class="line" data-split="word" data-em="Churrasco">Pizza embaixo. Churrasco em cima.</p>
+          <p class="line" data-split="word" data-em="Churrasco">Pizza no Tradicional. Churrasco no Fusion.</p>
         </div>
 
         <div class="band" data-a="0.52" data-b="0.74" data-entrance="scatter" data-spread="0.42">
@@ -1234,8 +1234,8 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
           <h1 data-split="word">Santo Strike</h1>
           <p class="sub">Rodízio a partir de R$&nbsp;54,99. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias.</p>
           <div class="ctas">
-            <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
-            <a class="btn btn--ghost" href="#andares">Ver os rodízios</a>
+            <a class="btn btn--ghost" href="#rodizios">Conheça nossos rodízios e tire suas dúvidas</a>
+            <a class="btn btn--gold" href="/reserva/">Faça sua reserva</a>
           </div>
         </div>
       </div>
@@ -1254,10 +1254,10 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
     <div class="inner">
       <svg class="halo band-mark" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
       <h1>Santo Strike</h1>
-      <p class="sub">Dois andares, dois rodízios, boliche e PlayKids. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias.</p>
+      <p class="sub">Dois rodízios, boliche e PlayKids. Terça a domingo, exceto o 3º domingo do mês, em Duque de Caxias.</p>
       <div class="ctas">
-        <a class="btn btn--gold" href="/reserva/">Reservar mesa</a>
-        <a class="btn btn--ghost" href="#andares">Ver os rodízios</a>
+        <a class="btn btn--ghost" href="#rodizios">Conheça nossos rodízios e tire suas dúvidas</a>
+        <a class="btn btn--gold" href="/reserva/">Faça sua reserva</a>
       </div>
     </div>
   </section>
@@ -1266,25 +1266,26 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
   <div class="trust">
     <ul>
       <li><b data-count="267" data-suffix=" mil">0 mil</b> seguidores no Instagram</li>
-      <li><b data-count="2">0</b> andares, dois rodízios</li>
+      <li><b data-count="2">0</b> rodízios: Tradicional e Fusion</li>
       <li><b>Boliche</b> e PlayKids para a família</li>
       <li><b>Ter. a dom.</b> rodízio das 18h30 às 22h30</li>
     </ul>
   </div>
 
-  <!-- ========== OS DOIS ANDARES ========== -->
-  <section class="sec" id="andares">
+  <!-- ========== OS DOIS RODÍZIOS ========== -->
+  <!-- O cliente escolhe pelo nome do rodízio; o site não cita localização (pedido da casa em 09/10/2026). -->
+  <section class="sec" id="rodizios">
     <div class="wrap">
-      <p class="kicker rv">O que tem em cada piso</p>
-      <h2 class="rv">Você sobe ou você fica?</h2>
-      <p class="lede rv">Dois rodízios diferentes, um em cada andar. Escolha antes de reservar,
+      <p class="kicker rv">O que tem em cada rodízio</p>
+      <h2 class="rv">Tradicional ou Fusion?</h2>
+      <p class="lede rv">Dois rodízios diferentes. Escolha antes de reservar,
         porque o preço e o cardápio mudam.</p>
 
       <div class="floors">
         <article class="floor rv">
-          <figure class="floor__foto"><img src="assets/fotos/rodizio.webp" width="900" height="900" alt="Pizza margherita do rodízio do 1º piso" loading="lazy" decoding="async"></figure>
+          <figure class="floor__foto"><img src="assets/fotos/rodizio.webp" width="900" height="900" alt="Pizza margherita do Rodízio Tradicional" loading="lazy" decoding="async"></figure>
           <svg class="halo" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
-          <p class="tag">1º piso</p>
+          <p class="tag">Pizza e bufê</p>
           <h3>Rodízio Tradicional</h3>
           <p class="what">O bufê você se serve. A pizza vem até a sua mesa.</p>
           <span class="price grad">R$&nbsp;54,99<small>No Pix da reserva, de terça a quinta</small></span>
@@ -1311,10 +1312,10 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         </article>
 
         <article class="floor rv">
-          <figure class="floor__foto"><img src="assets/fotos/churrasco.webp" width="1400" height="432" alt="Churrasco na brasa do rodízio Fusion Food" loading="lazy" decoding="async"></figure>
+          <figure class="floor__foto"><img src="assets/fotos/churrasco.webp" width="1400" height="432" alt="Churrasco na brasa do Rodízio Fusion" loading="lazy" decoding="async"></figure>
           <svg class="halo" viewBox="0 0 200 40" aria-hidden="true"><ellipse cx="100" cy="20" rx="72" ry="11"/></svg>
-          <p class="tag">2º piso</p>
-          <h3>Rodízio Fusion Food</h3>
+          <p class="tag">Churrasco, oriental e massas</p>
+          <h3>Rodízio Fusion</h3>
           <p class="what">Outra experiência: churrasco na brasa, comida oriental e massas.</p>
           <span class="price grad">R$&nbsp;69,99<small>No Pix da reserva, de terça a quinta</small></span>
           <div class="folder">
@@ -1331,7 +1332,6 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
             <li>Até 2 anos grátis &middot; 3 a 5 anos R$&nbsp;24,99 &middot; 6 a 8 anos R$&nbsp;34,99</li>
             <li>Bariátricos têm 30% de desconto, com carteirinha</li>
             <li>Bebidas à parte, sem refil</li>
-            <li>O 2º piso não tem acessibilidade: quem precisa de acesso sem escada fica no 1º piso</li>
           </ul>
         </article>
       </div>
@@ -1339,6 +1339,8 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         de criança, apresente RG ou certidão de nascimento; para o desconto de bariátrico, a carteirinha. Sem o documento,
         vale o valor de adulto. Quem entra no salão paga o rodízio. Preços diferenciados conforme a forma de pagamento, nos
         termos da Lei nº 13.455/2017.</p>
+      <p class="fineprint rv"><b>Acessibilidade:</b> se alguém do grupo precisa de acessibilidade,
+        <a href="https://wa.me/5521988799699?text=Ol%C3%A1!%20Quero%20tirar%20uma%20d%C3%BAvida%20sobre%20acessibilidade%20no%20Santo%20Strike%20antes%20de%20reservar." target="_blank" rel="noopener">fale com um atendente pelo WhatsApp</a> antes de reservar.</p>
     </div>
   </section>
 
@@ -1366,15 +1368,15 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
       </div>
 
       <div class="cat is-on" id="cat-pizza" role="tabpanel" aria-labelledby="tb-pizza">
-        <p class="cat__where">Nos dois pisos</p>
+        <p class="cat__where">Nos dois rodízios</p>
         <ul class="dishes">
           <li><span>Pizzas salgadas</span><em>à vontade</em></li>
           <li><span>Pizzas doces</span><em>à vontade</em></li>
-          <li><span>Pizzas premium no 2º piso</span><em>Fusion Food</em></li>
+          <li><span>Pizzas premium</span><em>só no Fusion</em></li>
         </ul>
       </div>
       <div class="cat" id="cat-bufe" role="tabpanel" aria-labelledby="tb-bufe" hidden>
-        <p class="cat__where">1º piso &middot; Rodízio Tradicional</p>
+        <p class="cat__where">Rodízio Tradicional</p>
         <ul class="dishes">
           <li><span>Arroz, feijão, batata frita, baião de dois e caldos</span><em>à vontade</em></li>
           <li><span>Macarrão, lasanha e panqueca</span><em>à vontade</em></li>
@@ -1386,7 +1388,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         </ul>
       </div>
       <div class="cat" id="cat-churrasco" role="tabpanel" aria-labelledby="tb-churrasco" hidden>
-        <p class="cat__where">2º piso &middot; Rodízio Fusion Food</p>
+        <p class="cat__where">Rodízio Fusion</p>
         <ul class="dishes">
           <li><span>Churrasco na brasa: carne, porco, frango, linguiça e coração</span><em>à vontade</em></li>
           <li><span>Rodada especial: pastel, risoto de camarão e hamburguinho</span><em>à vontade</em></li>
@@ -1398,7 +1400,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
       <div class="cat" id="cat-bebida" role="tabpanel" aria-labelledby="tb-bebida" hidden>
         <p class="cat__where">Com reserva sai mais barato</p>
         <ul class="dishes">
-          <li><span>Refrigerante e refresco no 1º piso, de terça a sexta</span><em>cortesia</em></li>
+          <li><span>Refrigerante e refresco no Rodízio Tradicional, de terça a sexta</span><em>cortesia</em></li>
           <li><span>Promoção com reserva: refrigerante 2 litros, quando não é cortesia</span><em>R$ 15</em></li>
           <li><span>Refrigerante 2 litros sem reserva</span><em>R$ 20</em></li>
           <li><span>Drinks e demais bebidas</span><em>à parte</em></li>
@@ -1468,7 +1470,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
       <p class="kicker rv">Festas e eventos</p>
       <h2 class="rv">Sua festa cabe aqui.</h2>
       <p class="lede rv">Quinze anos, casamento, aniversário, confraternização de fim de ano.
-        A casa inteira ou um andar só, com pista de boliche e cozinha própria.</p>
+        Com pista de boliche e cozinha própria.</p>
 
       <div class="strike rv">
         <p class="strike__hint" id="strikeHint">Segure para lançar</p>
@@ -1499,7 +1501,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         <article class="pack"><span class="pack__n">03</span><h3>Aniversário</h3>
           <p>Aniversariante paga metade do rodízio com reserva (exceto aos sábados) ou não paga com 10 pagantes no dia do aniversário.</p></article>
         <article class="pack"><span class="pack__n">04</span><h3>Confraternização</h3>
-          <p>Empresa ou turma grande, com andar reservado.</p></article>
+          <p>Empresa ou turma grande, com orçamento sob medida.</p></article>
       </div>
       <p class="fineprint rv">Cada festa tem orçamento próprio. O pedido pela reserva já chega
         com data, número de pessoas e ocasião.</p>
@@ -1527,8 +1529,8 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
           <figcaption>A pizza da casa</figcaption>
         </figure>
         <figure class="gal__i gal__i--wide gal__i--has" data-area="churr">
-          <img src="assets/fotos/churrasco.webp" width="1400" height="432" alt="Peça de churrasco na brasa do rodízio Fusion Food" loading="lazy" decoding="async">
-          <figcaption>Churrasco na brasa, 2º piso</figcaption>
+          <img src="assets/fotos/churrasco.webp" width="1400" height="432" alt="Peça de churrasco na brasa do Rodízio Fusion" loading="lazy" decoding="async">
+          <figcaption>Churrasco na brasa, Rodízio Fusion</figcaption>
         </figure>
         <figure class="gal__i gal__i--has" data-area="mesa">
           <img src="assets/fotos/mesa.webp" width="900" height="900" alt="Mesa posta com pratos, taças e guardanapos" loading="lazy" decoding="async">
@@ -1549,23 +1551,32 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
 
   <!-- ========== RESERVA ========== -->
   <!-- A reserva mora em /reserva/: extras, total do dia e Pix. Aqui fica só a porta de entrada,
-       com atalhos que já chegam com o andar escolhido. -->
+       com atalhos que já chegam com o rodízio escolhido. -->
   <section class="sec" id="reserva">
     <div class="wrap">
       <p class="kicker rv">Reserva</p>
       <h2 class="rv">Reserve em poucos toques.</h2>
-      <p class="lede rv">Escolha o andar, o dia e quantas pessoas vão. Para confirmar a reserva,
-        você antecipa 1 rodízio a cada grupo de 10 pessoas no Pix (de 1 a 19 pessoas, 1 rodízio, a partir de
-        R$&nbsp;54,99). O restante é pago no
-        dia, por quem comparecer.
-        Dá pra somar pista de boliche e kit festa e usar o desconto de aniversário.</p>
+      <p class="lede rv">Escolha o rodízio, o dia e quantas pessoas vão. Dá pra somar pista de boliche e kit festa
+        e usar o desconto de aniversário. <b>Preencher o formulário ainda não confirma a reserva:</b> a solicitação segue
+        para o WhatsApp, onde a equipe confirma conforme a disponibilidade e as regras da casa.</p>
+      <div class="regras rv" style="max-width:760px">
+        <ul>
+          <li class="is-key">Antecipação para confirmar a reserva: 1 a 19 pessoas, 1 rodízio antecipado; 20 a 29 pessoas, 2 rodízios antecipados; 30 a 39 pessoas, 3 rodízios antecipados; 40 a 49 pessoas, 4 rodízios antecipados; e assim sucessivamente.</li>
+          <li>Tolerância de chegada: terça a sexta, chegada de todos até 19h30; sábados, domingos e feriados, chegada de
+            todos até 19h. Após a tolerância, a reserva perde a garantia e o grupo fica sujeito à disponibilidade.</li>
+          <li>Pagamento integral antecipado: pagando todos os rodízios na reserva, o grupo garante uma mesa exclusiva, sem
+            horário máximo de tolerância para chegada. O pagamento não é reembolsável.</li>
+          <li>A antecipação é paga no Pix e o restante no dia, por quem comparecer. Dá para reservar com até 60 dias de
+            antecedência.</li>
+        </ul>
+      </div>
       <div class="atalhos-res rv">
-        <a class="atalho-res" href="/reserva/?onde=1piso"><b>1º piso</b><span>Rodízio de pizza e bufê</span><em>a partir de R$&nbsp;54,99</em></a>
-        <a class="atalho-res" href="/reserva/?onde=2piso"><b>2º piso</b><span>Fusion Food com churrasco</span><em>a partir de R$&nbsp;69,99</em></a>
+        <a class="atalho-res" href="/reserva/?onde=tradicional"><b>Rodízio Tradicional</b><span>Pizza e bufê à vontade</span><em>a partir de R$&nbsp;54,99</em></a>
+        <a class="atalho-res" href="/reserva/?onde=fusion"><b>Rodízio Fusion</b><span>Churrasco, oriental e massas</span><em>a partir de R$&nbsp;69,99</em></a>
         <a class="atalho-res" href="/reserva/?onde=boliche"><b>Boliche</b><span>Pista por hora</span><em>a partir de R$&nbsp;40</em></a>
         <a class="atalho-res" href="/reserva/?onde=festa"><b>Festa</b><span>15 anos, casamento</span><em>orçamento</em></a>
       </div>
-      <div class="reserva-cta rv"><a class="btn btn--gold" href="/reserva/">Fazer minha reserva</a></div>
+      <div class="reserva-cta rv"><a class="btn btn--gold" href="/reserva/">Faça sua reserva</a></div>
     </div>
   </section>
 
