@@ -174,6 +174,7 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .check b{color:var(--ink)}
 .aniv{display:grid;grid-template-columns:1fr 1fr;gap:0 .7rem;margin-top:.9rem}
 .aniv .fld{margin-bottom:0}
+.aniv .fld--quem{grid-column:1 / -1;margin-top:.7rem}
 
 /* contrato */
 .contrato{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:1rem 1.1rem}
@@ -405,11 +406,13 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         <output id="qHoras">1</output>
         <button type="button" data-qtd="horas" data-d="1" aria-label="Mais uma hora">+</button></div>
     </div>
+    <div class="aviso" id="avisoJogar" hidden></div>
 
     <label class="check caixa-rodizio"><input type="checkbox" id="temAniv"><span>Tem <b>aniversariante</b> no grupo</span></label>
     <div class="aniv" id="anivCampos" hidden>
       <label class="fld"><span>Dia do aniversário</span><select id="anivDia"></select></label>
       <label class="fld"><span>Mês</span><select id="anivMes"></select></label>
+      <label class="fld fld--quem"><span>Quem faz aniversário</span><select id="anivQuem"></select></label>
     </div>
     <div class="aviso" id="avisoAniv" hidden></div>
 
@@ -662,7 +665,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   var RODIZIO = { 1:'Rodízio Tradicional', 2:'Rodízio Fusion' };
   var st = { tela:0, tipo:'mesa', piso:1, onde:'Rodízio Tradicional', data:null, hora:null,
              adultos:2, bari:0, c35:0, c68:0, bebes:0, pistas:1, horas:1, exclusiva:false,
-             aniv:{ on:false, dia:0, mes:0 }, extras:{}, decor:null };   /* decor: true = traz a própria; null = não escolheu */
+             aniv:{ on:false, dia:0, mes:0, quem:'adultos' }, extras:{}, decor:null };   /* decor: true = traz a própria; null = não escolheu */
   /* o rodízio reservado tem horário único, a pedido da casa */
   var HORA_RODIZIO = '18:30';
 
@@ -741,6 +744,13 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if (pagantes >= 10 && (dist === 0 || ((w === 3 || w === 4) && dist <= 5))) return 'gratis';
     return dist === 0 ? 'meia' : 'fora';
   }
+  /* quem faz aniversário: só as categorias que existem no grupo. Se a escolhida
+     zerar, vale a primeira que existe. O desconto usa o valor dessa categoria. */
+  var QUEM_TXT = { adultos:'adulto', bari:'bariátrico', c35:'criança de 3 a 5 anos', c68:'criança de 6 a 8 anos' };
+  function quemAniv(){
+    var ok = Object.keys(QUEM_TXT).filter(function(k){ return st[k] > 0; });
+    return ok.indexOf(st.aniv.quem) >= 0 ? st.aniv.quem : ok[0];
+  }
 
   /* ---------- rodízio ---------- */
   /* forma: 'pix' (Pix da reserva ou dinheiro) ou 'maquina' (maquininha) */
@@ -757,7 +767,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if (st.bebes) out.push({ nome:st.bebes + (st.bebes > 1 ? ' crianças' : ' criança') + ' de até 2 anos', valor:0 });
     var regra = usarPromo ? '' : anivRegra();
     if (regra === 'gratis' || regra === 'meia'){
-      var base = st.adultos ? va : vb;
+      var base = { adultos:va, bari:vb, c35:cr.c35, c68:cr.c68 }[quemAniv()];
       var desc = regra === 'gratis' ? base : arred(base / 2);
       out.push({ nome:'Aniversariante ' + (regra === 'gratis' ? 'não paga' : 'com 50%'), valor:-desc, desconto:true });
     }
@@ -888,6 +898,15 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     if (exclusivaOn()) return 'mesa exclusiva, sem horário máximo de tolerância para chegada.';
     return 'chegada de todos até ' + (toleranciaCurta(st.data) ? '19h' : '19h30') + '. ' + APOS_TOLERANCIA;
   }
+  /* jogar antes de comer pode estourar a tolerância da mesa: vazio quando não se aplica */
+  function avisoJogarAntes(){
+    var H = st.hora ? parseInt(st.hora, 10) : 0, limite = toleranciaCurta(st.data) ? 19 : 19.5;
+    if (st.tipo === 'pista' && st.piso && H && H < limite && H + st.horas > limite && !exclusivaOn()){
+      return '<b>Vai jogar antes de comer?</b> Com a pista até as ' + (H + st.horas) + 'h, você chega à mesa depois da tolerância. ' +
+        'Escolha menos horas ou combine com a casa.';
+    }
+    return '';
+  }
 
   /* ---------- dias ---------- */
   /* A reserva abre com até 60 dias de antecedência (pedido da casa em
@@ -981,7 +1000,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     }
     EXTRAS.forEach(function(e){
       var p = precoExtra(e), fora = indisponivel(e);
-      if (fora) st.extras[e.id] = 0;
+      if (fora){
+        if (st.extras[e.id]) avisa('O Kit Festa não vale aos sábados e saiu da reserva.');
+        st.extras[e.id] = 0;
+      }
       var div = document.createElement('div');
       div.className = 'extra' + (e.foto ? ' extra--arte' : '') + (fora ? ' fora' : '');
       div.innerHTML = (e.foto ? '<img src="' + e.foto + '" alt="" width="420" height="746" loading="lazy" decoding="async">'
@@ -1024,6 +1046,14 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     mostra('.caixa-rodizio', rod);
     mostra('.caixa-pista', st.tipo === 'pista');
     $('anivCampos').hidden = !(rod && st.aniv.on);
+    /* "Quem faz aniversário": só as categorias que existem no grupo */
+    var sq = $('anivQuem'), cats = Object.keys(QUEM_TXT).filter(function(k){ return st[k] > 0; });
+    st.aniv.quem = quemAniv();
+    if (sq.getAttribute('data-cats') !== cats.join()){
+      sq.setAttribute('data-cats', cats.join());
+      sq.innerHTML = cats.map(function(k){ return '<option value="' + k + '">' + QUEM_TXT[k].charAt(0).toUpperCase() + QUEM_TXT[k].slice(1) + '</option>'; }).join('');
+    }
+    sq.value = st.aniv.quem;
     if (rod){
       var cheio = valorDia(d), va = promo ? TABELA[1].terQui.promo : cheio, cr = TABELA[st.piso].crianca;
       $('rotAdultos').textContent = 'Adultos';
@@ -1049,6 +1079,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var mh = maxHoras();
     $('vPistas').textContent = 'Até 6 pessoas em cada';
     $('vHoras').textContent = st.hora ? 'Por pista, a partir das ' + fmtHora(st.hora) + ' · até ' + mh + (mh > 1 ? ' horas' : ' hora') : 'Por pista';
+    $('avisoJogar').innerHTML = avisoJogarAntes(); $('avisoJogar').hidden = !avisoJogarAntes();
     EXTRAS.forEach(function(e){
       var el = $('p_' + e.id);
       if (el){ var p = precoExtra(e); el.textContent = indisponivel(e) ? 'fora aos sábados' : p ? moeda(p) : 'cortesia'; }
@@ -1134,12 +1165,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         'De sexta a domingo, feriados e vésperas, R$ 120 a hora. ' +
         'O rodízio fica reservado para as <b>18h30</b>, com chegada de todos ' +
         (!d ? 'até 19h30 de terça a sexta e até 19h aos sábados, domingos e feriados.' : 'até ' + (curta ? '19h' : '19h30') + ' neste dia.');
-      /* jogar antes de comer pode estourar a tolerância da mesa */
-      var H = st.hora ? parseInt(st.hora, 10) : 0, limite = curta ? 19 : 19.5;
-      if (H && H < limite && H + st.horas > limite && !exclusivaOn()){
-        av.innerHTML += ' <b>Vai jogar antes de comer?</b> Com a pista até as ' + (H + st.horas) + 'h, você chega à mesa depois da tolerância. ' +
-          'Escolha menos horas ou combine com a casa.';
-      }
+      if (avisoJogarAntes()) av.innerHTML += ' ' + avisoJogarAntes();
     } else if (st.tipo === 'pista'){
       av.innerHTML = nota + 'Uso avulso, sem rodízio: <b>R$ 200</b> a hora de terça a quinta e <b>R$ 300</b> de sexta a domingo, feriados e vésperas. ' +
         'Indo no rodízio, a mesma pista sai a partir de R$ 40.';
@@ -1206,6 +1232,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       $('modalidadeTxt').innerHTML = exclusivaOn()
         ? '<b>Pagamento integral antecipado:</b> mesa exclusiva para o grupo, sem horário máximo de tolerância para chegada. O pagamento não é reembolsável.'
         : '<b>Antecipação de ' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') + ':</b> ' + textoTolerancia().replace('chegada', 'Chegada');
+      if (avisoJogarAntes()) $('modalidadeTxt').innerHTML += ' ' + avisoJogarAntes();
     }
     /* festa é orçamento, sem Pix; e só existe "restante no caixa" quando o grupo paga a antecipação */
     $('subContrato').textContent = st.tipo === 'festa'
@@ -1302,7 +1329,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     /* a pista, num bloco só dela */
     if (pista){
       var bol = [pl(st.pistas, 'pista', 'pistas') + ' às ' + fmtHora(st.hora) + ', por ' + pl(st.horas, 'hora', 'horas') +
-        (st.piso && st.hora === '18:00' ? ' (promoção das 18h)' : '')];
+        (st.piso && st.hora === '18:00' ? ' (1ª hora na promoção das 18h)' : '')];
       if (!rod) bol.push(pl(st.adultos, 'jogador', 'jogadores'));
       bloco('Boliche', bol);
     }
@@ -1317,9 +1344,11 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       if (st.bebes) grupo.push(pl(st.bebes, 'criança de até 2 anos', 'crianças de até 2 anos'));
       var regra = '';
       if (st.aniv.on){
-        regra = usaPromo() ? '' : anivRegra();
-        grupo.push('Aniversariante: dia ' + doisDig(st.aniv.dia) + '/' + doisDig(st.aniv.mes) +
-          (regra === 'gratis' ? ' (não paga: 10 pagantes + aniversariante)' : regra === 'meia' ? ' (50% de desconto, aniversariante do dia)' : ' (sem desconto nesta data)'));
+        var ra0 = anivRegra();
+        regra = usaPromo() ? '' : ra0;
+        grupo.push('Aniversariante' + (quemAniv() === 'adultos' ? '' : ' (' + QUEM_TXT[quemAniv()] + ')') + ': dia ' + doisDig(st.aniv.dia) + '/' + doisDig(st.aniv.mes) +
+          (regra === 'gratis' ? ' (não paga: 10 pagantes + aniversariante)' : regra === 'meia' ? ' (50% de desconto, aniversariante do dia)'
+           : usaPromo() && (ra0 === 'gratis' || ra0 === 'meia') ? ' (promoções não cumulativas: ficou a de R$ 49,99, mais barata)' : ' (sem desconto nesta data)'));
       }
       /* o aniversariante que não paga não entra na conta dos pagantes */
       bloco('Pessoas (' + pl(pagantes() - (regra === 'gratis' ? 1 : 0), 'pagante', 'pagantes') + ')', grupo);
@@ -1402,7 +1431,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   function ir(n){
     st.tela = n;
     telas.forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-tela') === n); });
-    $('voltar').hidden = n === 0 || n === 7;
+    $('voltar').hidden = n === 0;
     $('avancar').hidden = n === 7;
     $('avancar').textContent = n === 6 ? 'Ir para o envio' : 'Continuar';
     if (n === 7){
@@ -1466,13 +1495,15 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     }
     ir(vizinha(1));
   });
-  document.addEventListener('input', function(){ avisa(''); });
-  document.addEventListener('change', function(){ avisa(''); });
+  /* na captura, para limpar antes dos handlers e não apagar o aviso que eles derem */
+  document.addEventListener('input', function(){ avisa(''); }, true);
+  document.addEventListener('change', function(){ avisa(''); }, true);
   $('voltar').addEventListener('click', function(){ ir(vizinha(-1)); });
 
   /* cada pista leva até 6 jogadores: no uso avulso o número de pistas acompanha */
   function ajustaPistas(){
     if (!avulso()) return;
+    if (st.adultos > 6 * PISTA.maxPistas) avisa('Até 24 jogadores (4 pistas). Para mais, fale com a casa.');
     st.adultos = Math.min(st.adultos, 6 * PISTA.maxPistas);
     st.pistas = Math.max(st.pistas, Math.ceil(st.adultos / 6));
   }
@@ -1530,10 +1561,18 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     function ler(){
       st.aniv.mes = +sm.value || 0;
       st.aniv.dia = (sd.value && sm.value) ? +sd.value : 0;
+      st.aniv.quem = $('anivQuem').value;
+      /* 31/02, 31/04...: 2024 é bissexto, então 29/02 passa */
+      var inexiste = st.aniv.dia && new Date(2024, st.aniv.mes - 1, st.aniv.dia).getDate() !== st.aniv.dia;
+      if (inexiste){
+        avisa('O dia ' + st.aniv.dia + ' não existe em ' + MESES_LONGOS[st.aniv.mes - 1].toLowerCase() + '. Escolha outro dia.');
+        st.aniv.dia = 0; sd.value = '';
+      }
       atualizar();
     }
     sd.addEventListener('change', ler);
     sm.addEventListener('change', ler);
+    $('anivQuem').addEventListener('change', ler);
     $('temAniv').addEventListener('change', function(){
       st.aniv.on = this.checked;
       if (this.checked) $('ocasiao').value = 'Aniversário';
