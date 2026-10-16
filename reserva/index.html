@@ -500,7 +500,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
           <!-- as artes "regras de funcionamento" e "tabela de preços" saíram daqui: citam a localização dos rodízios -->
           <img data-src="/assets/catalogo/contrato-1.jpg" width="700" height="1242" alt="Contrato de reserva do Santo Strike" decoding="async">
           <img data-src="/assets/catalogo/boliche.jpg" width="700" height="876" alt="Valores da pista de boliche" decoding="async">
-          <img data-src="/assets/catalogo/aniversario.jpg" width="700" height="1244" alt="Promoção de aniversário" decoding="async">
+          <img data-src="/assets/catalogo/aniversario.jpg" width="700" height="876" alt="Promoção de aniversário: 100% grátis com 10 pagantes no dia do aniversário; 50% de desconto somente para o aniversariante do dia, com reserva antecipada e RG" decoding="async">
           <img data-src="/assets/catalogo/bebidas.jpg" width="700" height="1244" alt="Regras do refrigerante" decoding="async">
         </div>
       </details>
@@ -695,11 +695,17 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
   }
 
   /* ---------- boliche ---------- */
+  /* h: hora da reserva, a partir de 0. A hora da promoção das 18h é à parte e
+     não conta como 1ª hora: o 50% cai na 2ª hora cheia seguida, de terça a
+     quinta (casa, 16/10/2026: 18h R$ 40, 19h R$ 80, 20h R$ 40). h = -1 dá o
+     preço cheio da hora, usado no calendário. */
+  function promoNaHora(h){ return !!st.piso && h === 0 && st.hora === '18:00'; }
+  function meiaNaHora(d, h){ return !!st.piso && diaUtil(d) && h === (promoNaHora(0) ? 2 : 1); }
   function precoPista(d, h){
     var util = diaUtil(d);
     if (!st.piso) return util ? PISTA.avulso.util : PISTA.avulso.fim;
-    if (h === 0 && st.hora === '18:00') return PISTA.promo18;
-    if (h === 1 && util) return PISTA.rodizio.util / 2;      /* 2ª hora seguida com 50% */
+    if (promoNaHora(h)) return PISTA.promo18;
+    if (meiaNaHora(d, h)) return PISTA.rodizio.util / 2;
     return util ? PISTA.rodizio.util : PISTA.rodizio.fim;
   }
   /* a última pista começa às 22h e acaba às 23h */
@@ -708,17 +714,18 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var out = [], H = parseInt(st.hora || '18', 10);
     for (var h = 0; h < st.horas; h++){
       var p = precoPista(st.data, h), tag = '';
-      if (st.piso && h === 0 && st.hora === '18:00') tag = ' (promoção)';
-      else if (st.piso && h === 1 && diaUtil(st.data)) tag = ' (50%)';
+      if (promoNaHora(h)) tag = ' (promoção)';
+      else if (meiaNaHora(st.data, h)) tag = ' (50%)';
       out.push({ nome:(st.pistas > 1 ? st.pistas + ' pistas às ' : 'Pista às ') + (H + h) + 'h' + tag, valor:p * st.pistas });
     }
     return out;
   }
 
-  /* ---------- aniversário (arte "Promoção de aniversário") ----------
-     100% grátis: 10 pagantes + o aniversariante, no dia do aniversário;
-     às quartas e quintas vale até 5 dias antes ou depois.
-     50%: com reserva antecipada, menos aos sábados. */
+  /* ---------- aniversário (arte nova "Promoção de aniversário", 16/10/2026) ----------
+     100% grátis: 10 pagantes + o aniversariante como 11ª pessoa, no dia do
+     aniversário; às quartas e quintas vale até 5 dias antes ou depois.
+     50%: somente o aniversariante do dia, com reserva antecipada e RG.
+     A arte nova não exclui mais o sábado. Fora disso, não há desconto. */
   function distAniv(d){
     var menor = 999;
     [-1, 0, 1].forEach(function(k){
@@ -732,7 +739,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
     var w = st.data.getDay(), dist = distAniv(st.data);
     var pagantes = st.adultos + st.bari - 1 + st.c35 + st.c68;
     if (pagantes >= 10 && (dist === 0 || ((w === 3 || w === 4) && dist <= 5))) return 'gratis';
-    return w === 6 ? 'sabado' : 'meia';
+    return dist === 0 ? 'meia' : 'fora';
   }
 
   /* ---------- rodízio ---------- */
@@ -902,7 +909,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         bt.type = 'button'; bt.setAttribute('data-mes', mes); bt.textContent = MESES_LONGOS[mes];
         meses.appendChild(bt);
       }
-      var v = st.tipo === 'pista' ? precoPista(d, 2)
+      var v = st.tipo === 'pista' ? precoPista(d, -1)
             : st.tipo === 'festa' ? 0
             : valorDia(d);
       var lab = document.createElement('label');
@@ -1122,8 +1129,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
              : vespera(d) ? 'Este dia é <b>véspera de feriado</b>, então vale o preço de sexta e domingo. ' : '';
     var av = $('avisoDia');
     if (st.tipo === 'pista' && st.piso){
-      av.innerHTML = nota + 'Para quem vai no rodízio, a pista das <b>18h sai por R$ 40</b>. Nos outros horários, R$ 80 a hora de terça a quinta, ' +
-        'com a 2ª hora seguida por R$ 40, e R$ 120 de sexta a domingo, feriados e vésperas. ' +
+      av.innerHTML = nota + 'Para quem vai no rodízio, a pista das <b>18h sai por R$ 40</b>. Nos outros horários, R$ 80 a hora de terça a quinta ' +
+        'e, reservando 2 horas seguidas, a 2ª sai por R$ 40 (a hora da promoção das 18h não entra nessa conta). ' +
+        'De sexta a domingo, feriados e vésperas, R$ 120 a hora. ' +
         'O rodízio fica reservado para as <b>18h30</b>, com chegada de todos ' +
         (!d ? 'até 19h30 de terça a sexta e até 19h aos sábados, domingos e feriados.' : 'até ' + (curta ? '19h' : '19h30') + ' neste dia.');
       /* jogar antes de comer pode estourar a tolerância da mesa */
@@ -1163,10 +1171,11 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
         (distAniv(d) === 0 ? ', no dia do aniversário.' : ', dentro dos 5 dias que valem às quartas e quintas.') +
         ' Apresente o RG do aniversariante no caixa até 20h30.';
     } else if (regra === 'meia'){
-      aa.innerHTML = 'O aniversariante tem <b>50% de desconto</b>. Com 10 pagantes, ele não paga no dia do aniversário ' +
-        '(às quartas e quintas, até 5 dias antes ou depois). Apresente o RG do aniversariante no caixa até 20h30.';
+      aa.innerHTML = 'Reserva no dia do aniversário: o aniversariante tem <b>50% de desconto</b>. Com 10 pagantes, ele não paga. ' +
+        'Apresente o RG do aniversariante no caixa até 20h30.';
     } else {
-      aa.innerHTML = 'Aos sábados o desconto de 50% não vale. Com 10 pagantes e a reserva no dia do aniversário, o aniversariante não paga. Apresente o RG do aniversariante no caixa até 20h30.';
+      aa.innerHTML = 'Nesta data não há desconto de aniversário. O <b>50%</b> vale só para o aniversariante do dia. ' +
+        'O rodízio <b>grátis</b>, com 10 pagantes, vale no dia do aniversário e, às quartas e quintas, até 5 dias antes ou depois.';
     }
 
     /* contrato */
@@ -1310,9 +1319,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line)}
       if (st.aniv.on){
         regra = usaPromo() ? '' : anivRegra();
         grupo.push('Aniversariante: dia ' + doisDig(st.aniv.dia) + '/' + doisDig(st.aniv.mes) +
-          (regra === 'gratis' ? ' (não paga, 10 pagantes)' : regra === 'meia' ? ' (50% de desconto)' : ' (sem desconto neste dia)'));
+          (regra === 'gratis' ? ' (não paga: 10 pagantes + aniversariante)' : regra === 'meia' ? ' (50% de desconto, aniversariante do dia)' : ' (sem desconto nesta data)'));
       }
-      bloco('Pessoas (' + pl(pagantes(), 'pagante', 'pagantes') + ')', grupo);
+      /* o aniversariante que não paga não entra na conta dos pagantes */
+      bloco('Pessoas (' + pl(pagantes() - (regra === 'gratis' ? 1 : 0), 'pagante', 'pagantes') + ')', grupo);
     }
 
     if (festa){
