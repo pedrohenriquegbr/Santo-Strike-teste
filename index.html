@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
+<script>/* endereço oficial: quem chega pelo vercel.app ou pelo www vai para santostrike.com.br */if(/^(santo-strike\.vercel\.app|www\.santostrike\.com\.br)$/.test(location.hostname))location.replace('https://santostrike.com.br'+location.pathname+location.search+location.hash);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rodízio e Boliche em Duque de Caxias | Santo Strike</title>
 <meta name="description" content="Rodízio de pizza e bufê, rodízio Fusion com churrasco, boliche e PlayKids em Duque de Caxias. Terça a domingo, exceto o 3º domingo do mês. Reserve sua mesa.">
@@ -421,7 +422,7 @@ a{color:inherit}
 }
 /* o small herda o recorte do gradiente e some: devolve cor sólida a ele */
 .floor .price small{
-  font-size:.42em;font-weight:400;display:block;margin-top:.6rem;letter-spacing:.04em;
+  font-size:.42em;font-weight:400;display:block;margin-top:.6rem;letter-spacing:.04em;line-height:1.4;
   background:none;-webkit-text-fill-color:var(--text-secondary);color:var(--text-secondary);
 }
 /* Os valores como no folder da casa: o dia, o preço do Pix da reserva (igual
@@ -520,7 +521,13 @@ a{color:inherit}
 .tab-pista .is-hoje{background:rgba(240,185,75,.08)}
 .tab-pista thead .is-hoje{color:var(--accent)}
 .tab-pista td.is-hoje{color:var(--accent-hover)}
-.tab-pista .is-outro{opacity:.5}
+.tab-pista .is-outro{opacity:.72}
+/* celular bem estreito (320 px): a tabela da pista cabe sem cortar a coluna */
+@media (max-width:359px){
+  .tab-pista{font-size:.8rem}
+  .tab-pista th,.tab-pista td{padding:.6rem .3rem}
+  .tab-pista td{font-size:.84rem;white-space:normal}
+}
 .pista__nota{margin-top:.7rem;font-size:.8rem;color:var(--text-secondary)}
 #boliche .ctas{display:flex;margin-top:1.8rem}
 .foto-real{border:1px solid var(--line);overflow:hidden;position:relative}
@@ -1265,8 +1272,8 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
   <!-- ========== TRUST BAR ========== -->
   <div class="trust">
     <ul>
-      <li><b data-count="267" data-suffix=" mil">0 mil</b> seguidores no Instagram</li>
-      <li><b data-count="2">0</b> rodízios: Tradicional e Fusion</li>
+      <li><b data-count="267" data-suffix=" mil">267 mil</b> seguidores no Instagram</li>
+      <li><b data-count="2">2</b> rodízios: Tradicional e Fusion</li>
       <li><b>Boliche</b> e PlayKids para a família</li>
       <li><b>Ter. a dom.</b> rodízio das 18h30 às 22h30</li>
     </ul>
@@ -1488,7 +1495,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         <article class="pack"><span class="pack__n">02</span><h3>Casamento</h3>
           <p>Recepção com bufê próprio, sem fornecedor de fora para a comida.</p></article>
         <article class="pack"><span class="pack__n">03</span><h3>Aniversário</h3>
-          <p>No dia do aniversário, o aniversariante não paga com 10 pagantes, ou tem 50% de desconto com reserva antecipada, aplicado no caixa. Apresente o RG.</p></article>
+          <p>No dia do aniversário, o aniversariante não paga com 10 pagantes (às quartas e quintas, até 5 dias antes ou depois), ou tem 50% de desconto com reserva antecipada, aplicado no caixa. RG até 20h30.</p></article>
         <article class="pack"><span class="pack__n">04</span><h3>Confraternização</h3>
           <p>Empresa ou turma grande, com orçamento sob medida.</p></article>
       </div>
@@ -1588,7 +1595,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
         </div>
       </div>
 
-      <div class="vz" aria-roledescription="carrossel" aria-label="Avaliações de clientes" aria-live="off">
+      <div class="vz" role="region" aria-roledescription="carrossel" aria-label="Avaliações de clientes" aria-live="off">
         <article class="av"><div class="av__brilho"></div>
           <div class="av__topo"><div class="av__foto"><img alt="" referrerpolicy="no-referrer" width="58" height="58" loading="lazy" decoding="async"><span class="av__ini" aria-hidden="true"></span></div>
             <div class="av__quem"><div class="av__nome"></div><div class="av__fonte">Avaliação no Google</div></div></div>
@@ -1987,16 +1994,34 @@ window.addEventListener('scroll', function(){
 }, { passive: true });
 
 var burger = document.getElementById('burger');
+var navLinks = document.getElementById('navLinks');
+function fecharMenu(devolveFoco){
+  if (!document.body.classList.contains('menu-open')) return;
+  document.body.classList.remove('menu-open');
+  burger.setAttribute('aria-expanded','false');
+  burger.setAttribute('aria-label','Abrir menu');
+  if (devolveFoco) burger.focus();
+}
 burger.addEventListener('click', function(){
   var open = document.body.classList.toggle('menu-open');
   burger.setAttribute('aria-expanded', open ? 'true' : 'false');
   burger.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  /* teclado: o foco entra no menu aberto */
+  if (open){ var l = navLinks.querySelector('a'); if (l) l.focus(); }
 });
-document.getElementById('navLinks').addEventListener('click', function(e){
-  if (e.target.tagName === 'A'){
-    document.body.classList.remove('menu-open');
-    burger.setAttribute('aria-expanded','false');
-  }
+navLinks.addEventListener('click', function(e){
+  if (e.target.tagName === 'A') fecharMenu(false);
+});
+document.querySelector('.nav .brand').addEventListener('click', function(){ fecharMenu(false); });
+/* com o menu aberto: Esc fecha e o Tab fica entre os links e o botão do menu */
+document.addEventListener('keydown', function(e){
+  if (!document.body.classList.contains('menu-open')) return;
+  if (e.key === 'Escape'){ fecharMenu(true); return; }
+  if (e.key !== 'Tab') return;
+  var itens = [].slice.call(navLinks.querySelectorAll('a')).concat([burger]);
+  var i = itens.indexOf(document.activeElement);
+  e.preventDefault();
+  itens[i < 0 ? 0 : (i + (e.shiftKey ? -1 : 1) + itens.length) % itens.length].focus();
 });
 
 /* ===========================================================
@@ -2223,7 +2248,7 @@ var CASA = {
   fechaTerceiroDomingo: true,    /* a casa fecha todo 3º domingo do mês (confirmado em 21/09/2026) */
   /* dias em que a casa abre mesmo sendo segunda ou 3º domingo; a mesma lista
      fica em reserva/index.html (ABRE_EXTRA) */
-  abreExtra: [ { dia:'2026-10-12', nome:'Dia das Crianças' } ],
+  abreExtra: [],      /* ex.: { dia:'2026-10-12', nome:'Dia das Crianças' } */
   /* Preços: tabela oficial da casa (catálogo do WhatsApp). */
 
   /* A casa abre às 18h. Rodízio das 18h30 às 22h30, entrada até 21h50. */
