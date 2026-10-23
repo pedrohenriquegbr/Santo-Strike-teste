@@ -1117,6 +1117,13 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
         : '<b>Antecipação de rodízios:</b> para confirmar a reserva de ' + pessoas() + (pessoas() > 1 ? ' pessoas' : ' pessoa') +
           ', você antecipa <b>' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') + ', ' +
           moeda(sinalCobreTodos() ? somar(linhasRodizio(promoOk)) : valorSinal()) + '</b> no Pix.' + tabelaSinal(true);
+      /* só aniversariante e crianças: ninguém pode ser antecipado */
+      if (!qtdAntecipaveis()){
+        $('pagSinalVal').textContent = $('pagTudoVal').textContent = '—';
+        $('pagSinalTxt').textContent = 'A antecipação precisa de pelo menos um adulto pagante.' + soCaixa;
+        $('avisoSinal').innerHTML = '<b>Inclua pelo menos um adulto pagante.</b> Criança e aniversariante não pagam antecipado, ' +
+          'então a reserva precisa de pelo menos um adulto ou bariátrico para a antecipação.' + tabelaSinal(true);
+      }
     } else {
       $('avisoSinal').innerHTML = '';
     }
