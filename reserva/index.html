@@ -504,7 +504,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
           <img data-src="/assets/catalogo/contrato-1.jpg" width="700" height="1242" alt="Contrato de reserva do Santo Strike" decoding="async">
           <img data-src="/assets/catalogo/boliche.jpg" width="700" height="876" alt="Valores da pista de boliche" decoding="async">
           <img data-src="/assets/catalogo/aniversario.jpg" width="700" height="876" alt="Promoção de aniversário: 100% grátis com 10 pagantes no dia do aniversário; 50% de desconto somente para o aniversariante do dia, com reserva antecipada e RG" decoding="async">
-          <img data-src="/assets/catalogo/bebidas.jpg" width="700" height="1244" alt="Regras do refrigerante" decoding="async">
         </div>
       </details>
     </div>
@@ -642,7 +641,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
       desc:'Bolo de 10 fatias, 10 cupcakes e a mesa do bolo montada no tema que você escolher. Pago junto com a reserva. Não vale aos sábados, é uma promoção por noite em cada rodízio e depende da disponibilidade.' },
     /* na reserva vale o preço promocional do refrigerante */
     { id:'refri', nome:'Refrigerante 2L', preco:15, ico:'copo',
-      desc:'<b>Promoção com reserva: R$ 15.</b> Você marca aqui e paga na casa. No Rodízio Tradicional, de terça a sexta, refrigerante e refresco são cortesia.' },
+      desc:'<b>Promoção com reserva: R$ 15.</b> Você marca aqui e paga na casa.' },
     { id:'bolo', nome:'Taxa de bolo próprio', preco:60, ico:'bolo',
       desc:'Só se você trouxer o bolo e usar pratos, talheres e estrutura da casa. Paga na casa. Com descartáveis seus, não paga.' }
   ];
@@ -830,7 +829,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
 
   /* ---------- extras ---------- */
   function precoExtra(e){
-    if (e.id === 'refri' && st.piso === 1 && st.data && st.data.getDay() >= 2 && st.data.getDay() <= 5) return 0;
     return e.preco;
   }
   function indisponivel(e){
