@@ -487,7 +487,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
         <li><span><b>Confirmação:</b> preencher o formulário não confirma a reserva. A solicitação segue para o WhatsApp, onde a equipe confirma conforme a disponibilidade e as regras da casa.</span></li>
         <li id="regraChegada"><span><b>Tolerância de chegada:</b> <span id="tolerancia">a reserva do rodízio é para as 18h30. Terça a sexta: chegada de todos até 19h30. Sábados, domingos e feriados: chegada de todos até 19h. Após a tolerância, a reserva perde a garantia e o grupo fica sujeito à disponibilidade.</span></span></li>
         <li id="regraSinal"><span><b>Antecipação:</b> para confirmar a reserva, é necessário antecipar rodízios conforme o tamanho do grupo: <span class="regra-sinal-txt"></span> O valor antecipado, pago no Pix pelo valor em dinheiro, é utilizado para a confirmação da reserva. O restante é pago no dia, no caixa, só por quem comparecer. Kit Festa e pista de boliche são pagos inteiros na reserva.</span></li>
-        <li id="regraExclusiva" hidden><span><b>Pagamento integral antecipado (mesa exclusiva):</b> com o pagamento antecipado de todos os rodízios, o grupo garante uma mesa exclusiva, sem horário máximo de tolerância para chegada. O pagamento não é reembolsável.</span></li>
+        <li id="regraExclusiva" hidden><span><b>Pagamento integral antecipado (mesa exclusiva):</b> com o pagamento antecipado de todos os rodízios de adultos, o grupo garante uma mesa exclusiva, sem horário máximo de tolerância para chegada. Crianças e aniversariante pagam no caixa. O pagamento não é reembolsável.</span></li>
         <li id="regraPista" hidden><span><b>Boliche:</b> o valor é por pista, que leva até 6 pessoas, com pagamento integral no ato da reserva e conforme a disponibilidade de pistas.</span></li>
         <li id="regraAniv" hidden><span><b>Aniversário:</b> um aniversariante por reserva, promoções não cumulativas e RG do aniversariante apresentado até 20h30.</span></li>
         <li class="so-antecipacao"><span><b>Cancelamento:</b> reembolso total se você pedir pelo WhatsApp oficial em até 7 dias da contratação. Depois desse prazo não há reembolso.</span></li>
@@ -751,33 +751,36 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
     var ok = Object.keys(QUEM_TXT).filter(function(k){ return st[k] > 0; });
     return ok.indexOf(st.aniv.quem) >= 0 ? st.aniv.quem : ok[0];
   }
+  /* Regra da casa (23/10/2026): criança e aniversariante não pagam antecipado.
+     No Pix da reserva entram só adultos e bariátricos; criança paga no caixa e
+     o aniversariante tem o desconto (50% ou grátis) só no caixa. */
+  function anivComDesconto(){ var r = anivRegra(); return r === 'gratis' || r === 'meia'; }
+  function antecipaveis(){
+    var a = st.adultos, b = st.bari;
+    if (anivComDesconto()){ if (quemAniv() === 'adultos') a--; else if (quemAniv() === 'bari') b--; }
+    return { adultos:Math.max(0, a), bari:Math.max(0, b) };
+  }
+  function qtdAntecipaveis(){ var x = antecipaveis(); return x.adultos + x.bari; }
 
   /* ---------- rodízio ---------- */
   /* forma: 'pix' (Pix da reserva ou dinheiro) ou 'maquina' (maquininha) */
   function valorDia(d, forma){ return TABELA[st.piso][faixa(d, st.piso)][forma || 'pix']; }
+  /* os rodízios que entram no Pix quando o grupo paga tudo: só adultos e
+     bariátricos, sem o aniversariante com desconto */
   function linhasRodizio(usarPromo){
-    var d = st.data, cheio = valorDia(d);
+    var cheio = valorDia(st.data);
     var va = usarPromo ? TABELA[1].terQui.promo : cheio;
     var vb = Math.min(va, arred(cheio * 0.7));               /* bariátrico: 30% sobre o valor do dia */
-    var cr = TABELA[st.piso].crianca, out = [];
-    if (st.adultos) out.push({ nome:st.adultos + ' adulto' + (st.adultos > 1 ? 's' : '') + ' × ' + moeda(va), valor:va * st.adultos });
-    if (st.bari) out.push({ nome:st.bari + ' bariátrico' + (st.bari > 1 ? 's' : '') + ' × ' + moeda(vb), valor:vb * st.bari });
-    if (st.c35) out.push({ nome:st.c35 + (st.c35 > 1 ? ' crianças' : ' criança') + ' de 3 a 5 anos × ' + moeda(cr.c35), valor:cr.c35 * st.c35 });
-    if (st.c68) out.push({ nome:st.c68 + (st.c68 > 1 ? ' crianças' : ' criança') + ' de 6 a 8 anos × ' + moeda(cr.c68), valor:cr.c68 * st.c68 });
-    if (st.bebes) out.push({ nome:st.bebes + (st.bebes > 1 ? ' crianças' : ' criança') + ' de até 2 anos', valor:0 });
-    var regra = usarPromo ? '' : anivRegra();
-    if (regra === 'gratis' || regra === 'meia'){
-      var base = { adultos:va, bari:vb, c35:cr.c35, c68:cr.c68 }[quemAniv()];
-      var desc = regra === 'gratis' ? base : arred(base / 2);
-      out.push({ nome:'Aniversariante ' + (regra === 'gratis' ? 'não paga' : 'com 50%'), valor:-desc, desconto:true });
-    }
+    var x = antecipaveis(), out = [];
+    if (x.adultos) out.push({ nome:x.adultos + ' adulto' + (x.adultos > 1 ? 's' : '') + ' × ' + moeda(va), valor:va * x.adultos });
+    if (x.bari) out.push({ nome:x.bari + ' bariátrico' + (x.bari > 1 ? 's' : '') + ' × ' + moeda(vb), valor:vb * x.bari });
     return out;
   }
-  /* promoções não cumulativas: num dia de R$ 49,99 com aniversariante,
-     fica a opção que sai mais barata para o grupo */
+  /* a promoção de R$ 49,99 vale para os rodízios pagos na reserva. O
+     aniversariante não é pago antecipado, então o desconto dele (no caixa)
+     não se soma à promoção de ninguém. */
   function promoSePagarTudo(){
-    if (!comRodizio() || !temPromo(st.data, st.piso)) return false;
-    return somar(linhasRodizio(true)) <= somar(linhasRodizio(false));
+    return comRodizio() && temPromo(st.data, st.piso);
   }
   function usaPromo(){ return pagaTudo() && promoSePagarTudo(); }
 
@@ -789,21 +792,20 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
   function exclusivaOn(){ return comRodizio() && st.exclusiva; }
   /* Quando a antecipação já cobre todos os pagantes (1 pessoa), o valor é o
      mesmo de pagar tudo, mas sem virar mesa exclusiva: a tolerância continua. */
-  function sinalCobreTodos(){ return rodiziosDoSinal() >= pagantes(); }
+  function sinalCobreTodos(){ var q = qtdAntecipaveis(); return q > 0 && rodiziosDoSinal() >= q; }
   function pagaTudo(){ return comRodizio() && (st.exclusiva || sinalCobreTodos()); }
   /* quantos rodízios entram no sinal: 1 até 19 pessoas e, de 20 em diante,
-     1 a cada 10 (20 a 29 = 2, 30 a 39 = 3...). Nunca mais que os pagantes. */
+     1 a cada 10 (20 a 29 = 2, 30 a 39 = 3...). A faixa conta o grupo todo, mas
+     só adultos e bariátricos são antecipados, nunca mais que eles. */
   function rodiziosDoSinal(){
     var p = pessoas(), n = p < 20 ? 1 : Math.floor(p / 10);
-    return Math.min(n, pagantes());
+    return Math.min(n, qtdAntecipaveis());
   }
-  /* o sinal cobre os rodízios de maior valor do grupo (normalmente adultos) */
+  /* o sinal cobre os rodízios de maior valor entre adultos e bariátricos */
   function valorSinal(){
-    var n = rodiziosDoSinal(), cheio = valorDia(st.data), cr = TABELA[st.piso].crianca, u = [], i;
-    for (i = 0; i < st.adultos; i++) u.push(cheio);
-    for (i = 0; i < st.bari; i++) u.push(arred(cheio * 0.7));
-    for (i = 0; i < st.c68; i++) u.push(cr.c68);
-    for (i = 0; i < st.c35; i++) u.push(cr.c35);
+    var n = rodiziosDoSinal(), cheio = valorDia(st.data), x = antecipaveis(), u = [], i;
+    for (i = 0; i < x.adultos; i++) u.push(cheio);
+    for (i = 0; i < x.bari; i++) u.push(arred(cheio * 0.7));
     u.sort(function(a, b){ return b - a; });
     return arred(u.slice(0, n).reduce(function(s, v){ return s + v; }, 0));
   }
@@ -865,16 +867,28 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
     if (st.bari) l.push({ quem:'Bariátrico', valor:'com 30% de desconto' });
     return l;
   }
+  /* o que se paga no caixa, no dia: com a antecipação, o restante do grupo;
+     pagando tudo, só as crianças (o aniversariante vem numa frase à parte) */
+  function restanteNoCaixa(){
+    if (!comRodizio()) return [];
+    if (!pagaTudo()) return restantePorPessoa();
+    var cr = TABELA[st.piso].crianca, l = [];
+    if (st.c35) l.push({ quem:'Criança de 3 a 5 anos', valor:moeda(cr.c35) });
+    if (st.c68) l.push({ quem:'Criança de 6 a 8 anos', valor:moeda(cr.c68) });
+    return l;
+  }
+  function textoAnivCaixa(){
+    return anivRegra() === 'gratis' ? 'não paga' : '50% de desconto';
+  }
   /* o que fica para o dia, em frases, para a tela */
   function noDia(){
-    var out = [];
-    if (comRodizio() && !pagaTudo()){
-      out.push('Restante dos rodízios, pago por quem comparecer: ' + restantePorPessoa().map(function(x){
+    var out = [], resto = restanteNoCaixa();
+    if (resto.length){
+      out.push((pagaTudo() ? 'Pago no caixa, no dia: ' : 'Restante dos rodízios, pago por quem comparecer: ') + resto.map(function(x){
         return x.quem.charAt(0).toLowerCase() + x.quem.slice(1) + ' ' + x.valor;
       }).join(', ') + '.');
-      var regra = anivRegra();
-      if (regra === 'gratis' || regra === 'meia') out.push('Aniversariante ' + (regra === 'gratis' ? 'não paga' : 'com 50% de desconto') + ', com o RG apresentado no caixa até 20h30.');
     }
+    if (comRodizio() && anivComDesconto()) out.push('Aniversariante: ' + textoAnivCaixa() + ', com o RG apresentado no caixa até 20h30.');
     if (!avulso()){
       EXTRAS.forEach(function(e){
         var q = st.extras[e.id] || 0, p = precoExtra(e);
@@ -1089,16 +1103,17 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
     if (rod){
       var n = rodiziosDoSinal(), promoOk = promoSePagarTudo();
       var chegada = 'Chegada de todos até ' + (d ? (toleranciaCurta(d) ? '19h' : '19h30') : '19h30 (19h aos sábados, domingos e feriados)') + '.';
+      var soCaixa = (st.c35 || st.c68 || anivComDesconto()) ? ' Crianças e aniversariante não pagam antecipado: pagam no caixa, no dia.' : '';
       $('pagSinalTxt').textContent = (sinalCobreTodos()
-        ? 'Você antecipa ' + textoSinal(n).replace(' antecipado', '') + ' no Pix, que já cobre o grupo. '
-        : 'Você antecipa ' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') + ' no Pix e o restante é pago no dia, por quem comparecer. ') + chegada;
+        ? 'Você antecipa ' + textoSinal(n).replace(' antecipado', '') + ' no Pix, que já cobre os adultos do grupo. '
+        : 'Você antecipa ' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') + ' no Pix e o restante é pago no dia, por quem comparecer. ') + chegada + soCaixa;
       $('pagSinalVal').textContent = moeda(sinalCobreTodos() ? somar(linhasRodizio(promoOk)) : valorSinal());
-      $('pagTudoTxt').textContent = 'Você paga todos os rodízios agora e garante uma mesa exclusiva para o grupo, sem horário máximo de tolerância para chegada. O pagamento não é reembolsável.' +
-        (promoOk ? ' Este dia entra na promoção de R$ 49,99 por adulto (7 dias de antecedência).' : '');
+      $('pagTudoTxt').textContent = 'Você paga agora os rodízios dos adultos e garante uma mesa exclusiva para o grupo, sem horário máximo de tolerância para chegada. O pagamento não é reembolsável.' +
+        (promoOk ? ' Este dia entra na promoção de R$ 49,99 por adulto (7 dias de antecedência).' : '') + soCaixa;
       $('pagTudoVal').textContent = moeda(somar(linhasRodizio(promoOk)));
       [].forEach.call(document.querySelectorAll('#pagamento input'), function(i){ i.checked = (i.value === 'tudo') === !!st.exclusiva; });
       $('avisoSinal').innerHTML = exclusivaOn()
-        ? '<b>Pagamento integral antecipado:</b> todos os rodízios são pagos na reserva, a mesa fica exclusiva para o grupo e não há horário máximo de chegada. O pagamento não é reembolsável.'
+        ? '<b>Pagamento integral antecipado:</b> os rodízios dos adultos são pagos na reserva, a mesa fica exclusiva para o grupo e não há horário máximo de chegada. O pagamento não é reembolsável.' + soCaixa
         : '<b>Antecipação de rodízios:</b> para confirmar a reserva de ' + pessoas() + (pessoas() > 1 ? ' pessoas' : ' pessoa') +
           ', você antecipa <b>' + textoSinal(n).replace(' antecipados', '').replace(' antecipado', '') + ', ' +
           moeda(sinalCobreTodos() ? somar(linhasRodizio(promoOk)) : valorSinal()) + '</b> no Pix.' + tabelaSinal(true);
@@ -1190,14 +1205,12 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
     aa.hidden = !(rod && st.aniv.on);
     if (!st.aniv.dia){
       aa.innerHTML = 'Escolha o dia e o mês do aniversário para ver o desconto.';
-    } else if (promo && (regra === 'gratis' || regra === 'meia')){
-      aa.innerHTML = 'As promoções não se somam. Neste dia a <b>promoção de R$ 49,99</b> saiu mais barata para o grupo, então ficou ela. Leve o RG do aniversariante até 20h30.';
     } else if (regra === 'gratis'){
       aa.innerHTML = 'O aniversariante <b>não paga</b>: são 10 pagantes mais ele' +
         (distAniv(d) === 0 ? ', no dia do aniversário.' : ', dentro dos 5 dias que valem às quartas e quintas.') +
-        ' Apresente o RG do aniversariante no caixa até 20h30.';
+        ' Ele não entra no pagamento da reserva. Apresente o RG do aniversariante no caixa até 20h30.';
     } else if (regra === 'meia'){
-      aa.innerHTML = 'Reserva no dia do aniversário: o aniversariante tem <b>50% de desconto</b>. Com 10 pagantes, ele não paga. ' +
+      aa.innerHTML = 'Reserva no dia do aniversário: o aniversariante tem <b>50% de desconto, aplicado no caixa</b>, e não entra no pagamento da reserva. Com 10 pagantes, ele não paga. ' +
         'Apresente o RG do aniversariante no caixa até 20h30.';
     } else {
       aa.innerHTML = 'Nesta data não há desconto de aniversário. O <b>50%</b> vale só para o aniversariante do dia. ' +
@@ -1238,7 +1251,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
     $('subContrato').textContent = st.tipo === 'festa'
       ? 'Festa é orçamento: a casa responde pelo WhatsApp com os valores e os pacotes para a data.'
       : 'Depois da confirmação da equipe, a reserva entra na agenda com o Pix pago e o comprovante enviado no WhatsApp.' +
-        (rod && !pagaTudo() ? ' No dia, cada um paga o restante no caixa.' : '');
+        (rod && (!pagaTudo() || restanteNoCaixa().length || anivComDesconto()) ? ' No dia, o restante é pago no caixa.' : '');
     pintarResumo($('resumo'));
     pintarNoDia($('noDia'));
     $('docs').hidden = !precisaDocs();
@@ -1344,11 +1357,9 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
       if (st.bebes) grupo.push(pl(st.bebes, 'criança de até 2 anos', 'crianças de até 2 anos'));
       var regra = '';
       if (st.aniv.on){
-        var ra0 = anivRegra();
-        regra = usaPromo() ? '' : ra0;
+        regra = anivRegra();
         grupo.push('Aniversariante' + (quemAniv() === 'adultos' ? '' : ' (' + QUEM_TXT[quemAniv()] + ')') + ': dia ' + doisDig(st.aniv.dia) + '/' + doisDig(st.aniv.mes) +
-          (regra === 'gratis' ? ' (não paga: 10 pagantes + aniversariante)' : regra === 'meia' ? ' (50% de desconto, aniversariante do dia)'
-           : usaPromo() && (ra0 === 'gratis' || ra0 === 'meia') ? ' (promoções não cumulativas: ficou a de R$ 49,99, mais barata)' : ' (sem desconto nesta data)'));
+          (regra === 'gratis' ? ' (não paga: 10 pagantes + aniversariante)' : regra === 'meia' ? ' (50% de desconto no caixa, aniversariante do dia)' : ' (sem desconto nesta data)'));
       }
       /* o aniversariante que não paga não entra na conta dos pagantes */
       bloco('Pessoas (' + pl(pagantes() - (regra === 'gratis' ? 1 : 0), 'pagante', 'pagantes') + ')', grupo);
@@ -1366,11 +1377,10 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
       bloco('Comprovante do Pix', ['Envio a foto do comprovante aqui, assim que pagar']);
 
       /* o que fica para o dia, no caixa */
-      if (rod && !pagaTudo()){
-        var resto = restantePorPessoa().map(function(x){ return x.quem + ': ' + x.valor.replace(/^com /, ''); });
-        var ra = anivRegra();
-        if (ra === 'gratis' || ra === 'meia') resto.push('Aniversariante: ' + (ra === 'gratis' ? 'não paga' : '50% de desconto') + ', com o RG no caixa até 20h30');
-        bloco('No dia, no caixa (paga quem comparecer)', resto);
+      if (rod){
+        var resto = restanteNoCaixa().map(function(x){ return x.quem + ': ' + x.valor.replace(/^com /, ''); });
+        if (anivComDesconto()) resto.push('Aniversariante: ' + textoAnivCaixa() + ', com o RG no caixa até 20h30');
+        bloco(pagaTudo() ? 'No dia, no caixa' : 'No dia, no caixa (paga quem comparecer)', resto);
       }
       var ext = [];
       if (!avulso()){
@@ -1468,6 +1478,8 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
                                               : st.tipo === 'festa' ? 'Escolha o dia e o horário.' : 'Escolha o dia.';
     if (n === 2 && comRodizio() && pagantes() < MIN_PESSOAS) return 'A reserva é para no mínimo ' + MIN_PESSOAS + (MIN_PESSOAS > 1 ? ' pessoas.' : ' pessoa.');
     if (n === 2 && comRodizio() && st.aniv.on && !st.aniv.dia) return 'Escolha o dia e o mês do aniversário.';
+    if (n === 2 && comRodizio() && !qtdAntecipaveis())
+      return 'Criança e aniversariante não pagam antecipado. Para garantir a reserva, inclua pelo menos um adulto pagante.';
     if (n === 5){
       /* marca o campo com problema e leva o foco até ele */
       var nomeOk = !!$('nome').value.trim(), foneOk = $('fone').value.replace(/\D/g,'').length >= 10;
