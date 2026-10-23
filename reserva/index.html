@@ -433,7 +433,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
   <!-- 4. EXTRAS -->
   <section class="tela" data-tela="3">
     <h1>Quer somar alguma coisa?</h1>
-    <p class="sub">O Kit Festa é pago junto com a reserva. Refrigerante e taxa de bolo você só marca aqui e paga na casa, no dia.</p>
+    <p class="sub">O Kit Festa é pago junto com a reserva. A taxa de bolo você só marca aqui e paga na casa, no dia.</p>
     <div id="extras"></div>
     <div class="aviso">Confete explosivo, glitter e parecidos <b>não são permitidos</b>. O uso gera taxa de limpeza de R$ 300,00.</div>
   </section>
@@ -639,9 +639,6 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
        pagos na casa, no dia (pedido da equipe de reservas). */
     { id:'kit',  nome:'Kit Festa + Bolo', preco:119.99, max:1, antecipado:true, foto:'/assets/catalogo/kit-festa.jpg',
       desc:'Bolo de 10 fatias, 10 cupcakes e a mesa do bolo montada no tema que você escolher. Pago junto com a reserva. Não vale aos sábados, é uma promoção por noite em cada rodízio e depende da disponibilidade.' },
-    /* na reserva vale o preço promocional do refrigerante */
-    { id:'refri', nome:'Refrigerante 2L', preco:15, ico:'copo',
-      desc:'<b>Promoção com reserva: R$ 15.</b> Você marca aqui e paga na casa.' },
     { id:'bolo', nome:'Taxa de bolo próprio', preco:60, ico:'bolo',
       desc:'Só se você trouxer o bolo e usar pratos, talheres e estrutura da casa. Paga na casa. Com descartáveis seus, não paga.' }
   ];
@@ -1007,7 +1004,7 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
   function montarExtras(){
     var box = $('extras'); box.innerHTML = '';
     if (avulso()){
-      box.innerHTML = '<div class="aviso" style="margin-top:0">Kit festa, refrigerante e taxa de bolo são para quem vai no rodízio. Na pista avulsa, é só seguir.</div>';
+      box.innerHTML = '<div class="aviso" style="margin-top:0">Kit festa e taxa de bolo são para quem vai no rodízio. Na pista avulsa, é só seguir.</div>';
       return;
     }
     EXTRAS.forEach(function(e){
