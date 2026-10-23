@@ -1,6 +1,10 @@
 {
   "cleanUrls": true,
   "trailingSlash": true,
+  "redirects": [
+    { "source": "/:path*", "has": [{ "type": "host", "value": "santo-strike.vercel.app" }], "destination": "https://santostrike.com.br/:path*", "permanent": true },
+    { "source": "/:path*", "has": [{ "type": "host", "value": "www.santostrike.com.br" }], "destination": "https://santostrike.com.br/:path*", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/(.*)",

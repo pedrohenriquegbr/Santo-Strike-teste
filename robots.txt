@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://santo-strike.vercel.app/sitemap.xml
+Sitemap: https://santostrike.com.br/sitemap.xml
