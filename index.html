@@ -249,6 +249,12 @@ a{color:inherit}
 .nav-links a:hover::after{right:0}
 /* no computador o botão dourado já faz esse papel; o link só aparece no menu do celular */
 .nav-links .nav-reserva{display:none}
+/* tablet: com o link Cardápio, 5 links + botão quebravam em duas linhas a 768 px */
+@media (min-width:721px) and (max-width:960px){
+  .nav-links{gap:1rem}
+  .nav-links a{font-size:.88rem;white-space:nowrap}
+  .nav > .btn{white-space:nowrap;padding-inline:1.1rem}
+}
 
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
@@ -576,6 +582,53 @@ a{color:inherit}
   transform:translateY(-4px);order:1}
 .dishes li em{order:2;font-family:var(--mono);font-style:normal;font-size:.82rem;
   color:var(--accent);white-space:nowrap}
+
+/* --- cardápio de bebidas: a arte "Menu bebidas" da casa como cardápio impresso.
+   Moldura dupla, brasa no canto (o círculo amarelo da arte) e preço com fio
+   pontilhado, como numa carta de restaurante. */
+.menu-bebidas{
+  position:relative;margin-top:clamp(3.5rem,7vw,5.5rem);
+  padding:clamp(2.2rem,4.5vw,3.6rem) clamp(1.5rem,4.5vw,3.8rem);
+  background:
+    radial-gradient(60% 55% at 0% 100%,rgba(255,106,0,.17),rgba(255,106,0,0) 70%),
+    radial-gradient(45% 40% at 100% 0%,rgba(240,185,75,.10),rgba(240,185,75,0) 70%),
+    linear-gradient(180deg,#180E08 0%,#120A05 100%);
+  border:1px solid var(--line-strong);border-radius:3px;
+  box-shadow:inset 0 1px 0 rgba(255,217,138,.07),0 2px 6px rgba(0,0,0,.35),0 30px 80px rgba(0,0,0,.45);
+  scroll-margin-top:6.5rem; /* o link "veja os preços" não esconde o título atrás do nav fixo */
+}
+.floor ul li a{color:var(--accent);text-underline-offset:3px;transition:color .2s var(--ease)}
+.floor ul li a:hover{color:var(--accent-hover)}
+.floor ul li a:active{opacity:.75}
+.menu-bebidas::before{content:"";position:absolute;inset:9px;border:1px solid var(--line);
+  border-radius:2px;pointer-events:none}
+.menu-bebidas__head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;
+  gap:1rem 2.5rem;padding-bottom:1.6rem;border-bottom:1px solid var(--line-strong)}
+.menu-bebidas__selo{font-family:var(--mono);font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--text-secondary)}
+.menu-bebidas h3{font-size:clamp(2.6rem,6.4vw,4.6rem);margin-top:.5rem;line-height:1}
+.menu-bebidas__nota{color:var(--text-secondary);font-size:.96rem;max-width:32ch;line-height:1.45}
+.menu-bebidas__nota b{color:var(--text-primary);font-weight:500}
+.menu-bebidas__cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.5rem,5vw,4.5rem);margin-top:2.2rem}
+.menu-bebidas h4{font-family:var(--mono);font-weight:500;font-size:.74rem;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--accent);margin:0 0 .4rem}
+.bebidas{list-style:none;margin:0;padding:0}
+.bebidas li{display:grid;grid-template-columns:auto minmax(1rem,1fr) auto;align-items:baseline;gap:.8rem;
+  padding:.8rem 0;border-bottom:1px solid var(--line)}
+.bebidas li span{font-size:1.06rem;line-height:1.3}
+.bebidas li small{display:block;margin-top:.15rem;font-size:.8rem;color:var(--text-secondary)}
+.bebidas li i{border-bottom:1px dotted var(--accent-muted);transform:translateY(-4px);
+  transition:border-color .25s var(--ease)}
+/* preço em DM Sans com algarismo tabular: o zero cortado da mono deixava a carta com cara de código */
+.bebidas li b{font-weight:500;font-size:1.04rem;font-variant-numeric:tabular-nums;color:var(--accent);
+  white-space:nowrap;transition:color .25s var(--ease)}
+.bebidas li:hover i{border-bottom-color:var(--accent)}
+.bebidas li:hover b{color:var(--accent-hover)}
+.menu-bebidas__lei{margin-top:1.1rem;font-size:.8rem;color:var(--text-secondary);opacity:.8}
+@media (max-width:720px){
+  .menu-bebidas::before{inset:6px}
+  .menu-bebidas__cols{grid-template-columns:1fr;gap:2.2rem}
+}
 
 /* --- boliche: split --------------------------------------- */
 .split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,6vw,5rem);align-items:center}
@@ -1278,6 +1331,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
   </a>
   <div class="nav-links" id="navLinks">
     <a href="#rodizios">Os rodízios</a>
+    <a href="#cardapio">Cardápio</a>
     <a href="#boliche">Boliche</a>
     <a href="#festa">Sua festa</a>
     <a href="#onde">Onde ficamos</a>
@@ -1416,7 +1470,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
             <li>Bufê de massas, petiscos e sobremesas especiais</li>
             <li>Até 2 anos grátis &middot; 3 a 5 anos R$&nbsp;24,99 &middot; 6 a 8 anos R$&nbsp;34,99</li>
             <li>Bariátricos têm 30% de desconto, com carteirinha</li>
-            <li>Bebidas à parte, sem refil</li>
+            <li>Bebidas à parte, sem refil: <a href="#bebidas">veja os preços</a></li>
           </ul>
         </article>
       </div>
@@ -1442,8 +1496,10 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
   <!-- ========== O QUE TEM NO RODÍZIO ========== -->
   <section class="sec" id="cardapio">
     <div class="wrap">
-      <p class="kicker rv">O que entra</p>
+      <p class="kicker rv">Cardápio</p>
       <h2 class="rv">Rodízio é rodízio.<br>Sem pegadinha na conta.</h2>
+      <p class="lede rv">A comida do rodízio é à vontade. As bebidas são à parte,
+        e o preço de cada uma está aqui embaixo.</p>
 
       <div class="tabs rv" role="tablist" aria-label="Categorias do cardápio">
         <button class="tab is-on" role="tab" aria-selected="true" aria-controls="cat-pizza" id="tb-pizza">Pizza</button>
@@ -1481,7 +1537,46 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
           <li><span>Sobremesas especiais, açaí e sorvete</span><em>à vontade</em></li>
         </ul>
       </div>
-      <p class="fineprint rv">Cardápio sujeito a alteração sem aviso prévio.</p>
+
+      <!-- Itens e preços da arte "Menu bebidas" que a dona mandou em 26/10/2026,
+           na ordem da arte. A divisão com/sem álcool é do site. O refrigerante
+           volta só aqui: a reserva segue sem ele (pedido de 23/10/2026). -->
+      <div class="menu-bebidas rv" id="bebidas">
+        <div class="menu-bebidas__head">
+          <div>
+            <p class="menu-bebidas__selo">Santo Strike &middot; Menu</p>
+            <h3 class="grad">Bebidas</h3>
+          </div>
+          <p class="menu-bebidas__nota"><b>Não entram no rodízio.</b> São cobradas à parte, por unidade.</p>
+        </div>
+        <div class="menu-bebidas__cols">
+          <div>
+            <h4>Sem álcool</h4>
+            <ul class="bebidas">
+              <li><span>Água sem gás</span><i aria-hidden="true"></i><b>R$&nbsp;3,00</b></li>
+              <li><span>Água com gás</span><i aria-hidden="true"></i><b>R$&nbsp;6,00</b></li>
+              <li><span>Água tônica</span><i aria-hidden="true"></i><b>R$&nbsp;7,00</b></li>
+              <li><span>Refrigerante<small>2 litros, retornável</small></span><i aria-hidden="true"></i><b>R$&nbsp;20,00</b></li>
+              <li><span>Refrigerante<small>1 litro e meio, PET</small></span><i aria-hidden="true"></i><b>R$&nbsp;20,00</b></li>
+              <li><span>Del Valle<small>1 litro</small></span><i aria-hidden="true"></i><b>R$&nbsp;12,00</b></li>
+              <li><span>H2O</span><i aria-hidden="true"></i><b>R$&nbsp;10,00</b></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Com álcool</h4>
+            <ul class="bebidas">
+              <li><span>Império<small>latão</small></span><i aria-hidden="true"></i><b>R$&nbsp;13,00</b></li>
+              <li><span>Império<small>275 ml, long neck</small></span><i aria-hidden="true"></i><b>R$&nbsp;11,00</b></li>
+              <li><span>Heineken<small>long neck</small></span><i aria-hidden="true"></i><b>R$&nbsp;13,00</b></li>
+              <li><span>Stella<small>long neck</small></span><i aria-hidden="true"></i><b>R$&nbsp;13,00</b></li>
+              <li><span>Brahma<small>latão</small></span><i aria-hidden="true"></i><b>R$&nbsp;14,00</b></li>
+              <li><span>Chopp de vinho</span><i aria-hidden="true"></i><b>R$&nbsp;15,00</b></li>
+            </ul>
+            <p class="menu-bebidas__lei">Proibida a venda de bebidas alcoólicas para menores de 18 anos.</p>
+          </div>
+        </div>
+      </div>
+      <p class="fineprint rv">Cardápio e preços sujeitos a alteração sem aviso prévio.</p>
     </div>
   </section>
 
