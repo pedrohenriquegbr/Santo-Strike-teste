@@ -2,14 +2,12 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<script>/* endereço oficial: quem chega pelo vercel.app ou pelo www vai para santostrike.com.br */if(/^(santo-strike\.vercel\.app|www\.santostrike\.com\.br)$/.test(location.hostname))location.replace('https://santostrike.com.br'+location.pathname+location.search+location.hash);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Santo Strike | Rodízio com Boliche em Duque de Caxias</title>
 <meta name="description" content="Santo Strike, Duque de Caxias: rodízio de pizza e bufê, rodízio Fusion com churrasco, boliche e PlayKids. Terça a domingo, exceto o 3º domingo. Reserve.">
 <meta name="theme-color" content="#1F130C">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
 <!-- Domínio do site. Ao trocar, rode na pasta do projeto: node trocar-dominio.js https://novo-dominio -->
-<link rel="canonical" href="https://santostrike.com.br/">
 <meta property="og:url" content="https://santostrike.com.br/">
 <meta property="og:image" content="https://santostrike.com.br/assets/og-home.jpg">
 <meta property="og:image:width" content="1200">
@@ -278,6 +276,7 @@ a{color:inherit}
 .btn--ghost:hover{border-color:var(--accent);background:rgba(240,185,75,.07)}
 /* sombra de texto em rótulo de botão lê como sujeira: mata em todo botão */
 .btn{text-shadow:none;text-align:center}
+.btn[hidden]{display:none}
 
 .burger{display:none;background:none;border:0;padding:.5rem;cursor:pointer;color:var(--text-primary)}
 .burger span{display:block;width:24px;height:2px;background:currentColor;margin:5px 0;transition:transform .3s var(--ease),opacity .3s var(--ease)}
@@ -1316,6 +1315,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
 /* no celular o grão fica parado: a animação custa CPU e bateria sem diferença visível */
 @media (pointer:coarse){body::after{animation:none}}
 </style>
+<script src="/assets/hoje.js"></script>
 </head>
 <body>
 <canvas class="embers" id="embers" aria-hidden="true"></canvas>
@@ -1376,6 +1376,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
           <div class="ctas">
             <a class="btn btn--ghost" href="#rodizios">Conheça nossos rodízios e tire suas dúvidas</a>
             <a class="btn btn--gold" href="/reserva/">Faça sua reserva</a>
+            <a class="btn btn--ghost" href="/reserva/hoje/" data-hoje hidden>Reservar para hoje</a>
           </div>
         </div>
       </div>
@@ -1398,6 +1399,7 @@ body::after{content:"";position:fixed;inset:-50%;pointer-events:none;z-index:61;
       <div class="ctas">
         <a class="btn btn--ghost" href="#rodizios">Conheça nossos rodízios e tire suas dúvidas</a>
         <a class="btn btn--gold" href="/reserva/">Faça sua reserva</a>
+        <a class="btn btn--ghost" href="/reserva/hoje/" data-hoje hidden>Reservar para hoje</a>
       </div>
     </div>
   </section>
@@ -2951,5 +2953,17 @@ function agoraBrasilia(){
   addEventListener('resize', function(){ medir(); semear(); }, { passive:true });
 })();
 </script>
+<script>
+/* "Reservar para hoje": aparece só com a reserva do dia aberta (assets/hoje.js) */
+(function(){
+  var S = window.SantoHoje;
+  if (!S) return;
+  var bts = document.querySelectorAll('[data-hoje]');
+  function mostrar(){ var on = S.estado() === 'aberto'; [].forEach.call(bts, function(b){ b.hidden = !on; }); }
+  mostrar();
+  S.aoMudar(mostrar);
+})();
+</script>
+<script src="/assets/teste.js" defer></script>
 </body>
 </html>

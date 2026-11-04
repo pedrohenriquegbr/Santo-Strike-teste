@@ -1,11 +1,10 @@
 <!doctype html>
 <html lang="pt-BR">
 <meta charset="utf-8">
-<script>/* endereço oficial: quem chega pelo vercel.app ou pelo www vai para santostrike.com.br */if(/^(santo-strike\.vercel\.app|www\.santostrike\.com\.br)$/.test(location.hostname))location.replace('https://santostrike.com.br'+location.pathname+location.search+location.hash);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="noindex, nofollow">
+<script src="/assets/hoje.js"></script>
 <meta name="description" content="Reserve mesa ou pista de boliche no Santo Strike, em Duque de Caxias: escolha o rodízio, o dia e quantas pessoas vão e envie a solicitação pelo WhatsApp.">
-<link rel="canonical" href="https://santostrike.com.br/reserva/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Santo Strike">
@@ -97,6 +96,12 @@ h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .3rem}
 .dia{flex:none;width:4.3rem;border:1px solid var(--line);background:var(--panel);border-radius:12px;
   padding:.7rem .3rem;text-align:center;cursor:pointer;scroll-snap-align:start;position:relative}
 .dia input{position:absolute;opacity:0;pointer-events:none}
+.dia--hoje{display:block;color:inherit;text-decoration:none;border:1px dashed #E3B23C}
+.dia--hoje i{color:var(--accent)}
+.dia--hoje.dia--fim{opacity:.85}
+.aviso-hoje{margin:.5rem 0 0;font-size:.85rem;color:var(--ink-2)}
+.aviso-hoje[hidden]{display:none}
+.dia--hoje:hover{border-color:var(--accent)}
 .dia i{display:block;font:500 .6rem/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);font-style:normal}
 .dia b{display:block;font:400 1.35rem/1.1 var(--display)}
 .dia u{display:block;font:500 .58rem/1.4 var(--mono);color:var(--accent);text-decoration:none}
@@ -352,6 +357,7 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
     <div class="dias-wrap"><div class="dias" id="dias"></div></div>
     <div class="setas"><button type="button" id="diaEsq" aria-label="Ver dias anteriores">&#8592;</button>
       <button type="button" id="diaDir" aria-label="Ver próximos dias">&#8594;</button></div>
+    <p class="aviso-hoje" id="avisoHoje" hidden></p>
     <p class="dia-escolhido" id="diaEscolhido" aria-live="polite">Você pode reservar com até 60 dias de antecedência.</p>
     <span class="rot" id="rotHora">Horário da reserva</span>
     <div class="horas" id="horas"></div>
@@ -692,7 +698,7 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
   }
   /* quem precisa de acessibilidade fala com um atendente, a pedido da casa */
   var ZAP_ACESSO = 'https://wa.me/' + WHATSAPP_CASA + '?text=' +
-    encodeURIComponent('Olá! Quero tirar uma dúvida sobre acessibilidade no Santo Strike antes de reservar.');
+    encodeURIComponent(((window.SantoHoje && SantoHoje.prefixoTeste) || '') + 'Olá! Quero tirar uma dúvida sobre acessibilidade no Santo Strike antes de reservar.');
   var LINK_ACESSO = '<a href="' + ZAP_ACESSO + '" target="_blank" rel="noopener">fale com um atendente pelo WhatsApp</a>';
   [].forEach.call(document.querySelectorAll('a.zap-acesso'), function(a){ a.href = ZAP_ACESSO; });
 
@@ -934,12 +940,71 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
      09/10/2026; antes eram 14 dias). A faixa de dias continua a mesma, com um
      marcador onde o mês vira e um atalho por mês em cima. */
   var DIAS_A_FRENTE = 60;
+  /* Card "Hoje": reserva do mesmo dia só pelo TagMe (assets/hoje.js). Sem
+     SantoHoje, ou com a casa fechada, o dia de hoje fica de fora como sempre. */
+  var cardHoje = null;
+  function hojeAberto(){
+    try { return !!(window.SantoHoje && SantoHoje.estado() !== 'fechado'); } catch (e) { return false; }
+  }
+  function fmtH(h){ var p = String(h).split(':'); return +p[0] + 'h' + (+p[1] ? p[1] : ''); }
+  /* frase logo abaixo da faixa de dias, só enquanto o card existe */
+  function avisoHoje(e, c){
+    var p = $('avisoHoje');
+    if (!p) return;
+    if (!cardHoje || e === 'encerrado'){ p.hidden = true; return; }
+    p.textContent = 'Para hoje, toque em Hoje: a reserva é feita numa página própria, ' +
+      (e === 'antes' ? 'das ' + fmtH(c.abre) + ' às ' + fmtH(c.fecha) : 'até as ' + fmtH(c.fecha)) + '.';
+    p.hidden = false;
+  }
+  function rotuloHoje(){
+    if (!cardHoje) return;
+    var e = SantoHoje.estado(), c = SantoHoje.CONFIG;
+    var t = e === 'antes' ? 'abre ' + fmtH(c.abre) : e === 'aberto' ? 'até ' + fmtH(c.fecha) : 'encerrado';
+    cardHoje.querySelector('u').textContent = t + ' \u2197';
+    cardHoje.classList.toggle('dia--fim', e === 'encerrado');
+    avisoHoje(e, c);
+    cardHoje.setAttribute('aria-label', 'Hoje, dia ' + cardHoje.querySelector('b').textContent + ': ' + t + '. Reserva do mesmo dia numa página própria.');
+  }
+  /* a hora muda: só o rótulo do card, sem refazer os radios (perderia o dia marcado) */
+  if (window.SantoHoje) SantoHoje.aoMudar(function(){
+    var deve = st.tipo === 'mesa' && hojeAberto();
+    if (deve && cardHoje) rotuloHoje();
+    else if (deve !== !!cardHoje){
+      if (!deve){ cardHoje.remove(); cardHoje = null; avisoHoje('fechado', SantoHoje.CONFIG); limparMesVazio(); }
+      else {
+        /* volta a existir: refaz a faixa mantendo o dia marcado */
+        var marcado = st.data ? $('dias').querySelector('input:checked') : null, val = marcado && marcado.value, sl = $('dias').scrollLeft;
+        montarDias();
+        if (val){ var r = $('dias').querySelector('input[value="' + val + '"]'); if (r) r.checked = true; }
+        $('dias').scrollLeft = sl;
+      }
+    }
+  });
+  /* tira o separador de mês do card de hoje quando ele some e o mês não tem mais dias */
+  function limparMesVazio(){
+    var box = $('dias'), seps = box.querySelectorAll('.mes-sep');
+    [].forEach.call(seps, function(sp){
+      var n = sp.nextElementSibling;
+      if (!n || n.classList.contains('mes-sep')){
+        var m = sp.getAttribute('data-mes'); sp.remove();
+        var b = $('meses').querySelector('button[data-mes="' + m + '"]'); if (b) b.remove();
+      }
+    });
+    marcarMes();
+  }
   function montarDias(){
     var box = $('dias'), meses = $('meses'); box.innerHTML = ''; meses.innerHTML = '';
     var hoje = soDia(new Date()), mes = -1;
-    for (var k = 1; k <= DIAS_A_FRENTE; k++){
+    cardHoje = null;
+    if ($('avisoHoje')) $('avisoHoje').hidden = true;
+    for (var k = 0; k <= DIAS_A_FRENTE; k++){
       var d = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate() + k);
-      if (fechado(d)) continue;
+      if (k === 0){
+        /* hoje: só no rodízio, só se a casa abre, e só pelo TagMe (link, não radio) */
+        if (st.tipo !== 'mesa' || !hojeAberto()) continue;
+        var ag = SantoHoje.agora().data.split('-');
+        d = new Date(+ag[0], +ag[1] - 1, +ag[2]);
+      } else if (fechado(d)) continue;
       if (d.getMonth() !== mes){
         mes = d.getMonth();
         var sep = document.createElement('span');
@@ -948,6 +1013,15 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
         var bt = document.createElement('button');
         bt.type = 'button'; bt.setAttribute('data-mes', mes); bt.textContent = MESES_LONGOS[mes];
         meses.appendChild(bt);
+      }
+      if (k === 0){
+        var a = document.createElement('a');
+        a.className = 'dia dia--hoje';
+        a.draggable = false;   /* a faixa de dias é arrastável: o arrasto nativo do link não pode roubar o gesto */
+        a.href ='/reserva/hoje/?onde=' + (st.piso === 2 ? 'fusion' : 'tradicional');
+        a.innerHTML = '<i>hoje</i><b>' + d.getDate() + '</b><u></u>';
+        box.appendChild(a); cardHoje = a; rotuloHoje();
+        continue;
       }
       var v = st.tipo === 'pista' ? precoPista(d, -1)
             : st.tipo === 'festa' ? 0
@@ -1422,7 +1496,7 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
     bloco('Cliente', cli);
 
     L.push('', 'Li e concordo com o contrato de reserva.');
-    return L.join('\n');
+    return ((window.SantoHoje && SantoHoje.prefixoTeste) || '') + L.join('\n');
   }
   /* No celular o botão abre o aplicativo. No computador ele abre o WhatsApp
      Web: o aplicativo do WhatsApp para Windows junta a mensagem numa linha só
@@ -1661,5 +1735,5 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
   })();
 })();
 </script>
-
+<script src="/assets/teste.js" defer></script>
 </html>

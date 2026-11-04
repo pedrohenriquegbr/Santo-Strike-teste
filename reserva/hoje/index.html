@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0B0705">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Reserva para hoje | Santo Strike</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<!-- horário, limite e estado do dia: tudo vem daqui (sem defer, de propósito) -->
+<script src="/assets/hoje.js"></script>
+<style>
+/* Reserva para hoje do Santo Strike. Mesmo visual da reserva de 8 passos
+   (/reserva/). Até o limite de pessoas, a reserva é feita no TagMe, dentro da
+   página; acima dele, com a equipe pelo WhatsApp. Horário e limite ficam em
+   /assets/hoje.js. Feita para o celular. */
+:root{
+  --canvas:#0B0705; --panel:#150F0A; --panel-2:#1E150D;
+  --accent:#E3B23C; --accent-2:#F2C65A; --ember:#C2410C;
+  --ink:#F6F1E6; --ink-2:#B9AC98;
+  --line:rgba(227,178,60,.18); --line-strong:rgba(227,178,60,.42);
+  --display:'Prata',Georgia,serif; --body:'DM Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --gutter:1.1rem;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--canvas);color:var(--ink);font:400 1rem/1.55 var(--body);
+  -webkit-font-smoothing:antialiased}
+/* 5,5rem no fim: o selo "SITE DE TESTE" fica fixo no canto de baixo e não pode cobrir o rodapé */
+.app{max-width:30rem;margin:0 auto;padding:0 var(--gutter) 5.5rem}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+img{max-width:100%}
+
+/* cabeçalho, igual ao da reserva */
+.top{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:1.1rem 0 .9rem;
+  border-bottom:1px solid var(--line)}
+.marca{display:flex;align-items:center;gap:.75rem;color:var(--ink);text-decoration:none}
+.marca img{display:block;width:auto;height:46px;flex:none}
+.marca span{font:500 .62rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.volta{font:500 .66rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+  text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.55rem .8rem;
+  transition:color .2s var(--ease),border-color .2s var(--ease)}
+.volta:hover{color:var(--accent);border-color:var(--line-strong)}
+.volta:active{transform:scale(.97)}
+
+/* título e dia */
+.cab{padding:1.6rem 0 0}
+h1{font:400 1.75rem/1.15 var(--display);margin:0 0 .35rem}
+.data{margin:0;color:var(--ink-2);font-size:1rem}
+.data::first-letter{text-transform:uppercase}
+.chip{display:inline-block;margin:.75rem 0 0;font:500 .64rem/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);border:1px solid var(--line-strong);border-radius:999px;padding:.5rem .75rem}
+
+/* bloco de estado */
+.estado{margin:1.5rem 0 0}
+.status{display:inline-flex;align-items:center;gap:.55rem;font:500 .62rem/1 var(--mono);letter-spacing:.18em;
+  text-transform:uppercase;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:.5rem .8rem .5rem .7rem}
+.status i{flex:none;width:.5rem;height:.5rem;border-radius:50%;background:var(--ink-2);opacity:.55}
+.status[data-estado="aberto"]{color:var(--accent);border-color:var(--line-strong)}
+.status[data-estado="aberto"] i{background:var(--accent);opacity:1;animation:pulso 2.2s var(--ease) infinite}
+.status[data-estado="antes"] i{background:none;border:1.5px solid var(--accent);opacity:1}
+@keyframes pulso{0%{box-shadow:0 0 0 0 rgba(227,178,60,.55)}70%{box-shadow:0 0 0 .45rem rgba(227,178,60,0)}100%{box-shadow:0 0 0 0 rgba(227,178,60,0)}}
+.linha{margin:.85rem 0 0;font-size:1.08rem;line-height:1.5;font-weight:500}
+.linha-sub{margin:.35rem 0 0;color:var(--ink-2);font-size:.92rem}
+
+/* pergunta e escolhas, no estilo das opções da reserva */
+h2{font:400 1.3rem/1.2 var(--display);margin:1.9rem 0 .8rem}
+.ops{display:grid;gap:.65rem}
+.op{width:100%;margin:0;text-align:left;font:inherit;color:var(--ink);
+  display:grid;grid-template-columns:1fr auto;gap:.2rem .8rem;align-items:center;min-height:4.6rem;
+  border:1px solid var(--line);background:var(--panel);padding:1rem 1rem;cursor:pointer;border-radius:12px;
+  -webkit-tap-highlight-color:transparent;
+  transition:border-color .2s var(--ease),background .2s var(--ease),transform .15s var(--ease)}
+.op:hover{border-color:var(--line-strong);background:var(--panel-2)}
+.op:active{transform:scale(.985)}
+.op[aria-expanded="true"]{border-color:var(--accent);background:var(--panel-2)}
+.op b{font-weight:700;font-size:1.05rem}
+.op em{grid-column:1;font-style:normal;color:var(--ink-2);font-size:.86rem;line-height:1.4}
+.op .val{grid-column:2;grid-row:1 / span 2;font:500 .7rem/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);text-align:right}
+.op .val::after{content:"";display:block;width:1.15rem;height:1.15rem;margin:.45rem 0 0 auto;border-radius:50%;
+  border:1.5px solid var(--line-strong);transition:border-color .2s var(--ease)}
+.op[aria-expanded="true"] .val::after{border-color:var(--accent);background:radial-gradient(circle,var(--accent) 0 42%,transparent 47%)}
+
+.painel{margin-top:1.3rem;scroll-margin-top:1rem}
+.painel > p{margin:0 0 .8rem}
+.dica{color:var(--ink-2);font-size:.92rem}
+
+/* aviso do site de teste: forte, para ninguém reservar no rodízio de verdade */
+.alerta{display:grid;grid-template-columns:1.35rem 1fr;gap:.7rem;align-items:start;margin:0 0 1rem;
+  border:1.5px solid var(--ember);background:rgba(194,65,12,.17);border-radius:12px;padding:.95rem 1rem;
+  font-size:.93rem;line-height:1.5;color:var(--ink)}
+.alerta svg{width:1.35rem;height:1.35rem;color:#FF8A5C;margin-top:.1rem}
+.alerta p{margin:0}
+.alerta b{color:#FFA07A}
+
+/* TagMe dentro da página: o TagMe pede no mínimo 320 x 694 */
+.tagme{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--panel);
+  overflow-x:auto;overflow-y:hidden}
+.tagme iframe{position:relative;z-index:1;display:block;width:100%;min-width:320px;height:720px;border:0}
+.tagme__espera{position:absolute;inset:0 0 auto;margin:0;padding:2.4rem 1rem;text-align:center;
+  font:500 .66rem/1.4 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.tagme.pronto .tagme__espera{display:none}
+/* no celular o TagMe ocupa a largura toda da tela, para caber os 320 px sem rolar a página */
+@media (max-width:32rem){
+  .tagme{margin:0 calc(-1 * var(--gutter));border-radius:0;border-left:0;border-right:0}
+}
+
+/* campo e botões */
+.fld{display:block;margin:0 0 .3rem}
+.fld span{display:block;font:500 .64rem/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-2);margin-bottom:.45rem}
+.fld span small{font-size:inherit;letter-spacing:inherit;opacity:.8;text-transform:none}
+.fld input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--ink);
+  font:400 1rem/1.4 var(--body);padding:.8rem .9rem;transition:border-color .2s var(--ease)}
+.fld input:hover{border-color:var(--line-strong)}
+.fld input:focus{border-color:var(--accent);outline:none}
+.fld input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fld [aria-invalid="true"]{border-color:var(--ember)}
+::placeholder{color:#A89C88;opacity:1}
+.erro{color:#FF5A3C;font-size:.86rem;margin:.2rem 0 .7rem;min-height:1.3em}
+
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:3.2rem;border:0;border-radius:999px;
+  background:var(--accent);color:var(--canvas);cursor:pointer;text-decoration:none;text-align:center;
+  font:700 .98rem/1.2 var(--body);padding:.9rem 1.5rem;-webkit-tap-highlight-color:transparent;
+  transition:transform .15s var(--ease),background .2s var(--ease)}
+.btn:hover{background:var(--accent-2)}
+.btn:active{transform:scale(.97)}
+.btn--fantasma{background:none;border:1px solid var(--line-strong);color:var(--ink);font-weight:500}
+.btn--fantasma:hover{background:var(--panel-2);border-color:var(--accent);color:var(--accent)}
+.acoes{display:grid;gap:.6rem;margin-top:1.4rem}
+.link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;color:var(--accent);
+  font-weight:500;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;
+  transition:color .2s var(--ease)}
+.link:hover{color:var(--accent-2);text-decoration-thickness:2px}
+.link:active{opacity:.75}
+.outra-aba{display:flex;justify-content:flex-start;font-size:.92rem;margin:.35rem 0 0}
+.outra-aba + .outra-aba{margin-top:0}
+
+/* fim da página */
+.outro{display:inline-flex;align-items:center;gap:.6rem;margin-top:2.6rem;min-height:44px;
+  font:500 .68rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);text-decoration:none;
+  border:1px solid var(--line);border-radius:999px;padding:.6rem 1rem;
+  transition:color .2s var(--ease),border-color .2s var(--ease),transform .15s var(--ease)}
+.outro:hover{color:var(--accent);border-color:var(--line-strong)}
+.outro:active{transform:scale(.97)}
+.outro span{transition:transform .2s var(--ease)}
+.outro:hover span{transform:translateX(3px)}
+.pe{margin-top:2.4rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.74rem;line-height:1.6;color:var(--ink-2)}
+.pe a{color:var(--ink-2)}
+.pe a:hover{color:var(--accent)}
+
+@media (max-width:359px){
+  :root{--gutter:.9rem}
+  .btn{padding:.9rem 1.1rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .status[data-estado="aberto"] i{animation:none}
+  .op,.op .val::after,.btn,.outro,.outro span,.volta,.link,.fld input{transition:none}
+  .op:active,.btn:active,.outro:active,.volta:active{transform:none}
+}
+</style>
+</head>
+<body>
+
+<main class="app">
+  <header class="top">
+    <a class="marca" href="/" aria-label="Voltar ao site do Santo Strike">
+      <img src="/assets/logo-menu.webp" alt="Santo Strike Boliche e Gastronomia" width="280" height="224">
+      <span>Reserva</span>
+    </a>
+    <a class="volta" href="/">Ver o site</a>
+  </header>
+
+  <div class="cab">
+    <h1>Reserva para hoje</h1>
+    <p class="data" id="data"></p>
+    <p class="chip" id="rodizio" hidden></p>
+  </div>
+
+  <noscript>
+    <p class="linha">Para reservar para hoje, fale com a equipe pelo
+      <a class="link" href="https://wa.me/5521988799699">WhatsApp</a>.</p>
+  </noscript>
+
+  <!-- bloco de estado: muda sozinho quando a reserva abre ou encerra -->
+  <div class="estado" id="estado" aria-live="polite" hidden>
+    <p class="status" id="status"><i aria-hidden="true"></i><span id="statusNome"></span></p>
+    <p class="linha" id="linha"></p>
+    <p class="linha-sub" id="linhaSub" hidden></p>
+  </div>
+
+  <!-- reserva aberta: até o limite pelo TagMe, acima dele pelo WhatsApp -->
+  <section id="vAberto" aria-labelledby="pergPessoas" hidden>
+    <h2 id="pergPessoas">Quantas pessoas vão?</h2>
+    <div class="ops">
+      <button type="button" class="op" id="opAte" aria-expanded="false" aria-controls="pAte">
+        <b id="opAteNome">Até 20 pessoas</b><em>Você faz a reserva aqui mesmo, em poucos passos.</em><span class="val">Online</span>
+      </button>
+      <button type="button" class="op" id="opMais" aria-expanded="false" aria-controls="pMais">
+        <b id="opMaisNome">Mais de 20 pessoas</b><em>A equipe faz a reserva com você</em><span class="val">WhatsApp</span>
+      </button>
+    </div>
+
+    <div class="painel" id="pAte" hidden>
+      <div class="alerta" id="avisoTeste" role="note" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.5 20h19L12 3.5Z"/><path d="M12 10v4.5"/><path d="M12 17.4v.1"/></svg>
+        <p><b>Teste:</b> este é o sistema de reservas de verdade da casa. Escolha o ambiente <b>Teste</b>.
+          Não reserve no Rodízio Tradicional nem no Fusion.</p>
+      </div>
+      <p>A reserva é feita pelo TagMe, o sistema de reservas da casa. Depois de reservar, ele envia a confirmação por e-mail.</p>
+      <p class="dica" id="dicaTagme">No TagMe, escolha o rodízio e o horário e preencha seus dados.</p>
+      <div class="tagme" id="tagme"><p class="tagme__espera">Carregando a reserva…</p></div>
+      <p class="outra-aba"><a class="link" id="linkTagme" href="https://usetag.me/santostrike" target="_blank" rel="noopener">Não carregou? Abrir a reserva em outra aba</a></p>
+      <p class="outra-aba"><a class="link" id="zapSemHorario" href="https://wa.me/5521988799699" target="_blank" rel="noopener">Não encontrou horário? Fale com a equipe no WhatsApp.</a></p>
+    </div>
+
+    <div class="painel" id="pMais" hidden>
+      <p id="maisTexto">Reserva acima de 20 pessoas é feita com a equipe, pelo WhatsApp.</p>
+      <label class="fld"><span>Quantas pessoas? <small>(opcional)</small></span>
+        <input id="qtd" type="number" inputmode="numeric" min="21" step="1" placeholder="Ex.: 30" aria-describedby="qtdErro"></label>
+      <p class="erro" id="qtdErro" aria-live="polite"></p>
+      <a class="btn" id="zapMais" href="https://wa.me/5521988799699" target="_blank" rel="noopener">Chamar a equipe no WhatsApp</a>
+    </div>
+  </section>
+
+  <!-- antes, encerrado e fechado -->
+  <section id="vFora" aria-label="Outras formas de reservar" hidden>
+    <!-- encerrado: WhatsApp primeiro e outro dia como segunda opção.
+         antes e fechado: outro dia primeiro (no antes, o WhatsApp vira link) -->
+    <div class="acoes">
+      <a class="btn" id="zapForaBtn" href="https://wa.me/5521988799699" target="_blank" rel="noopener" hidden>Falar com a equipe no WhatsApp</a>
+      <a class="btn" id="outroBtn" href="/reserva/">Reservar para outro dia</a>
+      <a class="link" id="zapFora" href="https://wa.me/5521988799699" target="_blank" rel="noopener">Falar com a equipe no WhatsApp</a>
+    </div>
+  </section>
+
+  <!-- com a reserva fechada o botão grande acima já é este link: aí este some, para não repetir -->
+  <a class="outro" id="outroDia" href="/reserva/">Reservar para outro dia <span aria-hidden="true">&#8594;</span></a>
+
+  <footer class="pe">Santo Strike Boliche e Gastronomia · Rua Beira Linha, 84, Jardim Glória, Duque de Caxias, RJ,
+    CEP 25045-366 · WhatsApp (21) 98879-9699 · <a href="/politica-de-privacidade/">Política de privacidade</a> ·
+    <a href="/termos/">Termos de uso</a></footer>
+</main>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var H = window.SantoHoje;
+  var estadoEl = $('estado');
+  estadoEl.hidden = false;
+
+  /* sem o hoje.js não dá para saber o horário: manda para o WhatsApp */
+  if (!H) {
+    $('statusNome').textContent = 'Indisponível';
+    $('linha').textContent = 'Não foi possível carregar o horário da reserva para hoje.';
+    $('vFora').hidden = false;
+    $('outroDia').hidden = true;
+    return;
+  }
+  var C = H.CONFIG;
+
+  /* ?onde=tradicional ou ?onde=fusion: só para citar o rodízio */
+  var RODIZIOS = { tradicional:'Rodízio Tradicional', fusion:'Rodízio Fusion' };
+  function daUrl(nome){
+    var q = location.search.replace(/^\?/, '').split('&');
+    for (var i = 0; i < q.length; i++) {
+      var kv = q[i].split('=');
+      try { if (decodeURIComponent(kv[0]) === nome) return decodeURIComponent((kv[1] || '').replace(/\+/g, ' ')); } catch (e) {}
+    }
+    return '';
+  }
+  var rodizio = RODIZIOS[daUrl('onde').toLowerCase()] || '';
+  if (rodizio) { $('rodizio').textContent = rodizio; $('rodizio').hidden = false; }
+
+  var DIAS = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+  var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  /* "quarta-feira, 4 de novembro", sempre no fuso de São Paulo (vem do hoje.js) */
+  function dataExtenso(a){
+    return DIAS[a.dia] + ', ' + (+a.data.slice(8, 10)) + ' de ' + MESES[+a.data.slice(5, 7) - 1];
+  }
+
+  /* '15:30' vira '15h30' e '18:00' vira '18h' (igual ao hoje.js) */
+  function fmtHora(h){ var p = String(h).split(':'); return (+p[0]) + 'h' + (p[1] === '00' ? '' : p[1]); }
+
+  var NOMES = { aberto:'Reservas abertas', antes:'Ainda não abriu', encerrado:'Encerradas por hoje', fechado:'Casa fechada hoje' };
+  var minimo = (+C.limite || 20) + 1;
+
+  /* textos com o limite do CONFIG */
+  $('opAteNome').textContent = 'Até ' + C.limite + ' pessoas';
+  $('opMaisNome').textContent = 'Mais de ' + C.limite + ' pessoas';
+  $('maisTexto').textContent = 'Reserva acima de ' + C.limite + ' pessoas é feita com a equipe, pelo WhatsApp.';
+  $('qtd').min = minimo;
+  $('qtd').placeholder = 'Ex.: ' + Math.max(30, minimo);
+  $('linkTagme').href = C.link;
+  $('avisoTeste').hidden = !C.teste;
+  /* no site de teste a reserva é só no ambiente Teste do TagMe */
+  $('dicaTagme').textContent = C.teste ? 'No TagMe, escolha o ambiente Teste e o horário e preencha seus dados.'
+                                       : 'No TagMe, escolha o rodízio e o horário e preencha seus dados.';
+
+  /* ---------- WhatsApp ---------- */
+  var hoje = '';
+  function pessoasTexto(){
+    var v = $('qtd').value.trim(), erro = '';
+    var n = Number(v);
+    var valido = v !== '' && Math.floor(n) === n && n >= minimo && n <= 999;
+    if (v !== '' && !valido) {
+      erro = n > 0 && n < minimo ? 'Para até ' + C.limite + ' pessoas, escolha a reserva online acima.'
+                                 : 'Confira o número de pessoas.';
+    }
+    $('qtdErro').textContent = erro;
+    if (erro) $('qtd').setAttribute('aria-invalid', 'true'); else $('qtd').removeAttribute('aria-invalid');
+    return valido ? String(n) : 'mais de ' + C.limite;
+  }
+  function atualizaZaps(){
+    /* uma informação por linha, para a equipe lançar no TagMe sem reler tudo.
+       Sem horário: o rodízio tem horário único. */
+    $('zapMais').href = H.zap([
+      'Olá! Quero reservar para hoje.',
+      'Rodízio: ' + (rodizio || 'a combinar'),
+      'Data: ' + hoje,
+      'Pessoas: ' + pessoasTexto(),
+      'Nome: '
+    ].join('\n'));
+    var fora = H.zap('Olá! Quero falar sobre uma reserva ' + (rodizio ? 'no ' + rodizio + ' ' : '') +
+      'para hoje, ' + hoje + '.');
+    $('zapFora').href = fora;
+    $('zapForaBtn').href = fora;
+    $('zapSemHorario').href = H.zap('Olá! Queria reservar para hoje, mas não encontrei horário na reserva online.');
+  }
+  $('qtd').addEventListener('input', atualizaZaps);
+
+  /* ---------- TagMe: só carrega quando a pessoa escolhe "Até 20 pessoas" ---------- */
+  var iframe = null;
+  function abrirTagme(){
+    if (iframe) return;
+    var caixa = $('tagme');
+    caixa.classList.remove('pronto');
+    iframe = document.createElement('iframe');
+    iframe.title = 'Reserva online do Santo Strike pelo TagMe';
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('width', '100%');
+    iframe.setAttribute('height', '720');
+    iframe.addEventListener('load', function(){ caixa.classList.add('pronto'); });
+    iframe.src = C.widget;
+    caixa.appendChild(iframe);
+  }
+  function fecharTagme(){
+    if (!iframe) return;
+    iframe.parentNode.removeChild(iframe);
+    iframe = null;
+    $('tagme').classList.remove('pronto');
+  }
+
+  var REDUZ = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function mostra(painel){
+    var ate = painel === 'ate', mais = painel === 'mais';
+    $('opAte').setAttribute('aria-expanded', String(ate));
+    $('opMais').setAttribute('aria-expanded', String(mais));
+    $('pAte').hidden = !ate;
+    $('pMais').hidden = !mais;
+    if (ate) abrirTagme();
+    var alvo = ate ? $('pAte') : mais ? $('pMais') : null;
+    /* no celular o painel nasce abaixo da dobra: rola até ele */
+    if (alvo && alvo.getBoundingClientRect().top > window.innerHeight * 0.55) {
+      try { alvo.scrollIntoView({ behavior: REDUZ ? 'auto' : 'smooth', block: 'start' }); }
+      catch (e) { alvo.scrollIntoView(true); }
+    }
+  }
+  $('opAte').addEventListener('click', function(){ mostra('ate'); });
+  $('opMais').addEventListener('click', function(){ mostra('mais'); });
+
+  /* ---------- estado ---------- */
+  function render(){
+    var e = H.estado(), a = H.agora();
+    hoje = dataExtenso(a);
+    $('data').textContent = hoje;
+    $('status').setAttribute('data-estado', e);
+    $('statusNome').textContent = NOMES[e];
+    var sub = '';
+
+    if (e === 'aberto') {
+      $('linha').textContent = 'Você pode fazer a reserva de hoje até as ' + fmtHora(C.fecha) + ', para até ' + C.limite + ' pessoas.';
+    } else if (iframe && e === 'encerrado') {
+      /* a pessoa pode estar no meio da reserva: o TagMe fica, só o texto muda */
+      $('linha').textContent = H.texto() + ' Se você já estava reservando, pode terminar. Para uma nova reserva, fale com a equipe.';
+    } else {
+      $('linha').textContent = H.texto();
+      if (e === 'antes') sub = 'Se deixar esta página aberta, ela muda sozinha às ' + fmtHora(C.abre) + '.';
+      if (e === 'encerrado') sub = 'Quer vir hoje mesmo assim? Fale com a equipe no WhatsApp. Ou reserve para outro dia.';
+      if (e === 'fechado') sub = 'A casa fecha às segundas e no 3º domingo do mês.';
+      fecharTagme();
+      mostra(null);
+    }
+    var comTagme = e === 'aberto' || (iframe && e === 'encerrado');
+    $('vAberto').hidden = !comTagme;
+    $('vFora').hidden = comTagme;
+    $('outroDia').hidden = !comTagme;
+    /* encerrado: WhatsApp é o botão principal; antes: WhatsApp é link; fechado: sem WhatsApp */
+    $('zapForaBtn').hidden = e !== 'encerrado';
+    $('outroBtn').classList.toggle('btn--fantasma', e === 'encerrado');
+    $('zapFora').hidden = e !== 'antes';
+    $('linhaSub').textContent = sub;
+    $('linhaSub').hidden = !sub;
+    atualizaZaps();
+  }
+
+  render();
+  H.aoMudar(render);
+})();
+</script>
+<script src="/assets/teste.js" defer></script>
+</body>
+</html>
