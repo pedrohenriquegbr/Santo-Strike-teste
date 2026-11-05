@@ -203,10 +203,10 @@ h2{font:400 1.3rem/1.2 var(--display);margin:1.9rem 0 .8rem}
     <h2 id="pergPessoas">Quantas pessoas vão?</h2>
     <div class="ops">
       <button type="button" class="op" id="opAte" aria-expanded="false" aria-controls="pAte">
-        <b id="opAteNome">Até 20 pessoas</b><em>Você faz a reserva aqui mesmo, em poucos passos.</em><span class="val">Online</span>
+        <b id="opAteNome">Até 21 pessoas</b><em>Você faz a reserva aqui mesmo, em poucos passos.</em><span class="val">Online</span>
       </button>
       <button type="button" class="op" id="opMais" aria-expanded="false" aria-controls="pMais">
-        <b id="opMaisNome">Mais de 20 pessoas</b><em>A equipe faz a reserva com você</em><span class="val">WhatsApp</span>
+        <b id="opMaisNome">Mais de 21 pessoas</b><em>A equipe faz a reserva com você</em><span class="val">WhatsApp</span>
       </button>
     </div>
 
@@ -224,7 +224,7 @@ h2{font:400 1.3rem/1.2 var(--display);margin:1.9rem 0 .8rem}
     </div>
 
     <div class="painel" id="pMais" hidden>
-      <p id="maisTexto">Reserva acima de 20 pessoas é feita com a equipe, pelo WhatsApp.</p>
+      <p id="maisTexto">Reserva acima de 21 pessoas é feita com a equipe, pelo WhatsApp.</p>
       <label class="fld"><span>Quantas pessoas? <small>(opcional)</small></span>
         <input id="qtd" type="number" inputmode="numeric" min="21" step="1" placeholder="Ex.: 30" aria-describedby="qtdErro"></label>
       <p class="erro" id="qtdErro" aria-live="polite"></p>
@@ -338,7 +338,7 @@ h2{font:400 1.3rem/1.2 var(--display);margin:1.9rem 0 .8rem}
   }
   $('qtd').addEventListener('input', atualizaZaps);
 
-  /* ---------- TagMe: só carrega quando a pessoa escolhe "Até 20 pessoas" ---------- */
+  /* ---------- TagMe: só carrega quando a pessoa escolhe "Até 21 pessoas" ---------- */
   var iframe = null;
   function abrirTagme(){
     if (iframe) return;

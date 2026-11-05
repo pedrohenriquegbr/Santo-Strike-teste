@@ -5,8 +5,8 @@
    O que cada linha do CONFIG faz:
      teste     true no site de teste: mostra o selo, deixa simular a hora e o dia
                e põe "TESTE" no começo da mensagem do WhatsApp. No site oficial, false.
-     abre      hora em que a reserva para hoje abre, 'HH:MM' (provisório: 15:30).
-     fecha     hora em que ela encerra, 'HH:MM' (provisório: 18:00). Às 18:00 já está encerrada.
+     abre      hora em que a reserva para hoje abre, 'HH:MM' (09:00, definido pela casa em 04/11/2026).
+     fecha     hora em que ela encerra, 'HH:MM' (15:30). Às 15:30 já está encerrada.
      limite    máximo de pessoas pela reserva online. Acima disso, WhatsApp.
      tz        fuso usado para saber que dia e que hora são. Sempre o de São Paulo,
                nunca o do aparelho de quem abre o site.
@@ -25,9 +25,9 @@
 
   var CONFIG = {
     teste: true,          // site de teste: selo, hora simulada e prefixo TESTE no WhatsApp
-    abre: '15:30',        // provisório
-    fecha: '18:00',       // provisório
-    limite: 20,
+    abre: '09:00',        // a casa, 04/11/2026: a reserva do dia abre às 9h
+    fecha: '15:30',       // e encerra às 15h30
+    limite: 21,           // a casa, 04/11/2026: até 21 pessoas pela reserva online
     tz: 'America/Sao_Paulo',
     widget: 'https://reservation-widget.tagme.com.br/reservation/schedule/66392cc1bf16af005b855193/reservationWidget',
     link: 'https://usetag.me/santostrike',
