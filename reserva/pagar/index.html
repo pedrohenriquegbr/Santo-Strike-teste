@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0B0705">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<title>Pagar o Pix da reserva | Santo Strike</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Prata&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<!-- data de hoje no fuso de São Paulo, WhatsApp da casa e modo de teste: tudo vem daqui (sem defer, de propósito) -->
+<script src="/assets/hoje.js"></script>
+<style>
+/* Pagar o Pix da reserva feita no sistema de reservas da casa (fase 2).
+   Mesmo visual de /reserva/ e de /reserva/hoje/. Um bloco por vez, feita para
+   o celular. O pagamento em si (Pix na tela, espera, vencido) é desenhado por
+   /assets/pix.js, que também traz o CSS dos botões .pix-*. */
+:root{
+  --canvas:#0B0705; --panel:#150F0A; --panel-2:#1E150D;
+  --accent:#E3B23C; --accent-2:#F2C65A; --ember:#C2410C;
+  --ink:#F6F1E6; --ink-2:#B9AC98;
+  --line:rgba(227,178,60,.18); --line-strong:rgba(227,178,60,.42);
+  --display:'Prata',Georgia,serif; --body:'DM Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --gutter:1.1rem;
+  --ok:#8FCB7A;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--canvas);color:var(--ink);font:400 1rem/1.55 var(--body);
+  -webkit-font-smoothing:antialiased}
+/* 5,5rem no fim: o selo "SITE DE TESTE" fica fixo no canto de baixo e não pode cobrir o rodapé */
+.app{max-width:30rem;margin:0 auto;padding:0 var(--gutter) 5.5rem}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+img{max-width:100%}
+
+/* cabeçalho, igual ao da reserva */
+.top{display:flex;align-items:center;justify-content:space-between;gap:.8rem;padding:1.1rem 0 .9rem;
+  border-bottom:1px solid var(--line)}
+.marca{display:flex;align-items:center;gap:.75rem;color:var(--ink);text-decoration:none}
+.marca img{display:block;width:auto;height:46px;flex:none}
+.marca span{font:500 .62rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.volta{font:500 .66rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);
+  text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:.55rem .8rem;
+  transition:color .2s var(--ease),border-color .2s var(--ease)}
+.volta:hover{color:var(--accent);border-color:var(--line-strong)}
+.volta:active{transform:scale(.97)}
+
+/* título de cada estado */
+.cab{display:flex;align-items:center;gap:.75rem;padding:1.6rem 0 0}
+h1{font:400 1.75rem/1.15 var(--display);margin:0}
+h1:focus{outline:none}
+.selo{flex:none;display:grid;place-items:center;width:2.6rem;height:2.6rem;border-radius:50%;
+  border:1.5px solid var(--accent);color:var(--accent)}
+.selo svg{width:1.25rem;height:1.25rem}
+.selo--ok{border-color:var(--ok);color:var(--ok)}
+
+.apoio{margin:.8rem 0 0;font-size:1rem;line-height:1.55;color:var(--ink-2)}
+.apoio b{color:var(--ink);font-weight:700}
+.apoio .forte{color:var(--accent)}
+.dica{margin:.35rem 0 0;color:var(--ink-2);font-size:.88rem}
+/* N8: 12 px; estes rótulos nomeiam o campo que a pessoa preenche */
+.rot{display:block;font:500 .75rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-2);margin:0 0 .45rem;padding:0}
+
+/* formulário */
+form{margin:1.4rem 0 0}
+.fld{display:block;margin:0}
+.fld > span{display:block;font:500 .75rem/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-2);margin-bottom:.45rem}
+.fld input{width:100%;min-height:3rem;background:var(--panel);border:1px solid var(--line);border-radius:10px;color:var(--ink);
+  font:400 1rem/1.4 var(--body);padding:.8rem .9rem;transition:border-color .2s var(--ease)}
+.fld input:hover{border-color:var(--line-strong)}
+.fld input:focus{border-color:var(--accent);outline:none}
+.fld input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.fld [aria-invalid="true"]{border-color:var(--ember)}
+::placeholder{color:#A89C88;opacity:1}
+.erro{color:#FF5A3C;font-size:.86rem;margin:.3rem 0 0}
+.erro:empty{display:none}
+.campo{margin:0 0 1.15rem}
+fieldset.campo{border:0;padding:0;min-width:0}
+.quando__dia{margin:0;font-size:1.05rem;font-weight:500;color:var(--ink)}
+.quando__dia::first-letter{text-transform:uppercase}
+#outroDia{margin-top:.5rem}
+
+/* rodízio: as mesmas opções da reserva, lado a lado */
+.ops{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.op{position:relative;display:flex;align-items:center;justify-content:space-between;gap:.6rem;min-height:3.4rem;
+  border:1px solid var(--line);background:var(--panel);padding:.8rem 1rem;cursor:pointer;border-radius:12px;
+  -webkit-tap-highlight-color:transparent;
+  transition:border-color .2s var(--ease),background .2s var(--ease),transform .15s var(--ease)}
+.op input{position:absolute;opacity:0;pointer-events:none}
+.op b{font-weight:700;font-size:1.02rem}
+.op::after{content:"";flex:none;width:1.15rem;height:1.15rem;border-radius:50%;border:1.5px solid var(--line-strong);
+  transition:border-color .2s var(--ease)}
+.op:hover{border-color:var(--line-strong);background:var(--panel-2)}
+.op:active{transform:scale(.985)}
+.op:has(input:checked){border-color:var(--accent);background:var(--panel-2)}
+.op:has(input:checked)::after{border-color:var(--accent);background:radial-gradient(circle,var(--accent) 0 42%,transparent 47%)}
+.op:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+
+/* botões e links, iguais aos de /reserva/hoje/ */
+.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:3.25rem;border:1px solid transparent;border-radius:999px;
+  background:var(--accent);color:var(--canvas);cursor:pointer;text-decoration:none;text-align:center;
+  font:700 .98rem/1.2 var(--body);padding:.9rem 1.5rem;-webkit-tap-highlight-color:transparent;
+  transition:transform .15s var(--ease),background .2s var(--ease),border-color .2s var(--ease),color .2s var(--ease)}
+.btn:hover{background:var(--accent-2)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:999px}
+.btn[disabled]{opacity:.75;cursor:progress;pointer-events:none}
+.btn--fantasma{background:none;border-color:var(--line-strong);color:var(--ink);font-weight:500}
+.btn--fantasma:hover{background:var(--panel-2);border-color:var(--accent);color:var(--accent)}
+.btn--fantasma:focus-visible{outline-color:var(--accent)}
+.btn.pix-feito{background:var(--panel-2);border-color:var(--ok);color:var(--ok)}
+.acoes{display:grid;gap:.6rem;margin-top:1.4rem}
+.link{display:inline-flex;align-items:center;justify-content:flex-start;min-height:48px;padding:.35rem .1rem;margin:0;
+  background:none;border:0;color:var(--accent);font:500 .95rem/1.35 var(--body);text-align:left;cursor:pointer;
+  text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;
+  -webkit-tap-highlight-color:transparent;transition:color .2s var(--ease)}
+.link:hover{color:var(--accent-2);text-decoration-thickness:2px}
+.link:active{opacity:.75}
+.links{display:grid;justify-items:start;margin-top:.5rem}
+
+/* "É esta a sua reserva?": as linhas pontilhadas do resumo da reserva */
+.linhas{border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:hidden;margin-top:1.2rem}
+.linhas .l{display:flex;align-items:baseline;gap:.6rem;padding:.7rem 1rem;border-bottom:1px solid var(--line);
+  font:400 .92rem/1.5 var(--mono);font-variant-numeric:tabular-nums}
+.linhas .l:last-child{border-bottom:0}
+.linhas .l span:first-child{color:var(--ink-2)}
+.linhas .l span:last-child{text-align:right}
+.linhas .l i{flex:1;min-width:.6rem;border-bottom:1px dotted var(--ink-2);opacity:.35;transform:translateY(-.3em)}
+
+/* cartão final: cabe inteiro numa tela de 375 x 667, para sair no print */
+.cartao{position:relative;margin-top:.8rem;padding:.9rem 1.1rem .9rem;border:1.5px solid var(--accent);border-radius:16px;
+  background:linear-gradient(180deg,rgba(227,178,60,.11),rgba(227,178,60,.02) 42%),var(--panel)}
+.cartao .pix-teste{margin:0 0 .7rem;padding:.6rem .75rem;font-size:.8rem;line-height:1.4}
+.cartao__cab{display:flex;align-items:center;gap:.7rem;margin:0 0 .7rem}
+.cartao__cab h1{font-size:1.5rem}
+.cartao__cab .selo{width:2.3rem;height:2.3rem}
+.cartao__rot{font:500 .75rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:0 0 .4rem}
+.cartao__codigo{margin:0 0 .7rem;font:500 2.4rem/1 var(--mono);letter-spacing:.14em;color:var(--accent);
+  font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.cartao__dados{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem .8rem;margin:0;padding:.65rem 0;
+  border-top:1px dashed var(--line-strong);border-bottom:1px dashed var(--line-strong)}
+.cartao__dados div{grid-column:span 2;min-width:0}
+.cartao__dados .c6{grid-column:1 / -1}
+.cartao__dados .c4{grid-column:span 4}
+.cartao__dados dt{font:500 .75rem/1.2 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin:0 0 .2rem}
+.cartao__dados dd{margin:0;font:500 .95rem/1.3 var(--body);color:var(--ink);overflow-wrap:anywhere}
+.cartao__dados dd::first-letter{text-transform:uppercase}
+.cartao__dados .num{font-family:var(--mono);font-size:.86rem;font-variant-numeric:tabular-nums}
+.cartao__guarde{margin:.75rem 0 0;font-size:.92rem;line-height:1.45;color:var(--ink)}
+.cartao__guarde b{color:var(--accent)}
+.cartao__regra{margin:.45rem 0 0;font-size:.875rem;line-height:1.4;color:var(--ink-2)}
+
+/* pagamento recebido, ainda sem a confirmação da reserva */
+.recebido{margin-top:1.1rem;padding:1rem 1.1rem;border:1.5px solid var(--accent);border-radius:16px;background:rgba(227,178,60,.07)}
+.recebido__numero{margin:0;font:500 1.55rem/1.2 var(--mono);letter-spacing:.04em;color:var(--accent);overflow-wrap:anywhere;
+  font-variant-numeric:tabular-nums}
+.recebido .apoio{margin:0 0 .9rem;color:var(--ink)}
+.recebido .apoio b{color:var(--accent)}
+#vRecebido .pix-teste{margin-top:1.1rem}
+
+.pe{margin-top:2.6rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.74rem;line-height:1.6;color:var(--ink-2)}
+.pe a{color:var(--ink-2)}
+.pe a:hover{color:var(--accent)}
+
+@media (max-width:359px){
+  :root{--gutter:.9rem}
+  .btn{padding:.9rem 1.1rem}
+  .cartao__codigo{font-size:2.1rem}
+}
+@media (prefers-reduced-motion:reduce){
+  .op,.op::after,.btn,.volta,.link,.fld input{transition:none}
+  .op:active,.btn:active,.volta:active{transform:none}
+}
+</style>
+</head>
+<body>
+
+<main class="app">
+  <header class="top">
+    <a class="marca" href="/" aria-label="Voltar ao site do Santo Strike">
+      <img src="/assets/logo-menu.webp" alt="Santo Strike Boliche e Gastronomia" width="280" height="224">
+      <span>Reserva</span>
+    </a>
+    <a class="volta" href="/">Ver o site</a>
+  </header>
+
+  <div class="cab" id="cab">
+    <span class="selo" id="seloCab" aria-hidden="true" hidden></span>
+    <h1 id="titulo" tabindex="-1">Pague para garantir a vaga</h1>
+  </div>
+
+  <noscript>
+    <p class="apoio">Para pagar o antecipado da sua reserva, fale com a equipe pelo
+      <a class="link" href="https://wa.me/5521988799699">WhatsApp</a>.</p>
+  </noscript>
+
+  <!-- 1. pedir os dados -->
+  <section id="vDados" aria-labelledby="titulo" hidden>
+    <p class="apoio">Você acabou de reservar? Agora é só pagar o antecipado no Pix. Informe o WhatsApp que você usou na reserva e a gente encontra ela.</p>
+    <form id="form" novalidate>
+      <div class="campo">
+        <label class="fld" for="fone"><span>WhatsApp</span>
+          <input id="fone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="21 99999-9999" aria-describedby="foneDica foneErro"></label>
+        <p class="dica" id="foneDica">Com DDD, ex.: 21 99999-9999</p>
+        <p class="erro" id="foneErro" aria-live="polite"></p>
+      </div>
+
+      <div class="campo">
+        <span class="rot" id="quandoRot">Para quando</span>
+        <p class="quando__dia" id="quandoTxt"></p>
+        <button type="button" class="link" id="outroDiaBtn" aria-expanded="false" aria-controls="outroDia">A reserva é para outro dia?</button>
+        <div id="outroDia" hidden>
+          <label class="fld" for="dia"><span>Dia da reserva</span>
+            <input id="dia" type="date" aria-describedby="diaErro"></label>
+          <p class="erro" id="diaErro" aria-live="polite"></p>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label class="fld" for="pessoas"><span>Quantas pessoas</span>
+          <input id="pessoas" type="number" inputmode="numeric" min="1" max="500" step="1" placeholder="Ex.: 6" aria-describedby="pessoasErro"></label>
+        <p class="erro" id="pessoasErro" aria-live="polite"></p>
+      </div>
+
+      <fieldset class="campo" aria-describedby="pisoErro">
+        <legend class="rot">Rodízio</legend>
+        <div class="ops" id="pisos">
+          <label class="op"><input type="radio" name="piso" value="1"><b>Tradicional</b></label>
+          <label class="op"><input type="radio" name="piso" value="2"><b>Fusion</b></label>
+        </div>
+        <p class="erro" id="pisoErro" aria-live="polite"></p>
+      </fieldset>
+
+      <button type="submit" class="btn" id="procurar">Procurar minha reserva</button>
+      <p class="dica" id="procurandoTxt" hidden>Isso leva poucos segundos.</p>
+    </form>
+    <div class="links"><a class="link" id="aindaNao" href="/reserva/hoje/">Ainda não reservei</a></div>
+  </section>
+
+  <!-- 2. é esta a sua reserva? -->
+  <section id="vAchou" aria-labelledby="titulo" hidden>
+    <div class="linhas" id="achouLinhas"></div>
+    <p class="apoio" id="achouTxt"></p>
+    <div class="acoes"><button type="button" class="btn" id="pagar"><span data-rot></span></button></div>
+    <div class="links"><button type="button" class="link" id="naoE">Não é esta</button></div>
+  </section>
+
+  <!-- 3. o Pix (desenhado pelo pix.js) -->
+  <section id="vPix" aria-labelledby="titulo" hidden>
+    <div id="pixArea" style="margin-top:1.2rem"></div>
+    <p class="apoio" id="outraAviso" role="note" hidden></p>
+    <div class="links"><button type="button" class="link" id="outraNoPix">Procurar outra reserva</button></div>
+  </section>
+
+  <!-- 4. reserva confirmada: o cartão para guardar -->
+  <section id="vCartao" aria-labelledby="tituloCartao" hidden>
+    <article class="cartao" id="cartao">
+      <div id="cartaoTeste"></div>
+      <div class="cartao__cab">
+        <span class="selo selo--ok" id="cartaoSelo" aria-hidden="true"></span>
+        <h1 id="tituloCartao" tabindex="-1">Reserva confirmada</h1>
+      </div>
+      <p class="cartao__rot" aria-hidden="true">Código da reserva</p>
+      <p class="cartao__codigo" id="cCodigo" role="img" aria-label="Código da reserva"></p>
+      <dl class="cartao__dados">
+        <div class="c6"><dt>Dia</dt><dd id="cDia"></dd></div>
+        <div><dt>Horário</dt><dd id="cHora"></dd></div>
+        <div><dt>Pessoas</dt><dd id="cPessoas"></dd></div>
+        <div><dt>Rodízio</dt><dd id="cRodizio"></dd></div>
+        <div><dt>Pago no Pix</dt><dd id="cValor"></dd></div>
+        <div class="c4"><dt>Número do pagamento</dt><dd class="num" id="cNumero"></dd></div>
+      </dl>
+      <p class="cartao__guarde"><b>Guarde este código.</b> O resto é pago no dia, no caixa, só por quem comparecer.</p>
+      <p class="cartao__regra">Chegada de todos: até 19h30 de terça a sexta; até 19h aos sábados, domingos e feriados. Após a tolerância, a reserva perde a garantia e o grupo fica sujeito à disponibilidade.</p>
+    </article>
+    <div class="acoes">
+      <button type="button" class="btn" id="copiarDados"><span data-rot>Copiar dados da reserva</span></button>
+      <a class="btn btn--fantasma" id="meuZap" href="#" target="_blank" rel="noopener">Mandar para o meu WhatsApp</a>
+    </div>
+    <p class="dica" style="margin-top:.9rem">Dica: tire um print desta tela.</p>
+    <p class="dica" id="cartaoEmail">O sistema de reservas da casa também envia a confirmação por e-mail.</p>
+    <div class="links"><button type="button" class="link" id="outraNoCartao">Pagar outra reserva</button></div>
+  </section>
+
+  <!-- 5. Pix aprovado, mas a confirmação da reserva não saiu sozinha -->
+  <section id="vRecebido" aria-labelledby="titulo" hidden>
+    <div id="recebidoTeste"></div>
+    <div class="recebido">
+      <p class="apoio" id="recebidoTxt"></p>
+      <p class="cartao__rot">Número do pagamento</p>
+      <p class="recebido__numero" id="rNumero"></p>
+    </div>
+    <div class="acoes">
+      <a class="btn" id="avisarEquipe" href="#" target="_blank" rel="noopener">Avisar a equipe no WhatsApp</a>
+      <button type="button" class="btn btn--fantasma" id="copiarNumero"><span data-rot>Copiar número do pagamento</span></button>
+    </div>
+    <div class="links"><button type="button" class="link" id="outraNoRecebido">Pagar outra reserva</button></div>
+  </section>
+
+  <!-- 6. já confirmada, não achou, várias, fora do ar, valor diferente -->
+  <section id="vAviso" aria-labelledby="titulo" hidden>
+    <p class="apoio" id="avisoTxt"></p>
+    <div class="recebido" id="avisoNum" hidden>
+      <p class="cartao__rot">Número do pagamento</p>
+      <p class="recebido__numero" id="avisoNumero"></p>
+    </div>
+    <div class="acoes" id="avisoAcoes"></div>
+    <div class="links" id="avisoLinks"></div>
+  </section>
+
+  <footer class="pe">Santo Strike Boliche e Gastronomia · Rua Beira Linha, 84, Jardim Glória, Duque de Caxias, RJ,
+    CEP 25045-366 · WhatsApp (21) 98879-9699 · <a href="/politica-de-privacidade/">Política de privacidade</a> ·
+    <a href="/termos/">Termos de uso</a></footer>
+</main>
+
+<script src="/assets/pix.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var H = window.SantoHoje, P = window.SantoPix;
+
+  /* sem o hoje.js ou o pix.js não dá para pagar aqui: a saída é o WhatsApp */
+  if (!H || !P) {
+    $('titulo').textContent = 'Pagamento no site indisponível agora';
+    $('avisoTxt').textContent = 'Não conseguimos abrir o pagamento agora. Sua reserva continua valendo. Fale com a equipe: ela confirma e manda a chave Pix.';
+    $('avisoAcoes').innerHTML = '<a class="btn" href="https://wa.me/5521988799699" target="_blank" rel="noopener">Falar com a equipe no WhatsApp</a>';
+    $('vAviso').hidden = false;
+    return;
+  }
+  var C = H.CONFIG;
+
+  /* ---------- datas e textos ---------- */
+  var RODIZIOS = { 1:'Tradicional', 2:'Fusion' };
+  var ONDE = { tradicional:1, fusion:2 };
+  var DIAS = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+  var DIAS_CURTOS = ['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  var dois = function(n){ return (n < 10 ? '0' : '') + n; };
+  function daUrl(nome){
+    var q = location.search.replace(/^\?/, '').split('&');
+    for (var i = 0; i < q.length; i++) {
+      var kv = q[i].split('=');
+      try { if (decodeURIComponent(kv[0]) === nome) return decodeURIComponent((kv[1] || '').replace(/\+/g, ' ')); } catch (e) {}
+    }
+    return '';
+  }
+  /* data que existe no calendário, 'AAAA-MM-DD' */
+  function diaValido(v){
+    if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+    var p = v.split('-'), t = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
+    return t.getUTCFullYear() === +p[0] && t.getUTCMonth() === +p[1] - 1 && t.getUTCDate() === +p[2];
+  }
+  function partes(iso){ var p = iso.split('-'); return { a:+p[0], m:+p[1], d:+p[2], w:new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay() }; }
+  function somaDias(iso, n){
+    var p = partes(iso), t = new Date(Date.UTC(p.a, p.m - 1, p.d + n));
+    return t.getUTCFullYear() + '-' + dois(t.getUTCMonth() + 1) + '-' + dois(t.getUTCDate());
+  }
+  /* "domingo, 15 de novembro" (tela) e "domingo, 15/11" (mensagem) */
+  function diaExtenso(iso){ var p = partes(iso); return DIAS[p.w] + ', ' + p.d + ' de ' + MESES[p.m - 1]; }
+  function diaCurto(iso){ var p = partes(iso); return DIAS_CURTOS[p.w] + ', ' + dois(p.d) + '/' + dois(p.m); }
+  function ddmm(iso){ var p = partes(iso); return dois(p.d) + '/' + dois(p.m); }
+  /* '19:00' vira '19h' e '18:30' vira '18h30' */
+  function fmtHora(h){ if (!h) return ''; var p = String(h).split(':'); return (+p[0]) + 'h' + (!p[1] || p[1] === '00' ? '' : p[1]); }
+  function pessoasTxt(n){ return n + (Number(n) > 1 ? ' pessoas' : ' pessoa'); }
+  function foneBonito(n){
+    n = String(n || '');
+    if (n.length === 11) return '(' + n.slice(0, 2) + ') ' + n.slice(2, 7) + '-' + n.slice(7);
+    if (n.length === 10) return '(' + n.slice(0, 2) + ') ' + n.slice(2, 6) + '-' + n.slice(6);
+    return n;
+  }
+  function esc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function rot(b){ return b.querySelector('[data-rot]') || b; }
+
+  /* No site de teste o hoje.js lê ?dia= como "simular a data de hoje". Nesta
+     página ?dia= é o dia da reserva: desfaz a simulação que veio da URL. */
+  var diaUrl = daUrl('dia');
+  if (C.teste && diaValido(diaUrl) && H.simulando && H.simulando().dia === diaUrl) H.simularDia(null);
+
+  var CHAVE = 'santoPixTagme';      /* só neste aparelho; some quando o dia da reserva passa */
+  var hoje = H.agora().data;
+  var limiteDia = somaDias(hoje, 60);
+  var d = { fone:'', dia:hoje, pessoas:null, piso:null };    /* o que a pessoa informou */
+  var achada = null;                /* resposta de /api/tagme-reserva/ */
+  var reg = null;                   /* o que fica guardado: Pix, reserva e resultado */
+  var ctrl = null, tentativa = null, gerando = false, refez = false, timerRev = null, revs = 0;
+
+  function paraQuando(dia){ return dia === hoje ? 'hoje' : 'o dia ' + ddmm(dia); }
+  function deQuando(dia){ return dia === hoje ? 'de hoje' : 'do dia ' + ddmm(dia); }
+  /* de onde saem os dados das mensagens: do Pix guardado ou do formulário */
+  function ctx(){
+    if (reg) return { fone:reg.fone, dia:reg.dia, pessoas:reg.pessoas, piso:reg.piso, hora:reg.hora };
+    var r = achada && achada.reserva;
+    return { fone:d.fone, dia:(r && diaValido(r.dia)) ? r.dia : d.dia, pessoas:d.pessoas, piso:d.piso, hora:r ? r.hora : null };
+  }
+
+  /* ---------- mensagens para a equipe (uma informação por linha) ---------- */
+  function abreC(){ return 'Olá! Fiz a reserva para ' + paraQuando(ctx().dia) + ' e quero pagar o antecipado.'; }
+  function zapEquipe(abre, fecha, extras){
+    var c = ctx(), L = [abre].concat(extras || []);
+    L.push('Rodízio: ' + (RODIZIOS[c.piso] || 'a combinar'), 'Data: ' + diaCurto(c.dia), 'Pessoas: ' + (c.pessoas || 'a combinar'),
+      'WhatsApp da reserva: ' + foneBonito(c.fone));
+    if (fecha) L.push(fecha);
+    return H.zap(L.join('\n'));
+  }
+  function zapDoPix(motivo){
+    var c = ctx();
+    if (motivo === 'devolvido') return zapEquipe('Olá! O Pix da minha reserva ' + deQuando(c.dia) + ' foi devolvido e quero ajuda para pagar.');
+    return zapEquipe('Olá! Paguei o Pix da reserva ' + deQuando(c.dia) + ' pelo site e a tela não atualizou.', 'Envio a foto do comprovante aqui.',
+      ['Valor: ' + P.moeda(reg ? reg.valor : 0)].concat(reg && reg.criadoEm ? ['Pix gerado às ' + P.horaDe(new Date(reg.criadoEm).toISOString())] : []));
+  }
+  function zapManual(){
+    var x = reg.resultado;
+    return H.zap([
+      'Olá! Paguei o Pix da reserva ' + deQuando(reg.dia) + ' pelo site e preciso que a equipe confirme.',
+      'Número do pagamento: ' + x.numero + (x.modo === 'simulado' ? ' (SIMULADO, nenhum Pix real)' : ''),
+      'Valor: ' + P.moeda(x.valor),
+      'Rodízio: ' + RODIZIOS[reg.piso],
+      'Dia e pessoas: ' + diaCurto(reg.dia) + ', ' + pessoasTxt(reg.pessoas),
+      'WhatsApp da reserva: ' + foneBonito(reg.fone),
+      'Não vou pagar de novo.'
+    ].join('\n'));
+  }
+  /* o que a pessoa guarda: "Copiar dados da reserva" e "Mandar para o meu WhatsApp" */
+  function dadosTexto(titulo){
+    var x = reg.resultado, L = [titulo, 'Código: ' + x.codigo, 'Dia: ' + diaCurto(x.dia)];
+    if (x.hora) L.push('Horário: ' + fmtHora(x.hora));
+    L.push('Pessoas: ' + x.pessoas, 'Rodízio: ' + RODIZIOS[reg.piso], 'Pago no Pix: ' + P.moeda(x.valor), 'Número do pagamento: ' + x.numero);
+    if (x.simulado) L.push('Reserva de teste. Não vale na casa.');
+    return L.join('\n');
+  }
+
+  /* ---------- troca de tela: um bloco por vez ---------- */
+  var SECOES = ['vDados','vAchou','vPix','vCartao','vRecebido','vAviso'];
+  function tela(secao, titulo, op){
+    op = op || {};
+    SECOES.forEach(function(s){ $(s).hidden = s !== secao; });
+    $('cab').hidden = secao === 'vCartao';
+    var selo = $('seloCab');
+    selo.hidden = !op.selo;
+    if (op.selo) { selo.className = 'selo' + (op.selo === 'ok' ? ' selo--ok' : ''); selo.innerHTML = P.ICONES[op.selo]; }
+    if (titulo) $('titulo').textContent = titulo;
+    window.scrollTo(0, 0);
+    if (!op.semFoco) P.focar(secao === 'vCartao' ? $('tituloCartao') : $('titulo'));
+    if (op.alerta) P.anunciar(op.alerta, true);
+    else if (op.educado) P.anunciar(op.educado);
+  }
+  function pararPix(){
+    if (ctrl) { ctrl.destruir(); ctrl = null; }
+    $('pixArea').innerHTML = '';
+  }
+  function salvar(){ P.guardar(CHAVE, reg); }
+  function esquecer(){ P.apagar(CHAVE); reg = null; clearInterval(timerRev); }
+
+  /* ---------- 1. pedir os dados ---------- */
+  function pintarQuando(){
+    $('quandoTxt').textContent = (d.dia === hoje ? 'Hoje, ' : '') + diaExtenso(d.dia);
+  }
+  function erro(campo, msg){
+    $(campo + 'Erro').textContent = msg;
+    if (msg) $(campo).setAttribute('aria-invalid', 'true'); else $(campo).removeAttribute('aria-invalid');
+  }
+  function validar(){
+    var fone = $('fone').value.replace(/\D/g, '');
+    if (fone.length >= 12 && fone.indexOf('55') === 0) fone = fone.slice(2);
+    var okFone = fone.length === 10 || fone.length === 11;
+    var txtN = $('pessoas').value.trim(), n = Number(txtN);
+    var okN = txtN !== '' && Math.floor(n) === n && n >= 1 && n <= 500;
+    var r = document.querySelector('#pisos input:checked'), okPiso = !!r;
+    var dia = d.dia, okDia = true;
+    if (!$('outroDia').hidden) { dia = $('dia').value; okDia = diaValido(dia) && dia >= hoje && dia <= limiteDia; }
+    erro('fone', okFone ? '' : 'Confira o WhatsApp: DDD e número, 11 dígitos.');
+    erro('dia', okDia ? '' : 'Escolha um dia entre hoje e ' + ddmm(limiteDia) + '.');
+    erro('pessoas', okN ? '' : 'Informe quantas pessoas estão na reserva.');
+    $('pisoErro').textContent = okPiso ? '' : 'Escolha o rodízio da reserva.';
+    if (!okFone) $('fone').focus();
+    else if (!okDia) $('dia').focus();
+    else if (!okN) $('pessoas').focus();
+    else if (!okPiso) document.querySelector('#pisos input').focus();
+    if (!(okFone && okDia && okN && okPiso)) return false;
+    d.fone = fone; d.dia = dia; d.pessoas = n; d.piso = +r.value;
+    pintarQuando();
+    return true;
+  }
+  function formulario(foco){
+    pararPix();
+    tela('vDados', 'Pague para garantir a vaga', { semFoco: foco === false || foco === 'fone' });
+    if (foco === 'fone') $('fone').focus();
+  }
+  function procurar(){
+    var b = $('procurar');
+    if (b.disabled) return;
+    b.disabled = true; b.textContent = 'Procurando...';
+    $('procurandoTxt').hidden = false;
+    P.anunciar('Procurando a sua reserva.');
+    P.procurarReserva({ fone:d.fone, dia:d.dia, pessoas:d.pessoas, piso:d.piso }).then(function(r){
+      b.disabled = false; b.textContent = 'Procurar minha reserva';
+      $('procurandoTxt').hidden = true;
+      tentativa = null; refez = false;
+      if (r.ok && r.achou && r.reserva) {
+        achada = r;
+        if (r.reserva.status === 'confirmada') aviso('ja_confirmada'); else mostrarAchou();
+      }
+      else if (r.ok && r.achou === false && r.motivo === 'nenhuma') aviso('nao_achou');
+      else if (r.ok && r.achou === false && r.motivo === 'varias') aviso('varias');
+      else aviso('fora_busca');
+    });
+  }
+
+  /* ---------- 2. é esta a sua reserva? (só dia, hora, pessoas e rodízio; nunca nome nem telefone) ---------- */
+  function linha(a, b){ return '<div class="l"><span>' + a + '</span><i></i><span>' + esc(b) + '</span></div>'; }
+  function mostrarAchou(){
+    var r = achada.reserva, c = ctx(), valor = P.moeda(achada.valor), n = achada.rodizios;
+    $('achouLinhas').innerHTML = linha('Dia', diaExtenso(c.dia)) + linha('Horário', fmtHora(r.hora) || 'a confirmar') +
+      linha('Pessoas', r.pessoas || d.pessoas) + linha('Rodízio', RODIZIOS[d.piso]);
+    var antecipado = n ? n + (n > 1 ? ' rodízios' : ' rodízio') : String(achada.descricao || '').replace(/^Antecipação de /, '');
+    $('achouTxt').innerHTML = 'Antecipado: ' + esc(antecipado) + '. Você paga <b class="forte">' + valor + '</b> agora. O resto é pago no dia, no caixa.';
+    rot($('pagar')).textContent = 'Sim, pagar ' + valor + ' no Pix';
+    tela('vAchou', 'É esta a sua reserva?', { educado:'Encontramos uma reserva: ' + diaExtenso(c.dia) + ', ' + fmtHora(r.hora) + ', ' +
+      pessoasTxt(r.pessoas || d.pessoas) + '. Valor do antecipado ' + valor + '.' });
+  }
+
+  /* ---------- 3. gerar o Pix (só no toque em pagar) ---------- */
+  function criarPix(){
+    if (gerando || !achada) return;
+    gerando = true;
+    tentativa = tentativa || P.novaTentativa();     /* dois toques = a mesma tentativa = a mesma cobrança */
+    var b = $('pagar'), total = achada.valor, r0 = achada.reserva;
+    b.disabled = true; rot(b).textContent = 'Gerando o Pix...';
+    P.anunciar('Gerando o Pix.');
+    P.criar({ origem:'tagme', tentativa:tentativa, cliente:{ fone:d.fone }, totalCliente:total, tagme:{ ref:achada.ref } }).then(function(r){
+      gerando = false;
+      b.disabled = false; rot(b).textContent = 'Sim, pagar ' + P.moeda(total) + ' no Pix';
+      if (r.ok && r.id && r.token) {
+        tentativa = null; refez = false;
+        if (P.centavos(r.valor) !== P.centavos(total)) { aviso('valor_diferente'); return; }
+        reg = { v:1, criadoEm:Date.now(), fone:d.fone, dia:diaValido(r0.dia) ? r0.dia : d.dia, hora:r0.hora || null,
+                pessoas:r0.pessoas || d.pessoas, piso:d.piso, codigo:String(r0.codigo || ''), valor:r.valor,
+                pix:{ id:r.id, token:r.token, valor:r.valor, copiaECola:r.copiaECola, qrImagem:r.qrImagem || null, expiraEm:r.expiraEm, modo:r.modo },
+                resultado:null };
+        salvar();
+        mostrarPix(false);
+        return;
+      }
+      if (r.erro === 'reserva_ja_confirmada') { aviso('ja_confirmada'); return; }
+      if (P.jaPago(r)) { tentativa = null; aviso('ja_pago', r.numero); return; }
+      if (r.erro === 'valor_diferente') { aviso('valor_diferente'); return; }
+      /* a busca vale 60 minutos: se venceu, procura de novo uma vez e segue */
+      if (r.erro === 'reserva_nao_encontrada' && !refez) { refez = true; buscarEPagar(); return; }
+      aviso('fora_pix');
+    });
+  }
+  function buscarEPagar(){
+    P.procurarReserva({ fone:d.fone, dia:d.dia, pessoas:d.pessoas, piso:d.piso }).then(function(r){
+      if (r.ok && r.achou && r.reserva) {
+        achada = r;
+        if (r.reserva.status === 'confirmada') { esquecer(); aviso('ja_confirmada'); } else criarPix();
+      }
+      else if (r.ok && r.achou === false && r.motivo === 'nenhuma') { esquecer(); aviso('nao_achou'); }
+      else if (r.ok && r.achou === false && r.motivo === 'varias') { esquecer(); aviso('varias'); }
+      else aviso('fora_pix');
+    });
+  }
+  /* "Gerar um novo Pix": a mesma reserva, procurada de novo, e uma tentativa nova */
+  function gerarOutro(){
+    d.fone = reg.fone; d.dia = reg.dia; d.pessoas = reg.pessoas; d.piso = reg.piso;
+    tentativa = null; refez = true;
+    buscarEPagar();
+  }
+  function mostrarPix(retomada){
+    outraPixReset();
+    tela('vPix', null, { semFoco:true });           /* o título e o foco ficam com o pix.js */
+    ctrl = P.montar($('pixArea'), {
+      pix: reg.pix, tituloEl: $('titulo'), retomada: !!retomada,
+      linhaReserva: 'Reserva ' + deQuando(reg.dia) + (reg.hora ? ', ' + fmtHora(reg.hora) : '') + ', ' + pessoasTxt(reg.pessoas),   /* N9: etiqueta, sem ponto */
+      valorEsperado: reg.valor, comEquipe: true,
+      saida: { texto:'Falar com a equipe no WhatsApp', href:function(){ return zapEquipe(abreC(), 'Não consegui pagar o Pix pelo site. Preciso da chave Pix.'); } },
+      zap: zapDoPix,
+      cancelar: '<p>As regras de cancelamento e de reembolso estão no contrato de reserva.</p>' +
+        '<p><a href="/termos/" target="_blank" rel="noopener">Ver o contrato</a></p>',
+      aoAprovar: function(s){ aprovado(s, false); },
+      aoValorDiferente: function(s){ aprovado(s, true); },
+      aoGerarOutro: gerarOutro,
+      /* o servidor recusou este Pix de vez (token ou id inválido): não adianta guardar */
+      aoFalhar: function(){ P.apagar(CHAVE); aviso('fora_consulta'); }
+    });
+  }
+
+  /* ---------- 4 e 5. Pix aprovado ---------- */
+  function aprovado(s, valorDif){
+    if (!reg) return;
+    var t = s.tagme || {};
+    var cod = String(t.codigo || reg.codigo || '').trim();
+    /* sem código não há cartão: fica como "Pagamento recebido" e a equipe confirma */
+    var confirmou = !valorDif && (t.estado === 'confirmada' || t.estado === 'ja_confirmada') && !!cod;
+    reg.resultado = { tipo:confirmou ? 'confirmada' : 'recebido', valorDif:!!valorDif, valor:Number(s.valor),
+      numero:String(s.numero == null ? '' : s.numero), modo:s.modo === 'simulado' ? 'simulado' : 'mp',
+      simulado:s.modo === 'simulado' || t.simulado === true, codigo:cod,
+      dia:diaValido(t.dia) ? t.dia : reg.dia, hora:t.hora || reg.hora || null, pessoas:t.pessoas || reg.pessoas };
+    salvar();
+    pintarResultado(true);
+  }
+  function pintarResultado(novo){
+    pararPix();
+    var x = reg.resultado, valor = P.moeda(x.valor);
+    if (x.tipo === 'confirmada') {
+      $('cartaoTeste').innerHTML = P.faixaTeste(x.modo, true, x.simulado ? 'Reserva de teste. Não vale na casa.' : '');
+      $('cartaoSelo').innerHTML = P.ICONES.ok;
+      $('cCodigo').textContent = x.codigo;
+      $('cCodigo').setAttribute('aria-label', 'Código da reserva: ' + x.codigo.split('').join(', '));
+      $('cDia').textContent = diaExtenso(x.dia);
+      $('cHora').textContent = fmtHora(x.hora) || 'a confirmar';
+      $('cPessoas').textContent = x.pessoas;
+      $('cRodizio').textContent = RODIZIOS[reg.piso];
+      $('cValor').textContent = valor;
+      $('cNumero').textContent = x.numero;
+      $('meuZap').href = 'https://wa.me/55' + reg.fone + '?text=' + encodeURIComponent(dadosTexto('Minha reserva no Santo Strike'));
+      $('cartaoEmail').hidden = !!x.simulado;           /* numa reserva de teste nenhum e-mail sai */
+      tela('vCartao', null, { educado:'Pix recebido. Reserva confirmada. Código ' + x.codigo + '.' });
+    } else {
+      $('recebidoTeste').innerHTML = P.faixaTeste(x.modo, true);
+      $('recebidoTxt').innerHTML = x.valorDif
+        ? 'Recebemos <b>' + valor + '</b> do seu Pix, mas o valor é diferente do antecipado desta reserva. <b>Não pague de novo.</b> A equipe confere com você pelo WhatsApp.'
+        : 'Recebemos <b>' + valor + '</b> do seu Pix, mas a sua reserva ainda não saiu confirmada aqui. <b>Não pague de novo.</b> A equipe confirma com você pelo WhatsApp.';
+      $('rNumero').textContent = x.numero;
+      $('avisarEquipe').href = zapManual();
+      tela('vRecebido', 'Pagamento recebido', { selo:'relogio',
+        alerta:novo ? 'Pagamento recebido. A reserva ainda precisa da equipe. Não pague de novo.' : '' });
+      agendarRevisao();
+    }
+  }
+  /* a confirmação pode sair um pouco depois (a equipe ou o aviso do banco): confere de novo, sem pressa.
+     D13: o resultado guardado também é conferido ao reabrir e ao voltar para a aba; devolvido ou recusado no
+     servidor, a tela volta ao bloco do Pix, que mostra "Este pagamento foi devolvido" */
+  function revisar(){
+    if (!reg || !reg.resultado) return;
+    var g = reg;
+    P.status(g.pix.id, g.pix.token).then(function(s){
+      if (reg !== g || !g.resultado || !s.ok) return;
+      if (s.status === 'estornado' || s.status === 'recusado') { g.resultado = null; salvar(); clearInterval(timerRev); mostrarPix(true); return; }
+      if (g.resultado.tipo !== 'recebido' || g.resultado.valorDif) return;
+      var t = s.status === 'aprovado' ? s.tagme : null;
+      if (t && (t.estado === 'confirmada' || t.estado === 'ja_confirmada') && (t.codigo || reg.codigo) && P.centavos(s.valor) === P.centavos(reg.valor)) aprovado(s, false);
+    });
+  }
+  function agendarRevisao(){
+    clearInterval(timerRev); revs = 0;
+    timerRev = setInterval(function(){
+      if (document.hidden) return;
+      if (++revs > 10) { clearInterval(timerRev); return; }
+      revisar();
+    }, 30000);
+  }
+  document.addEventListener('visibilitychange', function(){ if (!document.hidden) revisar(); });
+
+  /* ---------- 6. avisos: todo erro termina num botão que funciona ---------- */
+  function aviso(tipo, numero){
+    pararPix();
+    var c = ctx(), r = achada && achada.reserva, a;
+    var tentarBusca = function(){ formulario(); procurar(); };
+    var zapC = { texto:'Falar com a equipe no WhatsApp', href:zapEquipe(abreC(), 'Preciso da chave Pix ou de ajuda para achar a reserva.') };
+    var zapFora = { texto:'Falar com a equipe no WhatsApp', href:zapEquipe(abreC(), 'O pagamento pelo site não abriu.') };
+    if (tipo === 'ja_confirmada') {
+      a = { titulo:'Esta reserva já está confirmada', selo:'ok',
+        texto:'Sua reserva do dia ' + ddmm(c.dia) + (r && r.hora ? ', às ' + fmtHora(r.hora) : '') + ', para ' + pessoasTxt((r && r.pessoas) || c.pessoas) +
+          ', já está confirmada. Código: ' + ((r && r.codigo) || '') + '. Não precisa pagar de novo. Se você pagou e quer conferir, fale com a equipe com o comprovante do banco.',
+        educado:'Reserva já confirmada. Código ' + ((r && r.codigo) || '') + '.',
+        botoes:[{ texto:'Falar com a equipe no WhatsApp', href:zapEquipe('Olá! Minha reserva ' + deQuando(c.dia) + ' aparece como confirmada no site e quero conferir o pagamento.',
+                  '', ['Código da reserva: ' + ((r && r.codigo) || '')]) },
+                { texto:'Procurar outra reserva', acao:function(){ achada = null; formulario('fone'); }, estilo:'link' }] };
+    } else if (tipo === 'nao_achou') {
+      a = { titulo:'Não encontramos a sua reserva',
+        texto:'Confira se o WhatsApp e o número de pessoas são os mesmos da reserva. Se você acabou de reservar, espere um instante e tente de novo. Ainda não reservou? Faça a reserva primeiro, depois volte aqui.',
+        alerta:'Reserva não encontrada. Confira o WhatsApp e o número de pessoas.',
+        botoes:[{ texto:'Tentar de novo', acao:function(){ formulario('fone'); } },
+                { texto:zapC.texto, href:zapC.href, estilo:'fantasma' },
+                { texto:'Fazer a reserva', href:$('aindaNao').getAttribute('href'), estilo:'link', mesmaAba:true }] };
+    } else if (tipo === 'varias') {
+      a = { titulo:'Achamos mais de uma reserva',
+        texto:'Para não pagar a reserva errada, a equipe resolve com você. Toque no botão: a mensagem já vai pronta. Você não precisa pagar nada agora.',
+        alerta:'Mais de uma reserva encontrada. Fale com a equipe.',
+        botoes:[{ texto:'Falar com a equipe no WhatsApp', href:zapEquipe(abreC(), 'O site achou mais de uma reserva no meu WhatsApp. Preciso de ajuda para pagar a certa.') },
+                { texto:'Voltar', acao:function(){ formulario('fone'); }, estilo:'link' }] };
+    } else if (tipo === 'valor_diferente') {
+      a = { titulo:'O valor mudou',
+        texto:'O valor mudou e nada foi cobrado. A equipe confirma o valor certo com você.',
+        alerta:'O valor mudou. Nada foi cobrado.',
+        botoes:[{ texto:'Falar com a equipe no WhatsApp', href:zapEquipe(abreC(), 'O valor do Pix ficou diferente do antecipado. Preciso que a equipe confirme o valor.') },
+                { texto:'Tentar de novo', acao:tentarBusca, estilo:'link' }] };
+    } else if (tipo === 'ja_pago') {
+      /* 409 ja_pago: esta reserva já tem um Pix pago. Não gera outro e não é erro */
+      a = { titulo:'Pix já recebido', selo:'ok', numero:numero,                  /* N3: o pagamento existe: visto verde */
+        texto:'Já existe um Pix pago para esta reserva. Não pague de novo. Se quiser conferir, fale com a equipe com o comprovante do banco.',
+        alerta:'Pix já recebido. Não pague de novo.',
+        botoes:[{ texto:'Falar com a equipe no WhatsApp', href:zapEquipe('Olá! O site diz que a minha reserva ' + deQuando(c.dia) + ' já foi paga e quero conferir.', '',
+                  numero ? ['Número do pagamento: ' + numero] : []) },
+                { texto:'Procurar outra reserva', acao:function(){ esquecer(); achada = null; formulario('fone'); }, estilo:'link' }] };
+    } else if (tipo === 'fora_consulta') {
+      a = { titulo:'Pagamento no site indisponível agora',
+        texto:'Não conseguimos acompanhar este Pix agora. Se você já pagou, não pague de novo: fale com a equipe com o comprovante do banco.',
+        alerta:'Pagamento no site indisponível. Use o WhatsApp.',
+        botoes:[{ texto:'Falar com a equipe no WhatsApp', href:zapDoPix('nao_apareceu') },
+                { texto:'Procurar outra reserva', acao:function(){ esquecer(); achada = null; formulario('fone'); }, estilo:'link' }] };
+    } else {
+      var naBusca = tipo === 'fora_busca';
+      a = { titulo:'Pagamento no site indisponível agora',
+        texto:naBusca ? 'Não conseguimos procurar a sua reserva agora. Ela continua valendo. Fale com a equipe: ela confirma e manda a chave Pix.'
+                      : 'Não conseguimos gerar o Pix agora. Sua reserva continua valendo. Fale com a equipe: ela confirma e manda a chave Pix.',
+        alerta:'Pagamento no site indisponível. Use o WhatsApp.',
+        botoes:[zapFora, { texto:'Tentar de novo', acao:(naBusca || !achada) ? tentarBusca : mostrarAchou, estilo:'link' }] };
+    }
+    $('avisoTxt').textContent = a.texto;
+    $('avisoNumero').textContent = a.numero || '';
+    $('avisoNum').hidden = !a.numero;
+    $('avisoAcoes').innerHTML = ''; $('avisoLinks').innerHTML = '';
+    a.botoes.forEach(function(b){
+      var el = document.createElement(b.href ? 'a' : 'button');
+      if (b.href) { el.href = b.href; if (!b.mesmaAba) { el.target = '_blank'; el.rel = 'noopener'; } }
+      else { el.type = 'button'; el.addEventListener('click', b.acao); }
+      el.className = b.estilo === 'link' ? 'link' : b.estilo === 'fantasma' ? 'btn btn--fantasma' : 'btn';
+      el.textContent = b.texto;
+      $(b.estilo === 'link' ? 'avisoLinks' : 'avisoAcoes').appendChild(el);
+    });
+    tela('vAviso', a.titulo, { selo:a.selo, alerta:a.alerta, educado:a.educado });
+  }
+
+  /* ---------- começar de novo ---------- */
+  function outraReserva(){ esquecer(); achada = null; formulario('fone'); }
+  $('outraNoCartao').addEventListener('click', outraReserva);
+  $('outraNoRecebido').addEventListener('click', outraReserva);
+  /* com um Pix na tela: o primeiro toque avisa (D5); o segundo cancela o Pix no Mercado Pago (D9) e,
+     se ele já tinha sido pago, mostra o pagamento em vez de largar */
+  function outraPixReset(){
+    $('outraAviso').hidden = true; $('outraNoPix').textContent = 'Procurar outra reserva'; $('outraNoPix').__semCancelar = false;
+  }
+  $('outraNoPix').addEventListener('click', function(){
+    var b = this, av = $('outraAviso');
+    if (b.disabled || !reg) return;
+    if (av.hidden){
+      av.textContent = 'Este Pix ainda pode estar sendo pago. Se você já pagou, não procure outra reserva: fale com a equipe. Se procurar outra, este Pix é cancelado.';
+      av.hidden = false; b.textContent = 'Procurar outra mesmo assim';
+      P.anunciar(av.textContent, true);
+      return;
+    }
+    b.disabled = true; b.textContent = 'Conferindo o Pix...';
+    var g = reg;
+    if (ctrl) ctrl.pausar();
+    P.cancelar(g.pix.id, g.pix.token).then(function(r){
+      b.disabled = false; b.textContent = 'Procurar outra mesmo assim';
+      if (reg !== g) return;
+      if (P.jaPago(r)) {
+        /* já pago: a consulta traz a confirmação no sistema de reservas */
+        outraPixReset();
+        P.status(g.pix.id, g.pix.token).then(function(s){
+          if (reg !== g) return;
+          if (s.ok && s.status === 'aprovado') aprovado(s, P.centavos(s.valor) !== P.centavos(g.valor));
+          else aprovado({ valor:r.valor != null ? r.valor : g.valor, numero:r.numero, modo:g.pix.modo, tagme:null }, P.centavos(r.valor != null ? r.valor : g.valor) !== P.centavos(g.valor));
+        });
+        return;
+      }
+      if (!r.ok && !b.__semCancelar && r.erro !== 'token_invalido' && r.erro !== 'nao_encontrado'){
+        b.__semCancelar = true;
+        av.textContent = 'Não deu para cancelar este Pix agora. Se você já pagou, não pague de novo: fale com a equipe. Toque de novo para procurar outra mesmo assim.';
+        P.anunciar(av.textContent, true);
+        if (ctrl) ctrl.retomar();
+        return;
+      }
+      outraPixReset();
+      outraReserva();
+    });
+  });
+
+  /* ---------- eventos ---------- */
+  $('form').addEventListener('submit', function(ev){ ev.preventDefault(); if (validar()) procurar(); });
+  $('fone').addEventListener('input', function(){ erro('fone', ''); });
+  $('pessoas').addEventListener('input', function(){ erro('pessoas', ''); });
+  $('pisos').addEventListener('change', function(){ $('pisoErro').textContent = ''; });
+  $('outroDiaBtn').addEventListener('click', function(){
+    var abrir = $('outroDia').hidden;
+    $('outroDia').hidden = !abrir;
+    this.setAttribute('aria-expanded', String(abrir));
+    if (abrir) { $('dia').value = d.dia; $('dia').focus(); }
+  });
+  $('dia').addEventListener('change', function(){
+    var v = this.value, ok = diaValido(v) && v >= hoje && v <= limiteDia;
+    erro('dia', ok ? '' : 'Escolha um dia entre hoje e ' + ddmm(limiteDia) + '.');
+    if (ok) { d.dia = v; pintarQuando(); }
+  });
+  $('pagar').addEventListener('click', criarPix);
+  $('naoE').addEventListener('click', function(){ achada = null; formulario('fone'); });
+  $('copiarDados').addEventListener('click', function(){ if (reg && reg.resultado) P.copiarCom(this, dadosTexto('Reserva no Santo Strike'), 'Dados copiados'); });
+  $('copiarNumero').addEventListener('click', function(){ if (reg && reg.resultado) P.copiarCom(this, reg.resultado.numero, 'Número copiado'); });
+
+  /* ---------- o que veio na URL: ?onde=, ?pessoas= e ?dia= ---------- */
+  var onde = (daUrl('onde') || '').toLowerCase();
+  if (ONDE[onde]) { d.piso = ONDE[onde]; document.querySelector('#pisos input[value="' + d.piso + '"]').checked = true; }
+  var pUrl = parseInt(daUrl('pessoas'), 10);
+  if (pUrl >= 1 && pUrl <= 500) { d.pessoas = pUrl; $('pessoas').value = pUrl; }
+  if (diaValido(diaUrl) && diaUrl >= hoje && diaUrl <= limiteDia) d.dia = diaUrl;
+  $('dia').min = hoje; $('dia').max = limiteDia; $('dia').value = d.dia;
+  $('aindaNao').href = '/reserva/hoje/' + (ONDE[onde] ? '?onde=' + onde : '');
+  pintarQuando();
+
+  /* ---------- a aba recarregou ou a pessoa voltou depois: reabre o que estava guardado ---------- */
+  function retomar(){
+    var g = P.ler(CHAVE);
+    if (!g || g.v !== 1 || !g.pix || !g.pix.id || !g.pix.token || !diaValido(g.dia)) { if (g) P.apagar(CHAVE); return false; }
+    if (g.dia < hoje) { P.apagar(CHAVE); return false; }          /* o dia da reserva passou */
+    reg = g;
+    d.fone = g.fone; d.dia = g.dia; d.pessoas = g.pessoas; d.piso = g.piso;
+    if (g.resultado) { pintarResultado(false); revisar(); return true; }
+    /* sem resultado: o pix.js entra em "Esperando o seu pagamento" e consulta na hora. Se o prazo já
+       passou, mostra "O Pix venceu" sem afirmar nada até o servidor responder, e nada é apagado (B1) */
+    mostrarPix(true);
+    return true;
+  }
+  if (!retomar()) formulario(false);
+})();
+</script>
+<script src="/assets/teste.js" defer></script>
+</body>
+</html>

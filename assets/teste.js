@@ -32,7 +32,15 @@
     '.st-teste-painel button:hover{border-color:#E3B23C}',
     '.st-teste-painel button:focus-visible{outline:2px solid #E3B23C;outline-offset:2px}',
     '.st-teste-painel button[aria-pressed="true"]{background:#E3B23C;color:#150F0A;border-color:#E3B23C}',
-    '.st-teste-painel .st-teste-fechar{width:100%;margin-top:.2rem;border-color:#E3B23C;color:#E3B23C}'
+    '.st-teste-painel .st-teste-fechar{width:100%;margin-top:.2rem;border-color:#E3B23C;color:#E3B23C}',
+    /* fase 2: pagamento simulado (só nas páginas com o /assets/pix.js) */
+    '.st-teste-pix{margin:.4rem 0 .7rem;padding-top:.8rem;border-top:1px solid rgba(227,178,60,.3)}',
+    '.st-teste-pix .st-teste-grade button:last-child:nth-child(odd){grid-column:1 / -1}',
+    '.st-teste-painel label{display:block;margin:0 0 .6rem;font-size:.8rem;color:rgba(246,241,230,.85)}',
+    '.st-teste-painel select{display:block;width:100%;min-height:40px;margin-top:.3rem;padding:.4rem .5rem;border-radius:10px;',
+    'border:1px solid rgba(246,241,230,.3);background:#0B0705;color:#F6F1E6;font:600 .8rem/1.2 "DM Sans",system-ui,sans-serif;cursor:pointer}',
+    '.st-teste-painel select:hover{border-color:#E3B23C}',
+    '.st-teste-painel select:focus-visible{outline:2px solid #E3B23C;outline-offset:2px}'
   ].join('');
   var st = doc.createElement('style');
   st.id = 'stTesteCss';
@@ -73,6 +81,54 @@
     '<button type="button" data-d="">Data real</button>' +
     '</div>' +
     '<button type="button" class="st-teste-fechar">Fechar</button>';
+
+  /* fase 2: o Pix desta página é simulado (nada real é criado). Os botões fazem as
+     próximas consultas do Pix na tela voltarem com o estado escolhido; o seletor muda
+     a resposta da busca da reserva em /reserva/pagar/. Só nas páginas com o pix.js. */
+  var X = window.SantoPix;
+  if (X && X.simular) {
+    var grupo = doc.createElement('div');
+    grupo.className = 'st-teste-pix';
+    var temBusca = !!doc.getElementById('procurar');
+    grupo.innerHTML =
+      '<h2>Pagamento (simulado)</h2>' +
+      '<p>Só existe no site de teste.</p>' +
+      '<p class="st-teste-estado" id="stPixEstado" aria-live="polite"></p>' +
+      '<div class="st-teste-grade" id="stPixBotoes">' +
+      '<button type="button" data-p="aprovado">Simular pagamento aprovado</button>' +
+      '<button type="button" data-p="expirado">Simular Pix vencido</button>' +
+      '<button type="button" data-p="recusado">Simular recusado</button>' +
+      '<button type="button" data-p="estornado">Simular devolvido</button>' +
+      '<button type="button" data-p="manual">Simular confirmação manual</button>' +
+      '</div>' +
+      (temBusca ? '<label for="stPixBusca">Ao procurar a reserva' +
+        '<select id="stPixBusca"><option value="">normal</option><option value="nenhuma">não achar</option>' +
+        '<option value="varias">achar várias</option><option value="confirmada">já confirmada</option>' +
+        '<option value="indisponivel">fora do ar</option></select></label>' : '');
+    painel.insertBefore(grupo, painel.querySelector('.st-teste-fechar'));
+    var NOMES_PIX = { aprovado: 'aprovado', expirado: 'vencido', recusado: 'recusado', estornado: 'devolvido', manual: 'confirmação manual' };
+    var estadoPix = function (aviso) {
+      var s = X.simulando();
+      grupo.querySelector('#stPixEstado').textContent = aviso ||
+        (s.temPix ? 'Pix na tela.' + (s.pagamento ? ' Próximas consultas: ' + NOMES_PIX[s.pagamento] + '.' : ' Consultas normais.')
+                  : 'Nenhum Pix na tela. Gere um Pix e depois escolha o resultado.');
+      [].forEach.call(grupo.querySelectorAll('button[data-p]'), function (b) {
+        b.setAttribute('aria-pressed', String(!!s.temPix && b.getAttribute('data-p') === s.pagamento));
+      });
+      var sel = grupo.querySelector('#stPixBusca');
+      if (sel && sel.value !== (s.busca || '')) sel.value = s.busca || '';
+    };
+    grupo.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('button[data-p]') : null;
+      if (!b) return;
+      if (X.simular(b.getAttribute('data-p'))) { estadoPix(); abrir(false); selo.focus(); }
+      else estadoPix('Nenhum Pix na tela. Gere um Pix e depois escolha o resultado.');
+    });
+    var sel = grupo.querySelector('#stPixBusca');
+    if (sel) sel.addEventListener('change', function () { X.simularBusca(this.value || null); estadoPix(); });
+    if (X.aoSimular) X.aoSimular(function () { estadoPix(); });
+    estadoPix();
+  }
 
   function dois(n) { return (n < 10 ? '0' : '') + n; }
   /* próxima segunda-feira depois da data que o site está usando (AAAA-MM-DD) */

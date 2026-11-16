@@ -114,6 +114,23 @@ h2{font:400 1.3rem/1.2 var(--display);margin:1.9rem 0 .8rem}
   .tagme{margin:0 calc(-1 * var(--gutter));border-radius:0;border-left:0;border-right:0}
 }
 
+/* fase 2: reservar tem 2 passos (a reserva aqui embaixo e o Pix no site) */
+.passos2{margin:0 0 1rem;padding:.9rem 1rem;border:1px solid var(--line-strong);border-radius:12px;background:var(--panel)}
+.passos2__tit{margin:0 0 .6rem;font:500 .75rem/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.passos2 ol{list-style:none;margin:0;padding:0;display:grid;gap:.55rem}
+.passos2 li{display:grid;grid-template-columns:1.7rem 1fr;gap:.65rem;align-items:start;font-size:.97rem;line-height:1.45}
+.passos2__n{display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;border:1.5px solid var(--accent);
+  color:var(--accent);font:700 .8rem/1 var(--body)}
+.passos2 li b{display:block;color:var(--ink);font-weight:700}
+.passos2 li span:last-child{padding-top:.12rem}
+/* "Já reservou?": logo depois do sistema de reservas, borda dourada (não é aviso) */
+.ja{margin:1rem 0 .4rem;padding:1.1rem 1.1rem 1rem;border:1.5px solid var(--accent);border-radius:16px;
+  background:linear-gradient(180deg,rgba(227,178,60,.10),rgba(227,178,60,.02) 60%),var(--panel)}
+.ja h3{margin:0 0 .45rem;font:400 1.3rem/1.2 var(--display);color:var(--ink)}
+.ja p{margin:0}
+.ja .btn{margin-top:1rem}
+.ja .dica{margin-top:.7rem;font-size:.88rem}
+
 /* campo e botões */
 .fld{display:block;margin:0 0 .3rem}
 .fld span{display:block;font:500 .64rem/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;
@@ -216,9 +233,22 @@ h2{font:400 1.3rem/1.2 var(--display);margin:1.9rem 0 .8rem}
         <p><b>Teste:</b> este é o sistema de reservas de verdade da casa. Escolha o ambiente <b>Teste</b>.
           Não reserve no Rodízio Tradicional nem no Fusion.</p>
       </div>
+      <div class="passos2" id="passos2">
+        <p class="passos2__tit">Reservar tem 2 passos</p>
+        <ol>
+          <li><span class="passos2__n" aria-hidden="true">1</span><span>Faça a reserva abaixo.</span></li>
+          <li><span class="passos2__n" aria-hidden="true">2</span><span>Pague o antecipado no Pix. <b>A vaga só fica garantida com o Pix.</b></span></li>
+        </ol>
+      </div>
       <p>A reserva é feita pelo TagMe, o sistema de reservas da casa. Depois de reservar, ele envia a confirmação por e-mail.</p>
       <p class="dica" id="dicaTagme">No TagMe, escolha o rodízio e o horário e preencha seus dados.</p>
       <div class="tagme" id="tagme"><p class="tagme__espera">Carregando a reserva…</p></div>
+      <div class="ja" id="jaReservou" role="region" aria-labelledby="jaTit">
+        <h3 id="jaTit">Já reservou?</h3>
+        <p>Agora falta o passo 2: pagar o antecipado no Pix, aqui no site. Sem o Pix, a sua vaga não fica garantida. Leva 2 minutos e você não precisa falar com ninguém.</p>
+        <a class="btn" id="irPagar" href="/reserva/pagar/">Pagar o Pix da minha reserva</a>
+        <p class="dica">Ainda não terminou a reserva acima? Termine primeiro e depois toque aqui.</p>
+      </div>
       <p class="outra-aba"><a class="link" id="linkTagme" href="https://usetag.me/santostrike" target="_blank" rel="noopener">Não carregou? Abrir a reserva em outra aba</a></p>
       <p class="outra-aba"><a class="link" id="zapSemHorario" href="https://wa.me/5521988799699" target="_blank" rel="noopener">Não encontrou horário? Fale com a equipe no WhatsApp.</a></p>
     </div>
@@ -278,8 +308,11 @@ h2{font:400 1.3rem/1.2 var(--display);margin:1.9rem 0 .8rem}
     }
     return '';
   }
-  var rodizio = RODIZIOS[daUrl('onde').toLowerCase()] || '';
+  var onde = daUrl('onde').toLowerCase();
+  var rodizio = RODIZIOS[onde] || '';
   if (rodizio) { $('rodizio').textContent = rodizio; $('rodizio').hidden = false; }
+  /* passo 2: pagar o Pix da reserva feita acima, já com o rodízio quando a página sabe qual é */
+  $('irPagar').href = '/reserva/pagar/' + (rodizio ? '?onde=' + onde : '');
 
   var DIAS = ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
   var MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];

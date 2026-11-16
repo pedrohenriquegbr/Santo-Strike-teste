@@ -36,7 +36,7 @@
       ]
     },
     {
-      "source": "/assets/((?!hoje\\.js|teste\\.js).*)",
+      "source": "/assets/((?!hoje\\.js|teste\\.js|pix\\.js).*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -45,7 +45,7 @@
       ]
     },
     {
-      "source": "/assets/(hoje|teste).js",
+      "source": "/assets/(hoje|teste|pix).js",
       "headers": [
         {
           "key": "Cache-Control",

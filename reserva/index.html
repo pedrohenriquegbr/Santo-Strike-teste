@@ -268,6 +268,42 @@ details.artes img{border-radius:10px;border:1px solid var(--line);width:100%;hei
 .pc-ajuda button{background:none;border:0;padding:0;font:inherit;color:var(--accent);cursor:pointer;
   text-decoration:underline;text-underline-offset:3px}
 
+/* fase 2: Pix pago no site, na tela 8. O bloco do Pix (QR, copia e cola, espera) vem
+   do /assets/pix.js, com as classes .pix-*; aqui só o que é da tela 8. */
+.ok .selo.selo--ok{border-color:#8FCB7A;color:#8FCB7A}
+/* N4: em "Falta pagar o antecipado" o selo encolhe para o botão Pagar caber na primeira tela (375 x 667) */
+.ok[data-px="antes"] .selo{width:52px;height:52px;margin-bottom:.7rem}
+.ok[data-px="antes"] .selo svg{width:24px;height:24px}
+.ok[data-px="antes"] .codigo-res{margin-bottom:.9rem}
+.ok[data-px="antes"] #avisoConfirma{margin-bottom:.8rem !important}
+.ok[data-px="antes"] .pixA{margin-top:0}
+.pixA-retoma{margin:-.4rem 0 .6rem;font:500 .75rem/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.pixA-nota{text-align:left;margin:0 0 1rem;padding:.85rem 1rem;border-radius:12px;font-size:.95rem;line-height:1.5;color:var(--ink)}
+.pixA-nota b{color:var(--accent)}
+.pixA-nota--erro{border:1.5px solid var(--ember);background:rgba(194,65,12,.12)}
+.pixA-nota--erro b{color:#FFA07A}
+.pixA-nota--info{border:1px solid var(--line-strong);background:var(--panel)}
+.pixA-nota .pix-link{margin-top:.2rem}
+.pixA-recebido{text-align:left;margin:0 0 1rem;font-size:1.02rem;line-height:1.5;color:var(--ink)}
+.pixA-recebido b{color:var(--accent);font-weight:700}
+.pixA-recebido .num{font-family:var(--mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#pixTeste:empty{display:none}
+#pixTeste .pix-teste{margin:0 0 1rem}
+.pixA-passos{margin:.7rem 0 0;padding:0 0 0 1.25rem;display:grid;gap:.3rem;color:var(--ink)}
+.pixA-passos li::marker{color:var(--accent);font-weight:700}
+.pixA{text-align:left;margin:1rem 0 1.1rem}
+.pixA-antes{display:grid;gap:.25rem;justify-items:stretch}
+.pixA-antes .pix-link{justify-self:start}
+#enviarWpp[aria-disabled="true"]{background:var(--panel-2);color:var(--ink-2);border:1px dashed var(--line-strong);cursor:not-allowed}
+#enviarWpp[aria-disabled="true"]:hover{background:var(--panel-2)}
+#enviarWpp[aria-disabled="true"]:active{transform:none}
+.pixA-libera{margin:.55rem 0 0;font-size:.9rem;color:var(--ink-2)}
+.pixA-depois{margin:.7rem 0 0;font-size:.9rem;color:var(--ink-2);text-align:left}
+.pixA-links{display:grid;justify-items:start;margin-top:.4rem;text-align:left}
+#enviarWpp:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:999px}
+/* com a caixa "Como garantir a vaga" escondida, o botão não cola na caixa de cima (as margens se juntam: hoje fica igual) */
+.ok #enviarWpp{margin-top:1.1rem}
+
 /* dados da casa no pé da página, acima da barra fixa */
 .pe{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.74rem;line-height:1.6;color:var(--ink-2)}
 .pe a{color:var(--ink-2)}
@@ -534,10 +570,24 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
   <section class="tela" data-tela="7">
     <div class="ok">
       <div class="selo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <p class="pixA-retoma" id="pixRetoma" hidden>Você tem um Pix desta reserva</p>
       <h1 id="tituloOk">Falta só enviar</h1>
       <p class="codigo-res" id="codigoRes">SS-0000</p>
+      <!-- fase 2: avisos do Pix pago no site (o /assets/pix.js desenha o Pix em #pixArea) -->
+      <div id="pixTeste"></div>
+      <p class="pixA-recebido" id="pixRecebido" hidden></p>
+      <div class="pixA-nota pixA-nota--info" id="pixMudou" hidden>Você mudou a reserva, então o Pix anterior não vale mais.</div>
+      <div class="pixA-nota pixA-nota--erro" id="pixErro" hidden><p id="pixErroTxt" style="margin:0"></p><div id="pixErroLinks"></div></div>
       <div class="destaque" id="avisoConfirma" style="text-align:left;margin:0 0 1rem"><b>Sua reserva ainda não está confirmada.</b> Envie a
         solicitação pelo WhatsApp: a equipe confirma conforme a disponibilidade e as regras da casa.</div>
+      <!-- N4: o botão de pagar logo abaixo da explicação, antes do resumo (a 375 x 667 ele precisa aparecer sem rolar) -->
+      <div class="pixA" id="pixA" hidden>
+        <div class="pixA-antes" id="pixAntes" hidden>
+          <button type="button" class="pix-btn" id="pixPagar"><span data-rot>Pagar no Pix</span></button>
+          <button type="button" class="pix-link" id="pixPrefiro">Prefiro combinar pelo WhatsApp</button>
+        </div>
+        <div id="pixArea"></div>
+      </div>
       <div class="linhas" id="resumoOk"></div>
       <div class="nodia" id="noDiaOk" style="text-align:left"></div>
       <!-- o caminho até a vaga garantida, enquanto o Pix não é pago dentro do site -->
@@ -553,8 +603,17 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
       </div>
       <p class="sub" id="textoOk" style="margin-top:1.2rem" hidden>Toque abaixo para mandar o pedido de orçamento pelo WhatsApp do Santo Strike. A casa responde com os valores e os pacotes para a data.</p>
       <a class="btn" id="enviarWpp" href="#" target="_blank" rel="noopener" style="display:flex;justify-content:center;text-decoration:none">Enviar solicitação pelo WhatsApp</a>
+      <p class="pixA-libera" id="pixLibera" hidden>Libera depois do Pix.</p>
+      <div class="pixA-links" id="pixDepoisLinks" hidden>
+        <button type="button" class="pix-link" id="copiarNumero"><span data-rot>Copiar o número do pagamento</span></button>
+      </div>
+      <p class="pixA-depois" id="pixDepois" hidden>Para mudar algo depois de pagar, fale com a equipe pelo WhatsApp.</p>
       <!-- só aparece no computador: lá o botão abre o WhatsApp Web -->
       <p class="pc-ajuda" id="pcAjuda" hidden>No computador, a reserva abre no WhatsApp Web. Prefere o aplicativo? <button type="button" id="copiarMsg">Copie a mensagem</button> e cole na conversa com o Santo Strike, (21) 98879-9699.</p>
+      <div class="pixA-links" id="pixOutraBox" hidden>
+        <p class="pixA-depois" id="pixOutraAviso" hidden>Você já pagou este Pix. Envie a reserva antes de começar outra.</p>
+        <button type="button" class="pix-link" id="pixOutra">Começar outra reserva</button>
+      </div>
     </div>
   </section>
 
@@ -572,6 +631,8 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
   </div>
 </div>
 
+<!-- fase 2: pagamento por Pix dentro do site (window.SantoPix); sem ele a tela 8 fica como era -->
+<script src="/assets/pix.js"></script>
 <script>
 (function(){
   /* Folder oficial dos rodízios (conferido em 26/09/2026). O Pix pago no ato
@@ -1399,8 +1460,9 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
       return (i && /^(de|da|do|das|dos|e)$/.test(p)) ? p : p.charAt(0).toUpperCase() + p.slice(1);
     }).join(' ');
   }
-  function mensagemWhatsApp(){
+  function mensagemWhatsApp(pago){
     var d = st.data, festa = st.tipo === 'festa', pista = st.tipo === 'pista', rod = comRodizio(), L = [];
+    pago = !!pago && !festa;
     var pl = function(n, um, varios){ return n + ' ' + (n > 1 ? varios : um); };
     var bloco = function(titulo, itens){
       if (!itens.length) return;
@@ -1408,7 +1470,8 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
       itens.forEach(function(s){ L.push('- ' + s); });
     };
 
-    L.push(festa ? 'Olá! Quero um orçamento de festa no Santo Strike.' : 'Olá! Quero solicitar uma reserva no Santo Strike.');
+    L.push(festa ? 'Olá! Quero um orçamento de festa no Santo Strike.'
+         : pago ? 'Olá! Já paguei o antecipado da minha reserva pelo site do Santo Strike.' : 'Olá! Quero solicitar uma reserva no Santo Strike.');
     L.push('(enviado pelo site de reservas)');
     L.push('', festa ? 'Pedido: orçamento de festa' : 'Pedido: ' + $('codigoRes').textContent);
 
@@ -1459,10 +1522,11 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
       /* o que entra no Pix da reserva, e o total numa linha só dele */
       var pg = agora().map(function(i){ return i.nome + ': ' + (i.valor ? moeda(i.valor) : 'não paga'); });
       if (usaPromo()) pg.push('Com a promoção de R$ 49,99 (7 dias de antecedência, tudo pago no ato)');
-      bloco('Pagar agora, no Pix', pg);
-      L.push('', 'Total no Pix: ' + totalTexto());
-      /* a casa só põe na agenda com o comprovante na conversa */
-      bloco('Comprovante do Pix', ['Envio a foto do comprovante aqui, assim que pagar']);
+      bloco(pago ? 'Pago no Pix, pelo site' : 'Pagar agora, no Pix', pg);
+      L.push('', pago ? 'Total pago no Pix: ' + MARCA_VALOR : 'Total no Pix: ' + totalTexto());
+      /* a casa só põe na agenda com o comprovante na conversa; pago no site, vai o número do pagamento */
+      if (pago) L.push('', 'Pagamento:', MARCA_PAG);
+      else bloco('Comprovante do Pix', ['Envio a foto do comprovante aqui, assim que pagar']);
 
       /* o que fica para o dia, no caixa */
       if (rod){
@@ -1490,6 +1554,7 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
       av.push('Sem o documento, vale o valor de adulto');
     }
     bloco('Avisos', av);
+    if (pago) L.push('', 'Falta só confirmar a data. Se não estiver disponível, me avisem por aqui.');
 
     var cli = ['Nome: ' + nomeBonito($('nome').value), 'WhatsApp: ' + foneBonito($('fone').value)];
     if ($('obs').value.trim()) cli.push('Observação: ' + $('obs').value.trim());
@@ -1504,14 +1569,14 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
      e o Web mantém uma informação por linha. */
   var NO_CELULAR = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
                    (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.platform || ''));
-  function linkWhatsApp(){
-    var txt = encodeURIComponent(mensagemWhatsApp());
+  function linkWhatsApp(texto){
+    var txt = encodeURIComponent(texto == null ? mensagemWhatsApp() : texto);
     return NO_CELULAR ? 'https://wa.me/' + WHATSAPP_CASA + '?text=' + txt
                       : 'https://web.whatsapp.com/send?phone=' + WHATSAPP_CASA + '&text=' + txt;
   }
   /* copia a mensagem com as quebras de linha, para colar em qualquer WhatsApp */
   function copiarMensagem(botao){
-    var txt = mensagemWhatsApp();
+    var txt = pxMsgAtual();
     var feito = function(){ botao.textContent = 'Mensagem copiada'; setTimeout(function(){ botao.textContent = 'Copie a mensagem'; }, 2500); };
     var antigo = function(){
       var t = document.createElement('textarea');
@@ -1525,8 +1590,494 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
   }
   $('copiarMsg').addEventListener('click', function(){ copiarMensagem(this); });
 
+  /* ---------- Pix pago no site (fase 2) ----------
+     Com o pagamento no site disponível (SantoPix.disponivel(): a rota responde),
+     a tela 8 deixa de mandar pagar depois pelo WhatsApp: o Pix nasce no toque em
+     "Pagar", o botão do WhatsApp só libera com o Pix aprovado e a mensagem sai com
+     o bloco "Pagamento" no lugar de "Comprovante do Pix". Sem o pagamento no site
+     (rotas em 503, rede, valor diferente ou "Prefiro combinar pelo WhatsApp"), a
+     tela e a mensagem ficam exatamente como eram. A aba pode recarregar enquanto
+     a pessoa está no app do banco: o que refaz a tela 8 sem o `st` fica só neste
+     aparelho (localStorage), por no máximo 24 h. */
+  var PX = window.SantoPix || null;
+  var CHAVE_PIX = 'santoPixReserva', VIDA_PIX = 24 * 3600000;
+  var MARCA_VALOR = '\u0001VALOR\u0001', MARCA_PAG = '\u0001PAGAMENTO\u0001';
+  /* descartado: Pix largado que o servidor não conseguiu cancelar (D9), conferido de novo antes do próximo.
+     msgEspecial: a mensagem do WhatsApp de "Pix já recebido" e "valor diferente" (N1), com o número do pagamento */
+  var pixA = { modo:'hoje', rec:null, ctrl:null, tentativa:null, gerando:false, erros:0, mudou:false, retomada:false,
+               avisoHoje:'', tocouZap:false, seloHoje:null, vez:0, descartado:null, msgEspecial:null };
+
+  function pxEsc(v){ return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function pxRot(b, t){ (b.querySelector('[data-rot]') || b).textContent = t; }
+  function pxHojeIso(){
+    try { if (window.SantoHoje) return SantoHoje.agora().data; } catch (e) {}
+    var d = new Date(); return d.getFullYear() + '-' + doisDig(d.getMonth() + 1) + '-' + doisDig(d.getDate());
+  }
+  function pxFone(){ var n = $('fone').value.replace(/\D/g, ''); if (n.length > 11 && n.indexOf('55') === 0) n = n.slice(2); return n; }
+  /* o pedido do contrato, a partir do st (datas pelas partes locais, sem toISOString) */
+  function pxPedido(){
+    var d = st.data;
+    return { tipo:st.tipo, piso:st.piso, data:d ? d.getFullYear() + '-' + doisDig(d.getMonth() + 1) + '-' + doisDig(d.getDate()) : null,
+      hora:st.hora || null, adultos:st.adultos, bari:st.bari, c35:st.c35, c68:st.c68, bebes:st.bebes, pistas:st.pistas, horas:st.horas,
+      exclusiva:!!st.exclusiva, aniv:{ on:!!st.aniv.on, dia:st.aniv.dia, mes:st.aniv.mes, quem:st.aniv.quem }, extras:{ kit:st.extras.kit || 0 } };
+  }
+  /* o que define a cobrança: mudou isto, o Pix gerado não vale mais (nome e observação não contam) */
+  function pxSig(){ return JSON.stringify([pxPedido(), Math.round(total() * 100)]); }
+  function pxMesmoPix(){ return !!(PX && pixA.rec && pixA.rec.pix && st.tipo !== 'festa' && pixA.rec.sig === pxSig()); }
+  /* tudo o que refaz a tela 8 sem o st */
+  function pxRegistro(){
+    var nome = nomeBonito($('nome').value), cod = $('codigoRes').textContent;
+    return { v:1, criadoEm:Date.now(), sig:pxSig(), dia:pxPedido().data, codigo:cod, total:total(), totalTxt:totalTexto(), nome:nome,
+      exclusiva:exclusivaOn(), resumo:$('resumoOk').innerHTML, noDia:$('noDiaOk').innerHTML, passoPagar:$('passoPagar').innerHTML,
+      avisoHoje:pixA.avisoHoje, passoNum:$('passoNum').textContent, msgHoje:mensagemWhatsApp(), msgPaga:mensagemWhatsApp(true),
+      corpo:{ origem:'reserva', cliente:{ nome:nome, fone:pxFone(), email:'' }, totalCliente:total(), codigo:cod, pedido:pxPedido() },
+      pix:null, resultado:null, enviado:false };
+  }
+  function pxSalvar(){ if (PX && pixA.rec && pixA.rec.pix) PX.guardar(CHAVE_PIX, pixA.rec); }
+  function pxParar(){ if (pixA.ctrl) { pixA.ctrl.destruir(); pixA.ctrl = null; } var a = $('pixArea'); if (a) a.innerHTML = ''; }
+  function pxTotalTxt(){ return pixA.retomada && pixA.rec ? pixA.rec.totalTxt : totalTexto(); }
+  function pxMsgHoje(){ return pixA.retomada && pixA.rec ? pixA.rec.msgHoje : mensagemWhatsApp(); }
+  /* a mensagem paga: o molde guardado com o valor e o número que o servidor devolveu (nunca o total da tela) */
+  function pxMsgPaga(){
+    var r = pixA.rec, x = r && r.resultado;
+    if (!x) return pxMsgHoje();
+    var pag = ['- Pix pago no site' + (x.modo === 'simulado' ? ' (SIMULADO, nenhum Pix real)' : ''),
+               '- Valor: ' + moeda(x.valor), '- Número do pagamento: ' + x.numero].join('\n');
+    return r.msgPaga.split(MARCA_VALOR).join(moeda(x.valor)).split(MARCA_PAG).join(pag);
+  }
+  /* N1: já existe um Pix pago (409 ja_pago, ou o Pix largado que já tinha sido pago) ou o Pix pago tem outro valor.
+     O molde pago, com o número e o valor que o servidor devolveu; nunca "envio a foto do comprovante".
+     x = { numero, valor (pode faltar), modo, dif (valor diferente do total), anterior (pago antes de mudar a reserva) } */
+  function pxMsgJaPago(x){
+    var temValor = x.valor != null && !isNaN(Number(x.valor)), sim = x.modo === 'simulado' ? ' (SIMULADO, nenhum Pix real)' : '';
+    var totalTela = pixA.retomada && pixA.rec ? pixA.rec.total : total();
+    /* o que entrou é diferente do total: a mensagem NÃO pode soar como "reserva paga" (Vera, CA-06). Vai o pedido
+       de sempre, e no lugar do "Comprovante do Pix" o que entrou, o número do pagamento e o total da reserva */
+    if (x.dif || (x.anterior && temValor && PX.centavos(x.valor) !== PX.centavos(totalTela))){
+      var bl = ['Pagamento:', '- Paguei um Pix pelo site' + sim + ', com valor diferente do total', '- Valor que entrou: ' + moeda(Number(x.valor)),
+                '- Número do pagamento: ' + x.numero, '- Total da reserva: ' + pxTotalTxt()];
+      if (x.anterior) bl.push('- Paguei o Pix antes de mudar a reserva');
+      bl.push('- Não vou pagar de novo');
+      var hoje = pxMsgHoje(), COMP = 'Comprovante do Pix:\n- Envio a foto do comprovante aqui, assim que pagar';
+      return hoje.indexOf(COMP) >= 0 ? hoje.split(COMP).join(bl.join('\n')) : hoje + '\n\n' + bl.join('\n');
+    }
+    var molde = pixA.retomada && pixA.rec ? pixA.rec.msgPaga : mensagemWhatsApp(true);
+    var pag = ['- Pix já pago pelo site' + sim, '- Número do pagamento: ' + x.numero].concat(temValor ? ['- Valor: ' + moeda(Number(x.valor))] : []);
+    if (x.anterior) pag.push('- Paguei o Pix antes de mudar a reserva');
+    pag.push('- Não vou pagar de novo');
+    return molde.split(MARCA_VALOR).join(temValor ? moeda(Number(x.valor)) : 'ver o número do pagamento').split(MARCA_PAG).join(pag.join('\n'));
+  }
+  function pxMsgAtual(){ return pixA.modo === 'aprovado' ? pxMsgPaga() : pixA.msgEspecial || pxMsgHoje(); }
+  /* D9: a tela vai largar este Pix. Pendente: o servidor cancela no Mercado Pago. Já pago: devolve { pago }.
+     Sem resposta: guarda em pixA.descartado e confere de novo antes de gerar o próximo. */
+  function pxDescartar(rec){
+    var p = rec && rec.pix;
+    if (!PX || !p || !p.id || !p.token || rec.resultado) return Promise.resolve({});
+    return PX.cancelar(p.id, p.token).then(function(r){
+      if (PX.jaPago(r)) return { pago:{ numero:String(r.numero == null ? '' : r.numero), valor:r.valor != null ? Number(r.valor) : Number(p.valor), modo:p.modo } };
+      if (r.ok) return { cancelado:true };
+      if (r.erro !== 'token_invalido' && r.erro !== 'nao_encontrado') pixA.descartado = { pix:p, sig:rec.sig, total:rec.total, resultado:null };
+      return {};
+    });
+  }
+  /* o Pix largado já tinha sido pago: a mesma reserva = "Pix recebido"; reserva mudada = "Pix já recebido" com o número */
+  function pxPagoDescartado(rec, pago, mesma){
+    if (st.tela !== 7) return;
+    if (mesma){
+      pixA.rec = rec;
+      var s ={ valor:pago.valor, numero:pago.numero, modo:pago.modo };
+      if (PX.centavos(pago.valor) === PX.centavos(rec.total)) pxAprovado(s); else pxValorPago(s);
+      return;
+    }
+    pxHoje('jaPago', pago.numero, { valor:pago.valor, modo:pago.modo, anterior:true });
+  }
+
+  /* ---- peças da tela ---- */
+  function pxSelo(tipo){
+    var s = document.querySelector('.ok .selo');
+    if (pixA.seloHoje == null) pixA.seloHoje = s.innerHTML;
+    s.classList.toggle('selo--ok', tipo === 'ok');
+    s.innerHTML = tipo && PX ? PX.ICONES[tipo] : pixA.seloHoje;
+  }
+  /* o botão do WhatsApp desligado continua à vista e no teclado, com o motivo logo abaixo */
+  function pxZap(liga, href){
+    var a = $('enviarWpp');
+    if (liga){
+      a.href = href;
+      ['aria-disabled','aria-describedby','role','tabindex'].forEach(function(k){ a.removeAttribute(k); });
+    } else {
+      a.removeAttribute('href');
+      a.setAttribute('role', 'link'); a.setAttribute('tabindex', '0');
+      a.setAttribute('aria-disabled', 'true'); a.setAttribute('aria-describedby', 'pixLibera');
+    }
+    $('pixLibera').hidden = liga;
+  }
+  /* some com tudo o que é da fase 2 e deixa o botão do WhatsApp como o ir(7) deixou */
+  function pxEsconder(){
+    ['pixRecebido','pixMudou','pixErro','pixA','pixAntes','pixLibera','pixDepoisLinks','pixDepois'].forEach(function(id){ $(id).hidden = true; });
+    $('pixTeste').innerHTML = '';
+    $('avisoConfirma').hidden = false;
+    $('pixA').parentNode.removeAttribute('data-px');
+    pixA.msgEspecial = null;
+    pxSelo(null);
+    pxZap(true, linkWhatsApp(pxMsgHoje()));
+    $('enviarWpp').textContent = 'Enviar solicitação pelo WhatsApp';
+  }
+  /* a tela 8 de antes da fase 2, inteira */
+  function pxHojeTela(){
+    pxEsconder();
+    $('tituloOk').textContent = 'Falta só enviar';
+    $('avisoConfirma').innerHTML = pixA.avisoHoje;
+    $('passosPix').hidden = false;
+    $('textoOk').hidden = true;
+    $('pcAjuda').hidden = NO_CELULAR;
+  }
+  function pxLinkBtn(texto, fn){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'pix-link'; b.textContent = texto;
+    b.addEventListener('click', fn);
+    return b;
+  }
+  function pxCancelar(r){
+    return '<p>' + (r.exclusiva ? 'No pagamento integral (mesa exclusiva), o pagamento não é reembolsável.'
+      : 'Reembolso total se você pedir pelo WhatsApp oficial em até 7 dias da contratação. Depois desse prazo não há reembolso.') +
+      '</p><p><a href="/termos/" target="_blank" rel="noopener">Ver o contrato</a></p>';
+  }
+  /* WhatsApp da equipe a partir do bloco do Pix: "paguei e não apareceu" (variante B) e "foi devolvido" */
+  function pxZapEquipe(motivo){
+    var r = pixA.rec, pre = (window.SantoHoje && SantoHoje.prefixoTeste) || '', L;
+    if (motivo === 'devolvido') L = ['Olá! O Pix da reserva ' + r.codigo + ' foi devolvido e quero ajuda para pagar.', 'Valor: ' + moeda(Number(r.pix.valor)), 'Nome: ' + r.nome];
+    else L = ['Olá! Paguei o Pix da reserva ' + r.codigo + ' e a tela não atualizou.', 'Valor: ' + moeda(Number(r.pix.valor)),
+              'Pix gerado às ' + PX.horaDe(new Date(r.criadoEm).toISOString()), 'Envio a foto do comprovante aqui.', 'Nome: ' + r.nome];
+    return linkWhatsApp(pre + L.join('\n'));
+  }
+  function pxTextoAntes(){
+    var p = [], q = qtdAntecipaveis();
+    if (comRodizio()) p.push(pagaTudo() ? (q > 1 ? 'os ' + q + ' rodízios' : 'o rodízio') : 'o antecipado de ' + textoSinal(rodiziosDoSinal()).replace(/ antecipados?$/, ''));
+    if (st.tipo === 'pista') p.push(st.pistas > 1 ? 'as pistas' : 'a pista');
+    if (!avulso() && st.extras.kit) p.push('o Kit Festa');
+    var oque = p.length > 1 ? p.slice(0, -1).join(', ') + ' e ' + p[p.length - 1] : (p[0] || 'o antecipado');
+    var resto = comRodizio() && (!pagaTudo() || restanteNoCaixa().length || anivComDesconto());
+    return 'Para a equipe analisar a sua data, pague ' + oque + ' agora, aqui mesmo, no Pix. Valor: <b>' + totalTexto() + '</b>.' +
+      (resto ? ' O resto você paga no dia, no caixa.' : '') +
+      '<ol class="pixA-passos"><li>Toque em Pagar no Pix.</li><li>Pague no app do seu banco.</li><li>Volte aqui: o botão do WhatsApp libera sozinho.</li></ol>';
+  }
+  function pxRetomadaLinks(){
+    $('pixRetoma').hidden = false; $('pixOutraBox').hidden = false; $('voltar').hidden = true;
+  }
+
+  /* ---- estados ---- */
+  /* entrou na tela 8 (pelo ir(7)) */
+  function pxEntrar(){
+    if (!PX) return;
+    var festa = st.tipo === 'festa', r = pixA.rec, vez = ++pixA.vez;
+    pixA.retomada = false; pixA.tocouZap = false;
+    $('pixRetoma').hidden = true; $('pixOutraBox').hidden = true;
+    if (!festa) pixA.avisoHoje = $('avisoConfirma').innerHTML;
+    pxEsconder();
+    if (festa || !(total() > 0)) { if (r) { PX.apagar(CHAVE_PIX); pixA.rec = null; } pixA.modo = 'hoje'; return; }   /* orçamento e valor zero: sem Pix */
+    if (r && r.pix){
+      if (r.sig === pxSig()){
+        /* a mesma reserva: o Pix e o código ficam; nome, mensagem e resumo podem ter mudado */
+        var n = pxRegistro();
+        n.criadoEm = r.criadoEm; n.pix = r.pix; n.resultado = r.resultado; n.enviado = r.enviado;
+        pixA.rec = n; pxSalvar();
+        if (n.resultado) { if (n.resultado.valorDif) pxHoje('valorPago'); else pxAprovadoTela(false); }
+        else pxMostrarPix(false);
+        return;
+      }
+      PX.apagar(CHAVE_PIX); pixA.rec = null; pixA.tentativa = null; pixA.mudou = 'incerto';
+    }
+    pixA.modo = 'hoje';
+    /* D9: a reserva mudou com um Pix gerado: cancela o antigo antes de oferecer o novo (e descobre se já foi pago) */
+    var largar = r && r.pix && !r.resultado && r.sig !== pxSig() ? pxDescartar(r) : Promise.resolve({});
+    Promise.all([largar, PX.disponivel()]).then(function(v){
+      var res = v[0], ok = v[1];
+      if (vez !== pixA.vez || st.tela !== 7) return;
+      if (res.pago) { pxPagoDescartado(r, res.pago, false); return; }
+      if (res.cancelado) pixA.mudou = 'cancelado';
+      if (!ok || pixA.modo !== 'hoje' || pixA.tocouZap) return;   /* fica como hoje */
+      pxAntes();
+    });
+  }
+  /* "Falta pagar o antecipado": o Pix só nasce no toque em Pagar */
+  function pxAntes(){
+    pixA.modo = 'antes';
+    pxEsconder();
+    $('pixA').parentNode.setAttribute('data-px', 'antes');
+    pxSelo('relogio');
+    $('tituloOk').textContent = 'Falta pagar o antecipado';
+    $('avisoConfirma').innerHTML = pxTextoAntes();
+    $('passosPix').hidden = true;
+    $('pixA').hidden = false; $('pixAntes').hidden = false;
+    var b = $('pixPagar');
+    b.removeAttribute('aria-disabled'); b.removeAttribute('data-ocupado');
+    pxRot(b, 'Pagar ' + totalTexto() + ' no Pix');
+    pxZap(false); $('pcAjuda').hidden = true;
+    if (pixA.mudou){
+      /* D9: só diz "cancelado" quando o servidor cancelou; sem resposta, a frase não promete nada */
+      var txtMudou = pixA.mudou === 'cancelado'
+        ? 'Você mudou a reserva, então o Pix anterior foi cancelado. Pague só o novo.'
+        : 'Você mudou a reserva. Não pague o Pix anterior. Se você já pagou, não pague de novo: fale com a equipe.';
+      pixA.mudou = false; $('pixMudou').textContent = txtMudou; $('pixMudou').hidden = false;
+      PX.anunciar(txtMudou);
+    }
+  }
+  function pxCriar(){
+    if (pixA.gerando || !PX) return;
+    var base = pixA.retomada && pixA.rec ? pixA.rec : pxRegistro();
+    pixA.gerando = true;
+    pixA.tentativa = pixA.tentativa || PX.novaTentativa();     /* dois toques no mesmo Pix = a mesma tentativa */
+    var b = $('pixPagar');
+    b.setAttribute('aria-disabled', 'true'); b.setAttribute('data-ocupado', ''); pxRot(b, 'Gerando o Pix...');
+    PX.anunciar('Gerando o Pix.');
+    var corpo = JSON.parse(JSON.stringify(base.corpo));
+    corpo.tentativa = pixA.tentativa;
+    var desfaz = function(){ pixA.gerando = false; b.removeAttribute('aria-disabled'); b.removeAttribute('data-ocupado'); pxRot(b, 'Pagar ' + base.totalTxt + ' no Pix'); };
+    /* D9: um Pix largado sem resposta do servidor é conferido (e cancelado) antes de nascer outro */
+    var dd = pixA.descartado; pixA.descartado = null;
+    (dd ? pxDescartar(dd) : Promise.resolve({})).then(function(res){
+      if (res.pago){
+        desfaz();
+        var velho = JSON.parse(JSON.stringify(base));
+        velho.pix = dd.pix; velho.resultado = null; velho.enviado = false;
+        pxPagoDescartado(velho, res.pago, dd.sig === base.sig);
+        return null;
+      }
+      return PX.criar(corpo);
+    }).then(function(r){
+      if (!r) return;
+      desfaz();
+      if (r.ok && r.id && r.token){
+        pixA.tentativa = null; pixA.erros = 0;
+        if (PX.centavos(r.valor) !== PX.centavos(base.total)) { PX.cancelar(r.id, r.token); pxHoje('valor', r.valor); return; }
+        var rec = JSON.parse(JSON.stringify(base));
+        rec.criadoEm = Date.now(); rec.resultado = null; rec.enviado = false;
+        rec.pix = { id:r.id, token:r.token, valor:r.valor, copiaECola:r.copiaECola, qrImagem:r.qrImagem || null, expiraEm:r.expiraEm, modo:r.modo };
+        pixA.rec = rec; pxSalvar();
+        pxMostrarPix(false);
+        return;
+      }
+      if (PX.jaPago(r)) { pixA.tentativa = null; pxHoje('jaPago', r.numero, { valor:r.valor }); return; }
+      if (r.erro === 'valor_diferente') { pixA.tentativa = null; pxHoje('valor', r.valorServidor); return; }
+      pxHoje('fora');
+    });
+  }
+  function pxMostrarPix(retomada){
+    var r = pixA.rec;
+    pixA.modo = 'pix';
+    pxEsconder();
+    pxSelo('relogio');
+    $('avisoConfirma').hidden = true; $('passosPix').hidden = true; $('textoOk').hidden = true;
+    $('pixA').hidden = false; $('pixAntes').hidden = true;
+    pxZap(false); $('pcAjuda').hidden = true;
+    if (pixA.ctrl) pixA.ctrl.destruir();
+    pixA.ctrl = PX.montar($('pixArea'), {
+      pix:r.pix, tituloEl:$('tituloOk'), tituloNoBloco:true, retomada:!!retomada, valorEsperado:r.total,
+      saida:{ texto:'Prefiro combinar pelo WhatsApp', aoTocar:function(){ pxHoje('preferiu'); } },
+      zap:pxZapEquipe, cancelar:pxCancelar(r),
+      aoAprovar:pxAprovado, aoValorDiferente:pxValorPago,
+      aoGerarOutro:function(){ pixA.tentativa = null; pxCriar(); },        /* D5: Pix novo = tentativa nova */
+      aoFalhar:function(){ pxHoje('consulta'); }
+    });
+  }
+  function pxResultado(s, dif){
+    var x = { valor:Number(s.valor), numero:String(s.numero == null ? '' : s.numero), modo:s.modo === 'simulado' ? 'simulado' : 'mp' };
+    if (dif) x.valorDif = true;
+    pixA.rec.resultado = x; pxSalvar();
+  }
+  function pxAprovado(s){ if (!pixA.rec) return; pxResultado(s, false); pxAprovadoTela(true); }
+  /* aprovado, mas com valor diferente do total da tela: não libera "reserva paga"; fluxo de hoje com o número à vista */
+  function pxValorPago(s){ if (!pixA.rec) return; pxResultado(s, true); pxHoje('valorPago'); }
+  /* "Pix recebido": nunca "confirmada" aqui, a equipe ainda confirma a data */
+  function pxAprovadoTela(novo){
+    var r = pixA.rec, x = r.resultado;
+    pxParar(); pxEsconder();
+    pixA.modo = 'aprovado';
+    pxSelo('ok');
+    $('tituloOk').textContent = 'Pix recebido';
+    $('pixTeste').innerHTML = PX.faixaTeste(x.modo, true);
+    $('pixRecebido').innerHTML = 'Recebemos <b>' + moeda(x.valor) + '</b> do seu Pix. Número do pagamento: <b class="num">' + pxEsc(x.numero) + '</b>.';
+    $('pixRecebido').hidden = false;
+    $('avisoConfirma').innerHTML = '<b>A equipe ainda confirma a data.</b> Envie a reserva pelo WhatsApp: com o Pix já pago, a equipe só precisa confirmar a disponibilidade.';
+    $('passosPix').hidden = true; $('textoOk').hidden = true;
+    var el = $('resumoOk'), sec = el.querySelector('.l--sec span'), tot = el.querySelector('.l--total');
+    if (sec) sec.textContent = 'Pago no Pix, pelo site';
+    if (tot) { tot.firstElementChild.textContent = 'Total pago no Pix'; tot.lastElementChild.textContent = moeda(x.valor); }
+    pxZap(true, linkWhatsApp(pxMsgPaga()));
+    $('enviarWpp').textContent = 'Enviar reserva paga pelo WhatsApp';
+    $('pixDepoisLinks').hidden = false; $('pixDepois').hidden = false;
+    $('voltar').hidden = true;                       /* depois de pagar, mudar algo é com a equipe */
+    $('pcAjuda').hidden = NO_CELULAR;
+    $('totalRot').textContent = 'Pago no Pix'; $('total').textContent = moeda(x.valor);
+    if (pixA.retomada) pxRetomadaLinks();
+    window.scrollTo(0, 0);                           /* o "Pix recebido" e o número no alto da tela */
+    PX.focar($('tituloOk'));
+    if (novo !== false || pixA.retomada) PX.anunciar('Pix recebido. Número do pagamento ' + x.numero + '. Falta enviar a reserva pelo WhatsApp.');
+  }
+  /* volta ao fluxo de hoje. motivo: preferiu | fora | consulta | valor | valorPago | jaPago
+     o (só em jaPago): { valor, modo, anterior } */
+  function pxHoje(motivo, v, o){
+    pxParar();
+    o = o || {};
+    var r = pixA.rec, x = r && r.resultado;
+    /* D9: "Prefiro combinar" com um Pix vivo: a cópia vai para o cancelamento antes de o Pix sair de cena */
+    var largar = motivo === 'preferiu' && r && r.pix && !r.resultado ? JSON.parse(JSON.stringify(r)) : null;
+    if (motivo !== 'valorPago') { PX.apagar(CHAVE_PIX); if (r) { r.pix = null; r.resultado = null; } }   /* o Pix deste aparelho sai de cena */
+    pixA.modo = 'hoje';
+    pxHojeTela();
+    var caixa = $('pixErro'), t = $('pixErroTxt'), links = $('pixErroLinks'), titulo = '', alerta = '', info = false, selo = null;
+    links.innerHTML = '';
+    if (largar) {
+      var vez = pixA.vez;
+      pxDescartar(largar).then(function(res){
+        if (res.pago && vez === pixA.vez && pixA.modo === 'hoje') pxPagoDescartado(largar, res.pago, true);
+      });
+    }
+    if (motivo === 'fora' || motivo === 'consulta'){
+      pixA.erros++;
+      titulo = 'Pagamento no site indisponível agora';
+      t.textContent = motivo === 'fora'
+        ? 'Não conseguimos gerar o Pix. Sua reserva não se perdeu: envie pelo WhatsApp como sempre. A equipe confirma a data, manda a chave Pix e você manda a foto do comprovante.'
+        : 'Não conseguimos acompanhar este Pix agora. Se você já pagou, não pague de novo: envie pelo WhatsApp e mande a foto do comprovante.';
+      alerta = 'Pagamento no site indisponível. Use o WhatsApp.'; selo = 'aviso';
+      if (motivo === 'fora' && pixA.erros === 1 && !pixA.retomada)
+        links.appendChild(pxLinkBtn('Tentar o Pix de novo', function(){ pxAntes(); pxCriar(); }));
+    } else if (motivo === 'valor'){
+      titulo = 'O valor mudou'; selo = 'aviso';
+      t.innerHTML = 'O valor da sua reserva foi atualizado e não é mais <b>' + pxTotalTxt() + '</b>. Nada foi cobrado. Confira o resumo abaixo e envie pelo WhatsApp: a equipe confirma o valor certo.' +
+        (v != null && !isNaN(Number(v)) ? ' Valor atual: <b>' + moeda(Number(v)) + '</b>.' : '');
+      alerta = 'O valor mudou. Nada foi cobrado.';
+      if (!pixA.retomada) links.appendChild(pxLinkBtn('Voltar e conferir a reserva', function(){ ir(vizinha(-1)); }));
+    } else if (motivo === 'valorPago' && x){
+      titulo = 'O valor do Pix é diferente'; selo = 'aviso';
+      t.innerHTML = 'Recebemos <b>' + moeda(x.valor) + '</b> do seu Pix, mas o total da reserva é <b>' + pxTotalTxt() + '</b>. Não pague de novo. ' +
+        'Envie a solicitação pelo WhatsApp: a mensagem já vai com o número do pagamento, <b>' + pxEsc(x.numero) + '</b>.';
+      alerta = 'O valor do Pix é diferente do total. Não pague de novo.';
+      $('voltar').hidden = true;
+      pixA.msgEspecial = pxMsgJaPago({ numero:x.numero, valor:x.valor, modo:x.modo, dif:true });
+    } else if (motivo === 'jaPago'){
+      titulo = 'Pix já recebido'; info = true; selo = 'ok';
+      var temV = o.valor != null && !isNaN(Number(o.valor));
+      t.innerHTML = (o.anterior ? 'O Pix que você gerou antes de mudar a reserva já foi pago' : 'Já existe um Pix pago para esta reserva') +
+        (v ? ', número do pagamento <b>' + pxEsc(v) + '</b>' : '') + (temV ? ', valor <b>' + moeda(Number(o.valor)) + '</b>' : '') +
+        '. Não pague de novo. Envie a solicitação pelo WhatsApp: a mensagem já vai com esse número, e a equipe confere com você.';
+      alerta = 'Pix já recebido. Não pague de novo.';
+      pixA.msgEspecial = pxMsgJaPago({ numero:v || '', valor:temV ? Number(o.valor) : null, modo:o.modo, anterior:!!o.anterior });
+    }
+    /* N1: quem já pagou não vê "Pague o Pix" nem "envie o comprovante", e a mensagem leva o número do pagamento */
+    if (pixA.msgEspecial){
+      $('passosPix').hidden = true;
+      pxZap(true, linkWhatsApp(pixA.msgEspecial));
+      $('enviarWpp').textContent = 'Enviar pelo WhatsApp com o número do pagamento';
+    }
+    if (titulo){
+      $('tituloOk').textContent = titulo;
+      caixa.className = 'pixA-nota ' + (info ? 'pixA-nota--info' : 'pixA-nota--erro');
+      caixa.hidden = false;
+      pxSelo(selo);                                  /* N3: visto verde só com pagamento; aviso nos erros */
+      window.scrollTo(0, 0);
+    }
+    if (pixA.retomada) pxRetomadaLinks();
+    PX.focar($('tituloOk'));
+    if (alerta) PX.anunciar(alerta, true);
+  }
+  /* Voltar com um Pix na tela: confere antes de sair (pode ter acabado de ser pago) */
+  function pxSegurarVoltar(){
+    if (pixA.gerando || pixA.modo === 'aprovado') return true;
+    var c = pixA.ctrl, b = $('voltar');
+    if (!(c && c.vivo())) return false;
+    if (b.getAttribute('aria-busy') === 'true') return true;
+    b.setAttribute('aria-busy', 'true');
+    c.verificar().then(function(){
+      b.removeAttribute('aria-busy');
+      if (pixA.modo !== 'aprovado' && st.tela === 7) ir(vizinha(-1));
+    });
+    return true;
+  }
+  /* a aba recarregou (ou a pessoa voltou depois): refaz a tela 8 com o que ficou guardado */
+  function pxRetomar(){
+    if (!PX) return;
+    var g = PX.ler(CHAVE_PIX);
+    if (!g) return;
+    var ok = g.v === 1 && g.pix && g.pix.id && g.pix.token && typeof g.msgHoje === 'string' && typeof g.msgPaga === 'string' && g.corpo && g.codigo;
+    if (!ok || !(Date.now() - g.criadoEm < VIDA_PIX) || (g.enviado && g.dia && g.dia < pxHojeIso())) { PX.apagar(CHAVE_PIX); return; }
+    pixA.rec = g; pixA.retomada = true; pixA.avisoHoje = g.avisoHoje || '';
+    st.tela = 7;
+    telas.forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-tela') === 7); });
+    $('avancar').hidden = true;
+    $('codigoRes').textContent = g.codigo;
+    $('resumoOk').innerHTML = g.resumo; $('noDiaOk').innerHTML = g.noDia; $('passoPagar').innerHTML = g.passoPagar;
+    $('barra').style.transform = 'scaleX(1)'; $('passoNome').textContent = NOMES[7]; if (g.passoNum) $('passoNum').textContent = g.passoNum;
+    $('totalRot').textContent = 'A pagar agora'; $('total').textContent = g.totalTxt;
+    if (g.resultado) { if (g.resultado.valorDif) pxHoje('valorPago'); else pxAprovadoTela(false); pxReconferir(g); }
+    else { pxMostrarPix(true); PX.focar($('tituloOk')); }
+    pxRetomadaLinks();
+    window.scrollTo(0, 0);
+  }
+  /* D13: o "pago" guardado no aparelho é conferido uma vez ao reabrir. Devolvido ou recusado no servidor:
+     a tela volta ao bloco do Pix, que mostra "Este pagamento foi devolvido" e não libera o WhatsApp pago */
+  function pxReconferir(g){
+    PX.status(g.pix.id, g.pix.token).then(function(s){
+      if (!s.ok || pixA.rec !== g || !g.resultado || st.tela !== 7) return;
+      if (s.status !== 'estornado' && s.status !== 'recusado') return;
+      g.resultado = null; g.enviado = false; pxSalvar();
+      $('resumoOk').innerHTML = g.resumo; $('totalRot').textContent = 'A pagar agora'; $('total').textContent = g.totalTxt;
+      $('pixErro').hidden = true;
+      pxMostrarPix(true);
+      pxRetomadaLinks();
+    });
+  }
+
+  if (PX){
+    $('pixPagar').addEventListener('click', function(){ if (this.getAttribute('aria-disabled') !== 'true') pxCriar(); });
+    $('pixPrefiro').addEventListener('click', function(){ pxHoje('preferiu'); });
+    $('copiarNumero').addEventListener('click', function(){
+      var x = pixA.rec && pixA.rec.resultado;
+      if (x) PX.copiarCom(this, x.numero, 'Número copiado');
+    });
+    $('enviarWpp').addEventListener('click', function(ev){
+      if (this.getAttribute('aria-disabled') === 'true') { ev.preventDefault(); return; }
+      if (pixA.modo === 'aprovado' && pixA.rec) { pixA.rec.enviado = true; pxSalvar(); }
+      else pixA.tocouZap = true;
+    });
+    $('enviarWpp').addEventListener('keydown', function(ev){
+      if (this.getAttribute('aria-disabled') === 'true' && (ev.key === 'Enter' || ev.key === ' ')) ev.preventDefault();
+    });
+    /* "Começar outra reserva" (só na retomada): apaga o guardado. Pix pago e não enviado, ou Pix ainda vivo (N2),
+       pedem um segundo toque; o Pix vivo é cancelado antes (D9) e, se já tinha sido pago, a tela mostra o pagamento */
+    $('pixOutra').addEventListener('click', function(){
+      var b = this, r = pixA.rec, pago = !!(r && r.resultado && !r.enviado), vivo = !!(r && r.pix && !r.resultado);
+      if (b.getAttribute('aria-busy') === 'true') return;
+      if ((pago || vivo) && $('pixOutraAviso').hidden){
+        var aviso = pago ? 'Você já pagou este Pix. Envie a reserva antes de começar outra.'
+          : 'Este Pix ainda pode estar sendo pago. Se você já pagou, não comece outra reserva: fale com a equipe. Se começar outra, este Pix é cancelado.';
+        $('pixOutraAviso').textContent = aviso; $('pixOutraAviso').hidden = false; b.textContent = 'Começar outra mesmo assim';
+        PX.anunciar(aviso, true);
+        return;
+      }
+      var recomecar = function(){ pxParar(); PX.apagar(CHAVE_PIX); location.replace(location.pathname + location.search); };
+      if (!vivo) { recomecar(); return; }
+      b.setAttribute('aria-busy', 'true'); b.textContent = 'Conferindo o Pix...';
+      pxParar();
+      pxDescartar(r).then(function(res){
+        b.removeAttribute('aria-busy'); b.textContent = 'Começar outra mesmo assim';
+        if (res.pago) { $('pixOutraAviso').hidden = true; b.textContent = 'Começar outra reserva'; pxPagoDescartado(r, res.pago, true); return; }
+        /* sem resposta: a frase "este Pix é cancelado" não vale; avisa uma vez e deixa seguir no toque seguinte */
+        if (!res.cancelado && !b.__semCancelar){
+          b.__semCancelar = true; pixA.descartado = null;
+          var t = 'Não deu para cancelar este Pix agora. Se você já pagou, não pague de novo: fale com a equipe. Toque de novo para começar outra mesmo assim.';
+          $('pixOutraAviso').textContent = t; PX.anunciar(t, true);
+          return;
+        }
+        recomecar();
+      });
+    });
+  }
+
   /* ---------- navegação ---------- */
   function ir(n){
+    if (n !== 7) pxParar();          /* fase 2: fora da tela 8 o Pix não é consultado */
     st.tela = n;
     telas.forEach(function(t){ t.classList.toggle('on', +t.getAttribute('data-tela') === n); });
     $('voltar').hidden = n === 0;
@@ -1535,7 +2086,8 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
     if (n === 7){
       var soOrcamento = st.tipo === 'festa';
       if (!soOrcamento){
-        $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
+        /* com um Pix já gerado para esta mesma reserva, o código não muda */
+        if (!pxMesmoPix()) $('codigoRes').textContent = 'SS-' + String(Math.floor(Math.random() * 9000) + 1000);
         $('passoPagar').innerHTML = 'Pague <b>' + totalTexto() + '</b> no Pix.';
       }
       /* festa é só orçamento: não tem Pix nem comprovante nesta etapa */
@@ -1555,6 +2107,7 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
     /* o leitor de tela anuncia o novo passo */
     var h = document.querySelector('.tela.on h1');
     if (h && n > 0){ h.tabIndex = -1; h.focus({ preventScroll:true }); }
+    if (n === 7) pxEntrar();
   }
   /* anda pelas telas que valem para esta reserva */
   function vizinha(passo){
@@ -1598,7 +2151,7 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
   /* na captura, para limpar antes dos handlers e não apagar o aviso que eles derem */
   document.addEventListener('input', function(){ avisa(''); }, true);
   document.addEventListener('change', function(){ avisa(''); }, true);
-  $('voltar').addEventListener('click', function(){ ir(vizinha(-1)); });
+  $('voltar').addEventListener('click', function(){ if (st.tela === 7 && pxSegurarVoltar()) return; ir(vizinha(-1)); });
 
   /* cada pista leva até 6 jogadores: no uso avulso o número de pistas acompanha */
   function ajustaPistas(){
@@ -1733,6 +2286,9 @@ details.artes summary{display:flex;align-items:center;min-height:44px}
     input.checked = true;
     input.dispatchEvent(new Event('change', { bubbles:true }));
   })();
+
+  /* fase 2: com um Pix desta reserva guardado neste aparelho, abre direto na tela 8 */
+  pxRetomar();
 })();
 </script>
 <script src="/assets/teste.js" defer></script>
